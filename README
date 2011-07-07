@@ -1,0 +1,22 @@
+This is simdock, an eye-candy deskbar for Linux.
+This program is free software and still in development
+process.
+
+Installing:
+---------------------------------------------
+1) Launch ./configure
+2) Type 'make' to compile
+3) Type 'make install' as ROOT to install
+
+See INSTALLING file if you have problems or if you
+need compiling options
+
+Required libraries:
+---------------------------------------------
+libwxgtk2.8-0
+libwxgtk2.8-0-dev
+
+
+Original:
+---------------------------------------------
+http://sourceforge.net/projects/simbar/
