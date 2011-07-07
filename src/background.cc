@@ -1,0 +1,98 @@
+/*
+ *   Copyright 2007 Simone Della Longa <simonedll@yahoo.it>
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+#include "background.h"
+
+using namespace std;
+
+//get the currently used background 
+wxBitmap* getRootWallpaper()
+{
+    wxBitmap* backImage = new wxBitmap();
+    WnckScreen *screen = wnck_screen_get_default ();
+
+    Pixmap pm = wnck_screen_get_background_pixmap(screen);
+    int i = 0;
+    while(i < 5)
+    {
+        if (pm != None) {
+            break;
+        }
+        wxMilliSleep(1000);
+        pm  = wnck_screen_get_background_pixmap(screen);
+        i++;
+    }
+    
+    if (pm != None) {
+        backImage->SetPixmap(
+                            gdk_pixmap_foreign_new(
+                                pm
+                                )
+                            );
+    } else {
+        wxSize sz = wxGetDisplaySize();
+        backImage = new wxBitmap (sz.GetWidth(), sz.GetHeight());
+        wxMemoryDC dc;
+        dc.SelectObject(*backImage);
+        dc.SetBackground(*wxTRANSPARENT_BRUSH);
+        dc.Clear();
+        dc.SelectObject(*backImage);
+    }
+    return backImage;
+}
+
+wxBitmap *fixImage (wxString url, int type, wxColour c)
+{
+  if (url.IsEmpty ())
+    return NULL;
+
+  wxImage img = wxImage (url); 
+  wxSize sz = wxGetDisplaySize();
+  int w = sz.GetWidth();
+  int h = sz.GetHeight();
+  printf ("Image size:%d,%d Screen size:%d,%d\n", img.GetWidth (),
+	  img.GetHeight (), w, h);
+  // cout << wx2std(c.GetAsString(wxC2S_HTML_SYNTAX)) <<endl;
+  switch (type)
+    {
+    case STRETCHED:
+      return new wxBitmap (img.Scale (w, h, wxIMAGE_QUALITY_HIGH));
+      break;
+    case CENTERED:
+      int x, y;
+      if (img.GetWidth () > w)
+	x = 0;
+      else
+	x = (w - img.GetWidth ()) / 2;
+      if (img.GetHeight () > h)
+	y = 0;
+      else
+	y = (h - img.GetHeight ()) / 2;
+
+
+      img.Resize (wxSize (w, h), wxPoint (x, y), c.Red (), c.Green (),
+		  c.Blue ());
+      return new wxBitmap (img);
+      break;
+    default:
+      return new wxBitmap (img);
+      break;
+
+    }
+
+  return NULL;
+}

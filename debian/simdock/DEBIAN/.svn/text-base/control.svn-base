@@ -1,0 +1,14 @@
+Package: simdock
+Version: 1.1-1
+Section: gnome
+Priority: optional
+Architecture: i386
+Depends: libc6 (>= 2.5-0ubuntu1), libgcc1 (>= 1:4.1.2), libstdc++6 (>= 4.1.2), libwxbase2.8-0 (>= 2.8.1.1), libwxgtk2.8-0 (>= 2.8.1.1)
+Installed-Size: 144
+Maintainer: Simone Della Longa <simonedll@yahoo.it>
+Description: Customizable eye-candy dockbar
+ A fast and customizable dockbar, allows the user to launch applications
+ showing animations and fading effect.
+ .
+ It is written in c++ and wxWidgets for Gnome but works on most desktop environments.
+ Does not require Compiz nor 3D acceleration.

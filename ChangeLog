@@ -1,0 +1,9 @@
+1.2.1:
+    * Replaced gconf-background with reading the currently used
+      root-wallpaper.
+    * Enabled Drag & Drop without pressing ctrl
+    * Added Option to convert a currently open window (task) into a
+      launcher
+    * Bugfix: Icons sometimes vanished when creating new icons and
+              clicked again while fading
+    * Bugfix: The pid of some windows wasn't stored correctly (Amarok)

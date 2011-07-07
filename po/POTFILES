@@ -1,0 +1,4 @@
+	../src/main.cc \
+	../src/simImage.cc \
+	../src/main.h \
+	../src/simImage.h \
