@@ -631,61 +631,54 @@ MyFrame::OnLeftDown (wxMouseEvent & event)
 
 
 void
-MyFrame::OnLeftUp (wxMouseEvent & event)
-{
+MyFrame::OnLeftUp (wxMouseEvent & event) {
+    if (dragging && moving) {
+        int id = positionToId (wxPoint (event.m_x, event.m_y), ImagesList, 0,
+                                ImagesList->GetCount () - 1);
+        simImage *oldImg = (*ImagesList)[draggedID];
+        ImagesList->RemoveAt (draggedID);
+        ImagesList->Insert (oldImg, id);
 
-  if (dragging && moving)
-    {
-      int id = positionToId (wxPoint (event.m_x, event.m_y), ImagesList, 0,
-			     ImagesList->GetCount () - 1);
-      // cout << id << endl;
-      // simImage* oldImg = *ImagesList.Detach(draggedID);
-      simImage *oldImg = (*ImagesList)[draggedID];
-      ImagesList->RemoveAt (draggedID);
-      ImagesList->Insert (oldImg, id);
-
-      dragging = false;
-      moving = false;
-      appSize = PositionIcons (GetClientSize (), id, settings, ImagesList);
-      Refresh (false);
-      return;
+        dragging = false;
+        moving = false;
+        //it's possible the launchers were moved, save new order:
+        wxGetApp().launchersModified = true;
+        appSize = PositionIcons (GetClientSize (), id, settings, ImagesList);
+        Refresh (false);
+        return;
     }
     dragging = false;
-  for (unsigned int i = 0; i < ImagesList->GetCount (); i++)
-    {
-      simImage *img = (*ImagesList)[i];
-      if (img->isIn (event.m_x, event.m_y))
-	{
-	  if (img->windowCount() > 0)
-	  {
-	  	tasks_raise(img->getWindow());
-	  	return;
-	  }
-	  
-	  int pid;		/* process identifier */
+    for (unsigned int i = 0; i < ImagesList->GetCount (); i++) {
+        simImage *img = (*ImagesList)[i];
+        if (img->isIn (event.m_x, event.m_y)) {
+            if (img->windowCount() > 0) {
+                tasks_raise(img->getWindow());
+                return;
+            }
 
-	  pid = fork ();
-	  if (pid < 0)
-	    {
-	      wxDialog dlg (this, -1, wxT ("Damn, could not fork...."));
-	      dlg.ShowModal ();
+        /* process identifier */
+        int pid;		
+
+        pid = fork ();
+        if (pid < 0) {
+            wxDialog dlg (this, -1, wxT ("Damn, could not fork...."));
+            dlg.ShowModal ();
 	    }
 
-	  if (pid == 0)
-	    {
-	      system (wx2std (img->link).c_str ());
-	      exit (0);
+        if (pid == 0) {
+            system (wx2std (img->link).c_str ());
+            exit (0);
 	    }
-	  img->status = STATUS_INCREASING;
+        
+        img->status = STATUS_INCREASING;
 
         if (! blurTimer->IsRunning()) {
             blurTimer->Start (TIMER_TIMEOUT_BLUR);
         }
-	  return;
+        return;
 
-	}
+        }
     }
-
 }
 
 void
