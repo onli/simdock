@@ -1,3 +1,5 @@
+
+    * New position of moved launchers will be saved
 1.2.1:
     * Replaced gconf-background with reading the currently used
       root-wallpaper.
