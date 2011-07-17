@@ -374,7 +374,6 @@ MyFrame::OnMiddleUp (wxMouseEvent & event) {
             if (img->isIn (event.m_x, event.m_y)) {
                 /* process identifier */
                 int pid;		
-                cout << "Trying to start program";
                 pid = fork ();
                 if (pid < 0) {
                     wxDialog dlg (this, -1, wxT ("Damn, could not fork...."));
@@ -393,8 +392,6 @@ MyFrame::OnMiddleUp (wxMouseEvent & event) {
                 }
             }
         }
-    } else {
-        cout << "Already moving";
     }
     middleClicked = false;
     moving = false;
