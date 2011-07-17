@@ -288,8 +288,7 @@ wxMenu* MyFrame::GetPopMenu()
 }
 
 void
-MyFrame::updateSize ()
-{
+MyFrame::updateSize () {
   /*
    * This is approximately the maximim width reachable stretching
    * images. It is hard to get a 100% exact maximum width since it
@@ -368,9 +367,37 @@ MyFrame::OnMiddleDown (wxMouseEvent & event)
 }
 
 void
-MyFrame::OnMiddleUp (wxMouseEvent & event)
-{
-  middleClicked = false;
+MyFrame::OnMiddleUp (wxMouseEvent & event) {
+  if (! moving) {
+        for (unsigned int i = 0; i < ImagesList->GetCount (); i++) {
+            simImage *img = (*ImagesList)[i];
+            if (img->isIn (event.m_x, event.m_y)) {
+                /* process identifier */
+                int pid;		
+                cout << "Trying to start program";
+                pid = fork ();
+                if (pid < 0) {
+                    wxDialog dlg (this, -1, wxT ("Damn, could not fork...."));
+                    dlg.ShowModal ();
+                }
+
+                if (pid == 0) {
+                    system (wx2std (img->link).c_str ());
+                    exit (0);
+                }
+                
+                img->status = STATUS_INCREASING;
+
+                if (! blurTimer->IsRunning()) {
+                    blurTimer->Start (TIMER_TIMEOUT_BLUR);
+                }
+            }
+        }
+    } else {
+        cout << "Already moving";
+    }
+    middleClicked = false;
+    moving = false;
 }
 
 void
