@@ -51,74 +51,76 @@ public:
   int frameOptions;
   wxSize appSize;
 private:
-  void RefreshSizes (simImage * img, int distance);
-  /* Mouse */
-  void OnMiddleDown (wxMouseEvent & event);
-  void OnMiddleUp (wxMouseEvent & event);
-  void OnMouseMove (wxMouseEvent & event);
-  void OnMouseLeave (wxMouseEvent & event);
-  void OnMouseEnter (wxMouseEvent & event);
-  void OnMouseEnterIcon (wxMouseEvent & event, simImage* img);
-  void OnMouseLeaveIcon (wxMouseEvent & event);
-  void OnLeftUp (wxMouseEvent & event);
-  void OnLeftDown(wxMouseEvent& event);
-  void OnRightClick (wxMouseEvent & event);
+    void RefreshSizes (simImage * img, int distance);
+    /* Mouse */
+    void OnMiddleDown (wxMouseEvent & event);
+    void OnMiddleUp (wxMouseEvent & event);
+    void OnMouseMove (wxMouseEvent & event);
+    void OnMouseLeave (wxMouseEvent & event);
+    void OnMouseEnter (wxMouseEvent & event);
+    void OnMouseEnterIcon (wxMouseEvent & event, simImage* img);
+    void OnMouseLeaveIcon (wxMouseEvent & event);
+    void OnLeftUp (wxMouseEvent & event);
+    void OnLeftDown(wxMouseEvent& event);
+    void OnRightClick (wxMouseEvent & event);
 
-  void OnContextMenu (wxContextMenuEvent & event);
-  void OnKeyDown (wxKeyEvent & event);
+    simImage* getClickedIcon(wxMouseEvent & event);
 
-  void OnFrameMove (wxMoveEvent & event);
-  void OnPaint (wxPaintEvent & event);
-  void OnBackground (wxEraseEvent & event);
-  void OnBlurTimerTick (wxTimerEvent & event);
-  void OnHoverTimerTick (wxTimerEvent & event);
-  /* Menu callbacks */
-  void OnQuit (wxCommandEvent & event);
-  void OnAbout (wxCommandEvent & event);
-  void OnSettings(wxCommandEvent & event);
-  void OnAdd (wxCommandEvent & event);
-  void OnKeep (wxCommandEvent & event);
-  void OnEdit (wxCommandEvent &event);
-  void OnDelete (wxCommandEvent &event);
-  wxMenu* GetPopMenu();
-  /* popUp menu */
-  wxMenu *popMenu;
+    void OnContextMenu (wxContextMenuEvent & event);
+    void OnKeyDown (wxKeyEvent & event);
 
-  wxAboutDialogInfo* info; //About informations
+    void OnFrameMove (wxMoveEvent & event);
+    void OnPaint (wxPaintEvent & event);
+    void OnBackground (wxEraseEvent & event);
+    void OnBlurTimerTick (wxTimerEvent & event);
+    void OnHoverTimerTick (wxTimerEvent & event);
+    /* Menu callbacks */
+    void OnQuit (wxCommandEvent & event);
+    void OnAbout (wxCommandEvent & event);
+    void OnSettings(wxCommandEvent & event);
+    void OnAdd (wxCommandEvent & event);
+    void OnKeep (wxCommandEvent & event);
+    void OnEdit (wxCommandEvent &event);
+    void OnDelete (wxCommandEvent &event);
+    wxMenu* GetPopMenu();
+    /* popUp menu */
+    wxMenu *popMenu;
 
-  wxMenuItem* EditMenuItem; 
-  wxMenuItem* DeleteMenuItem;
-  int clickedID; //-1 means no launcher clicked
-  
-  /* Icons Drag n drop */
-  bool dragging;
-  bool moving;
-  int draggedID;
-  wxPoint draggedPos;
-    
-  
-  simSettings* settings;
-  ImagesArray* ImagesList;
-  
-  wxTimer *	 blurTimer;
-  
-  wxTimer*	 hoverTimer;
-  simImage* hoveringIcon;
-  bool showTooltip;
+    wxAboutDialogInfo* info; //About informations
 
-  wxImage * appBackground; //Simdock background
-  wxMemoryDC * src_dc; //Device context used to  the wallpaper
-  wxBitmap * backImage; //DE wallpaper
-  wxBitmap* markBitmap;
+    wxMenuItem* EditMenuItem; 
+    wxMenuItem* DeleteMenuItem;
+    int clickedID; //-1 means no launcher clicked
 
-    
-  bool middleClicked;
-  wxPoint middleClick;
-  
-  SettingsDialog *settingsDialog;
-  void OnClose (wxCloseEvent & event);
+    /* Icons Drag n drop */
+    bool dragging;
+    bool moving;
+    int draggedID;
+    wxPoint draggedPos;
 
-  DECLARE_EVENT_TABLE () 
+
+    simSettings* settings;
+    ImagesArray* ImagesList;
+
+    wxTimer *	 blurTimer;
+
+    wxTimer*	 hoverTimer;
+    simImage* hoveringIcon;
+    bool showTooltip;
+
+    wxImage * appBackground; //Simdock background
+    wxMemoryDC * src_dc; //Device context used to  the wallpaper
+    wxBitmap * backImage; //DE wallpaper
+    wxBitmap* markBitmap;
+
+
+    bool middleClicked;
+    wxPoint middleClick;
+
+    SettingsDialog *settingsDialog;
+    void OnClose (wxCloseEvent & event);
+
+    DECLARE_EVENT_TABLE () 
   
 };
 

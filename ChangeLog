@@ -1,4 +1,5 @@
-    * Middleclick will start new instance even if already open
+    * Refreshing icon when opening windows
+    * Middleclick will start new instance if one already open
     * New position of moved launchers will be saved
 1.2.1:
     * Replaced gconf-background with reading the currently used

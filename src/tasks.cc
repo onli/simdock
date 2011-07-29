@@ -205,6 +205,9 @@ static void tasks_window_opened (WnckScreen *screen, WnckWindow *window,callback
 		{
 		  	img->addWindow(window);
 		  	img->pid = ti.pid;
+            //refresh the icon, sometimes the splash-screen has no
+            //valid one, but the program does
+            img->img = ti.icon.ConvertToImage();
 		  	wxGetApp ().refresh();
 		  	return;
 	  	}

@@ -288,7 +288,8 @@ wxMenu* MyFrame::GetPopMenu()
 }
 
 void
-MyFrame::updateSize () {
+MyFrame::updateSize ()
+{
   /*
    * This is approximately the maximim width reachable stretching
    * images. It is hard to get a 100% exact maximum width since it
@@ -319,6 +320,7 @@ MyFrame::OnMouseMove (wxMouseEvent & event)
         framePos.x += event.m_x - middleClick.x;
         framePos.y += event.m_y - middleClick.y;
         this->Move (framePos);
+        moving = true;
         return;
     }
     if (dragging)
@@ -355,44 +357,41 @@ MyFrame::OnMouseMove (wxMouseEvent & event)
     appSize = PositionIcons (GetClientSize (), position, settings, ImagesList);
 
     Refresh (false);
-
 }
 
 
 void
-MyFrame::OnMiddleDown (wxMouseEvent & event)
-{
-  middleClick = wxPoint (event.m_x, event.m_y);
-  middleClicked = true;
+MyFrame::OnMiddleDown (wxMouseEvent & event) {
+    middleClick = wxPoint (event.m_x, event.m_y);
+    middleClicked = true;
 }
 
 void
 MyFrame::OnMiddleUp (wxMouseEvent & event) {
-  if (! moving) {
-        for (unsigned int i = 0; i < ImagesList->GetCount (); i++) {
-            simImage *img = (*ImagesList)[i];
-            if (img->isIn (event.m_x, event.m_y)) {
-                /* process identifier */
-                int pid;		
-                pid = fork ();
-                if (pid < 0) {
-                    wxDialog dlg (this, -1, wxT ("Damn, could not fork...."));
-                    dlg.ShowModal ();
-                }
-
-                if (pid == 0) {
-                    system (wx2std (img->link).c_str ());
-                    exit (0);
-                }
-                
-                img->status = STATUS_INCREASING;
-
-                if (! blurTimer->IsRunning()) {
-                    blurTimer->Start (TIMER_TIMEOUT_BLUR);
-                }
+    if (! moving) {
+        if (hoveringIcon != None) {
+            /* process identifier */
+            int pid;		
+            pid = fork ();
+            if (pid < 0) {
+                wxDialog dlg (this, -1, wxT ("Damn, could not fork...."));
+                dlg.ShowModal ();
             }
-        }
-    }
+
+            if (pid == 0) {
+                system (wx2std (hoveringIcon->link).c_str ());
+                exit (0);
+            }
+            
+            hoveringIcon->status = STATUS_INCREASING;
+
+            if (! blurTimer->IsRunning()) {
+                blurTimer->Start (TIMER_TIMEOUT_BLUR);
+            }
+        } 
+           //else "Not hovering an icon";
+    } 
+    // else "Already moving";
     middleClicked = false;
     moving = false;
 }
@@ -618,13 +617,13 @@ MyFrame::OnMouseEnter (wxMouseEvent & event)
     }
 }
 
-//Pseudo-event, called manually, starting tooltip-timer
+//Pseudo-event, called manually
 void MyFrame::OnMouseEnterIcon (wxMouseEvent & event, simImage* img)
 {
     hoveringIcon = img;
 }
 
-//Pseudo-event, called manually, stopping tooltip-timer
+//Pseudo-event, called manually
 void MyFrame::OnMouseLeaveIcon (wxMouseEvent & event)
 {
     hoveringIcon = None;
@@ -635,21 +634,28 @@ void MyFrame::OnMouseLeaveIcon (wxMouseEvent & event)
 void
 MyFrame::OnLeftDown (wxMouseEvent & event)
 {
-    for (unsigned int i = 0; i < ImagesList->GetCount (); i++)
-    {
-        simImage *img = (*ImagesList)[i];
-        if (img->isIn (event.m_x, event.m_y))
-        {
-            dragging = true;
-            draggedID = i;
-            draggedPos.x = event.m_x;
-            draggedPos.y = event.m_y;
-            Refresh (false);
-            return;
-        }
+    simImage *img = this->getClickedIcon(event);
+    if (img != None) {
+        dragging = true;
+        draggedID = positionToId(wxPoint (event.m_x, event.m_y), ImagesList, 0,
+                            ImagesList->GetCount () - 1);
+        draggedPos.x = event.m_x;
+        draggedPos.y = event.m_y;
+        Refresh (false);
+        return;
     }
 
+}
 
+simImage*
+MyFrame::getClickedIcon(wxMouseEvent & event) {
+    for (unsigned int i = 0; i < ImagesList->GetCount (); i++) {
+        simImage *img = (*ImagesList)[i];
+        if (img->isIn (event.m_x, event.m_y)) {
+            return img;
+        }
+    }
+    return None;
 }
 
 
