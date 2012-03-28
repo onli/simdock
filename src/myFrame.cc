@@ -421,7 +421,15 @@ MyFrame::OnContextMenu (wxContextMenuEvent & event)
 {
     showTooltip = false;
     hoverTimer->Stop();
-    PopupMenu (MyFrame::GetPopMenu());
+
+    // prevent the menu on being under the mouse-pointer, which lead to
+    // activating exit on a single short right-click
+    wxPoint relativeCursorPosition = wxPoint();
+    relativeCursorPosition.x = wxGetMousePosition().x - this->GetScreenPosition().x;
+    relativeCursorPosition.y = wxGetMousePosition().y - this->GetScreenPosition().y;
+
+    relativeCursorPosition.x += 2;
+    PopupMenu (MyFrame::GetPopMenu(), relativeCursorPosition);
 }
 
 void
