@@ -329,6 +329,7 @@ MyApp::OnInit ()
     int SPACER = 8;		// 10 //Pixel space between 2 starters
     int BG_HEIGHT = 30;	// 70
 	bool ENABLE_TASKS = true;
+	bool ENABLE_MINIMIZE = true;
     bool AUTO_POSITION = true;
 	bool SHOW_REFLEXES = true;
     int REFLEX_SCALING = 5;
@@ -338,7 +339,7 @@ MyApp::OnInit ()
 	settings = new simSettings( LEFT_BORDER, RIGHT_BORDER, BOTTOM_BORDER, ICONW, ICONH,
 	PERCENT, RANGE,
 	SPACER, BG_HEIGHT, bgPath, SHOW_REFLEXES,
-	REFLEX_SCALING, REFLEX_ALPHA,AUTO_POSITION,ENABLE_TASKS
+	REFLEX_SCALING, REFLEX_ALPHA,AUTO_POSITION,ENABLE_TASKS, ENABLE_MINIMIZE
     );
     
     //sMAXSIZE = settings->ICONW + settings->ICONW * settings->PERCENT / 100;

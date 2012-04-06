@@ -25,6 +25,7 @@
 
 #include <glib.h>
 #include <gconf/gconf-client.h>
+#include <gdk/gdkx.h>
 
 
 
@@ -160,7 +161,8 @@ public:
 simSettings (int LEFT_BORDER, int RIGHT_BORDER,int BOTTOM_BORDER,int ICONW,int ICONH,
 	int PERCENT,int RANGE,
 	int SPACER,int BG_HEIGHT,wxString bgPath,bool SHOW_REFLEXES,int
-	REFLEX_SCALING,int REFLEX_ALPHA, bool AUTO_POSITION, bool ENABLE_TASKS
+	REFLEX_SCALING,int REFLEX_ALPHA, bool AUTO_POSITION, bool ENABLE_TASKS,
+    bool ENABLE_MINIMIZE
     )
     {
     	this->LEFT_BORDER = LEFT_BORDER;

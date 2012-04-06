@@ -47,6 +47,7 @@ public:
 
 
 Window tasks_getFromName (const char *name, int nameLength);
+Window tasks_getFromWindowName (const char *name, int nameLength);
 int tasks_getProcessName (unsigned int pid, char *target_name, int size_targetname);
 void tasks_fillList (ImagesArray * ImagesList,simSettings* settings);
 void tasks_raise (WnckWindow* win);
