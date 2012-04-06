@@ -447,16 +447,30 @@ MyFrame::OnAbout (wxCommandEvent & WXUNUSED (event))
 void
 MyFrame::OnSettings (wxCommandEvent & WXUNUSED (event))
 {
-    simSettings initSettings = *settings;
+  simSettings initSettings = *settings;
+  //initSettings = settings;
+  /*
+     { LEFT_BORDER, RIGHT_BORDER, BOTTOM_BORDER, ICONW, ICONH,
+     PERCENT, RANGE,
+     SPACER, BG_HEIGHT, bgPath, SHOW_REFLEXES,
+     REFLEX_SCALING, REFLEX_ALPHA
+     }; */
+  settingsDialog = new SettingsDialog (this, &initSettings);
 
-    settingsDialog = new SettingsDialog (this, &initSettings);
-    settingsDialog->Show();
+  if (settingsDialog->ShowModal () == wxID_OK)
+    {
 
-    // the setting-window spawns wrongly only on the workspace simdock
-    // was started on, so show it now on the current workspace
-    GdkWindow * settingsWindow = gtk_widget_get_window(settingsDialog->GetHandle());
-    gdk_x11_window_move_to_current_desktop(settingsWindow);
-    settingsDialog->ShowModal();
+      simSettings *settings = settingsDialog->GetSettings ();
+      if (settings)
+	{
+	  simGconf_saveSettings (settings);
+	  wxMessageBox (_T
+			("Changes will have effect\nthe next time you will start the application"),
+			_T ("SimDock"), wxOK | wxICON_INFORMATION, NULL);
+	}
+
+    }
+  settingsDialog->Destroy ();
 }
 
 void

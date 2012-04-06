@@ -383,38 +383,14 @@ tasks_getFromName (const char *name, int nameLength)
     {
       curr_Win = (WnckWindow *) g_list_nth_data (windowz, i);
       WnckApplication *app = wnck_window_get_application (curr_Win);
+
       if (strncmp (name, wnck_application_get_name (app), nameLength) == 0)
 	return wnck_window_get_xid (curr_Win);
 
     }
 
   return 0;
-}
 
-Window
-tasks_getFromWindowName (const char *name, int nameLength)
-{
-
-  if (!name)
-    return 0;
-
-  WnckScreen *defaultScreen = wnck_screen_get_default ();
-  wnck_screen_force_update (defaultScreen);
-  GList *windowz = wnck_screen_get_windows (defaultScreen);
-
-  WnckWindow *curr_Win;
-  int l = g_list_length (windowz);
-
-  for (int i = 0; i < l; i++)
-    {
-      curr_Win = (WnckWindow *) g_list_nth_data (windowz, i);
-      printf("%s \n", wnck_window_get_name (curr_Win));
-      if (strncmp (name, wnck_window_get_name (curr_Win), nameLength) == 0)
-	return wnck_window_get_xid (curr_Win);
-
-    }
-
-  return 0;
 }
 
 void tasks_raise (WnckWindow* win)

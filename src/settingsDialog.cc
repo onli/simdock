@@ -26,22 +26,6 @@ IMPLEMENT_CLASS(SettingsDialog, wxPropertySheetDialog)
 
 BEGIN_EVENT_TABLE(SettingsDialog, wxPropertySheetDialog)
 EVT_BUTTON(ID_Browse_Bg, SettingsDialog::OnBrowseEvent)
-EVT_CHECKBOX(ID_Enable_Minimize, SettingsDialog::OnChange)
-EVT_CHECKBOX(ID_SHOW_REFLEXES, SettingsDialog::OnChange)
-EVT_CHECKBOX(ID_AUTO_POSITION, SettingsDialog::OnChange)
-EVT_CHECKBOX(ID_ENABLE_TASKS, SettingsDialog::OnChange)
-EVT_SPINCTRL(ID_LEFT_BORDER, SettingsDialog::OnSpinChange)
-EVT_SPINCTRL(ID_RIGHT_BORDER, SettingsDialog::OnSpinChange)
-EVT_SPINCTRL(ID_BOTTOM_BORDER, SettingsDialog::OnSpinChange)
-EVT_SPINCTRL(ID_ICONW, SettingsDialog::OnSpinChange)
-EVT_SPINCTRL(ID_ICONH, SettingsDialog::OnSpinChange)
-EVT_SPINCTRL(ID_PERCENT, SettingsDialog::OnSpinChange)
-EVT_SPINCTRL(ID_RANGE, SettingsDialog::OnSpinChange)
-EVT_SPINCTRL(ID_SPACER, SettingsDialog::OnSpinChange)
-EVT_SPINCTRL(ID_BG_HEIGHT, SettingsDialog::OnSpinChange)
-EVT_SPINCTRL(ID_REFLEX_SCALING , SettingsDialog::OnSpinChange)
-EVT_SPINCTRL(ID_REFLEX_ALPHA, SettingsDialog::OnSpinChange)
-
 END_EVENT_TABLE()
 
 
@@ -74,7 +58,7 @@ SettingsDialog::SettingsDialog(wxWindow* win, simSettings* settings)
     m_imageList->Add(wxArtProvider::GetIcon(wxART_INFORMATION, wxART_OTHER, imageSize));
 
 
-    Create(win, wxID_ANY, _("SimDock - Preferences"), wxDefaultPosition, wxDefaultSize,
+    Create(win, wxID_ANY, _("Preferences"), wxDefaultPosition, wxDefaultSize,
         wxDEFAULT_DIALOG_STYLE| wxRESIZE_BORDER);
         
 
@@ -99,7 +83,7 @@ SettingsDialog::SettingsDialog(wxWindow* win, simSettings* settings)
     	cout << "Error adding Background settings page" << endl;
     }
 
-    CreateButtons(wxOK);
+    CreateButtons(wxOK|wxCANCEL);
     LayoutDialog();
     
 }
@@ -129,21 +113,28 @@ SettingsDialog::~SettingsDialog()
     delete (notebook);
 }
 
-bool checkInt(wxSpinCtrl* control, int* value, unsigned long minvalue, unsigned long maxvalue)
+bool checkInt(wxTextCtrl* control, int* value, unsigned long minvalue, unsigned long maxvalue)
 {
-
-    if (control->GetValue() < minvalue || control->GetValue() > maxvalue)
+    unsigned long temp;
+    if (!control->GetValue().ToULong(&temp,10))
     {
+	    wxMessageBox (_T ("Cannot convert this to number? ") + control->GetValue() , _T ("SimDock"), wxOK | wxICON_ERROR, NULL);
+	    return false;
+    }
+    else
+    {
+    	    if (temp < minvalue || temp > maxvalue)
+	    {
 	    wxMessageBox (_T ("Wrong value! ") + control->GetValue()+
 	    wxString::Format(_T("Should be between %d and %d"),minvalue,maxvalue) , _T ("SimDock"), wxOK | wxICON_ERROR, NULL);
 	    return false;
-    }
+	    }
     
-	*value = control->GetValue();    
+	*value = (int) temp;    
 	return true;
+    }
 
 }
-
 simSettings* SettingsDialog::GetSettings()
 {
     /* Zoom */
@@ -208,16 +199,16 @@ wxPanel* SettingsDialog::CreateGeneralSettingsPage(wxWindow* parent)
     wxStaticBoxSizer* item2 = new wxStaticBoxSizer(wxVERTICAL, panel, _T("Zoom"));
     /* Zoom */
     wxBoxSizer* itemSizer6 = new wxBoxSizer( wxHORIZONTAL );
-    zoom_text = new wxSpinCtrl(panel, ID_PERCENT, wxString::Format(_T("%d"),settings->PERCENT));
-    zoom_text->SetRange(0, 1000);
+    zoom_text = new wxTextCtrl(panel,-1,wxString::Format(_T("%d"),settings->PERCENT));
+    zoom_text->SetMaxLength(5);
     itemSizer6->Add(new wxStaticText(panel,-1,_T("Zoom")),wxGROW|wxALL,5);
     itemSizer6->Add(zoom_text,wxGROW|wxALL,5);
     item2->Add(itemSizer6, 0, wxGROW|wxALL, 5);
     
     /* Zoom range */
     wxBoxSizer* itemSizer7 = new wxBoxSizer( wxHORIZONTAL );
-    range_text = new wxSpinCtrl(panel, ID_RANGE,wxString::Format(_T("%d"),settings->RANGE));
-    range_text->SetRange(0, 1000);
+    range_text = new wxTextCtrl(panel,-1,wxString::Format(_T("%d"),settings->RANGE));
+    range_text->SetMaxLength(5);
     itemSizer7->Add(new wxStaticText(panel,-1,_T("Range")),wxGROW|wxALL,5);
     itemSizer7->Add(range_text,wxGROW|wxALL,5);
     item2->Add(itemSizer7, 0, wxGROW|wxALL, 5);
@@ -229,17 +220,17 @@ wxPanel* SettingsDialog::CreateGeneralSettingsPage(wxWindow* parent)
     /* ---------------  BEHAVIOUR STUFF  ----------------------*/
     wxStaticBoxSizer* item3 = new wxStaticBoxSizer(wxVERTICAL, panel, _T("Behaviour"));
     /* Automatic positioning */    
-    auto_position = new wxCheckBox(panel, ID_AUTO_POSITION, _T("Automatic positioning"));
+    auto_position = new wxCheckBox(panel,-1,_T("Automatic positioning"));
     auto_position->SetValue(settings->AUTO_POSITION);
     item3->Add(auto_position, 0, wxGROW|wxALL, 5);
     
     /* Enable tasks */
-    enable_tasks = new wxCheckBox(panel,ID_ENABLE_TASKS, _T("Show tasks"));
+    enable_tasks = new wxCheckBox(panel,-1,_T("Show tasks"));
     enable_tasks->SetValue(settings->ENABLE_TASKS);
     item3->Add(enable_tasks, 0, wxGROW|wxALL, 5);
     
     /* Enable minimize */
-    enable_minimize = new wxCheckBox(panel,ID_Enable_Minimize,_T("Minimize Windows"));
+    enable_minimize = new wxCheckBox(panel,-1,_T("Minimize Windows"));
     enable_minimize->SetValue(settings->ENABLE_MINIMIZE);
     item3->Add(enable_minimize, 0, wxGROW|wxALL, 5);
 
@@ -263,15 +254,15 @@ wxPanel* SettingsDialog::CreateBackgroundPage(wxWindow* parent)
 
     /* Background height */
     wxBoxSizer* itemSizer4 = new wxBoxSizer( wxHORIZONTAL );
-    bg_height_text = new wxSpinCtrl(panel, ID_BG_HEIGHT, wxString::Format(_T("%d"),settings->BG_HEIGHT));
-    bg_height_text->SetRange(0, 1000);
+    bg_height_text = new wxTextCtrl(panel,-1,wxString::Format(_T("%d"),settings->BG_HEIGHT));
+    bg_height_text->SetMaxLength(5);
     itemSizer4->Add(new wxStaticText(panel,-1,_T("Background Height")),wxGROW|wxALL,5);
     itemSizer4->Add(bg_height_text,wxGROW|wxALL,5);
     item0->Add(itemSizer4, 0, wxGROW|wxALL, 5);
     
     /* Background path */
     wxBoxSizer* itemSizer5 = new wxBoxSizer( wxHORIZONTAL );
-    bg_path_text = new wxTextCtrl(panel, ID_bgPath, settings->BG_PATH,wxDefaultPosition,wxSize(150,wxDefaultSize.GetHeight()));
+    bg_path_text = new wxTextCtrl(panel,-1,settings->BG_PATH,wxDefaultPosition,wxSize(150,wxDefaultSize.GetHeight()));
     itemSizer5->Add(new wxStaticText(panel,-1,_T("Background Path")),wxGROW|wxALL,5);
     itemSizer5->Add(bg_path_text,wxGROW|wxALL,5);
     
@@ -292,14 +283,14 @@ wxPanel* SettingsDialog::CreateBackgroundPage(wxWindow* parent)
     wxStaticBoxSizer* item3 = new wxStaticBoxSizer(wxVERTICAL, panel, _T("Reflexes"));
     
     /* enable reflexes */
-    reflex_enabled = new wxCheckBox(panel, ID_SHOW_REFLEXES,_T("Enable reflexes"));
+    reflex_enabled = new wxCheckBox(panel,-1,_T("Enable reflexes"));
     reflex_enabled->SetValue(settings->SHOW_REFLEXES);
     item3->Add(reflex_enabled, 0, wxGROW|wxALL, 5);
     
     /* reflex scaling */
     wxBoxSizer* itemSizer9 = new wxBoxSizer( wxHORIZONTAL );
-    reflex_scaling_text = new wxSpinCtrl(panel, ID_REFLEX_SCALING,wxString::Format(_T("%d"),settings->REFLEX_SCALING));
-    reflex_scaling_text->SetRange(0, 100);
+    reflex_scaling_text = new wxTextCtrl(panel,-1,wxString::Format(_T("%d"),settings->REFLEX_SCALING));
+    reflex_scaling_text->SetMaxLength(5);
     itemSizer9->Add(new wxStaticText(panel,-1,_T("Reflex scaling")),wxGROW|wxALL,5);
     itemSizer9->Add(reflex_scaling_text,wxGROW|wxALL,5);
     item3->Add(itemSizer9, 0, wxGROW|wxALL, 5);
@@ -307,8 +298,8 @@ wxPanel* SettingsDialog::CreateBackgroundPage(wxWindow* parent)
     
     /* reflex transparency */
     wxBoxSizer* itemSizer10 = new wxBoxSizer( wxHORIZONTAL );
-    reflex_alpha_text = new wxSpinCtrl(panel, ID_REFLEX_ALPHA,wxString::Format(_T("%d"),settings->REFLEX_ALPHA));
-    reflex_alpha_text->SetRange(0, 255);
+    reflex_alpha_text = new wxTextCtrl(panel,-1,wxString::Format(_T("%d"),settings->REFLEX_ALPHA));
+    reflex_alpha_text->SetMaxLength(5);
     itemSizer10->Add(new wxStaticText(panel,-1,_T("Reflex transparency")),wxGROW|wxALL,5);
     itemSizer10->Add(reflex_alpha_text,wxGROW|wxALL,5);
     item3->Add(itemSizer10, 0, wxGROW|wxALL, 5);
@@ -340,32 +331,32 @@ wxPanel* SettingsDialog::CreateAestheticSettingsPage(wxWindow* parent)
 
     /* Left border */
     wxBoxSizer* itemSizer0 = new wxBoxSizer( wxHORIZONTAL );
-    left_border_text = new wxSpinCtrl(panel, ID_LEFT_BORDER, wxString::Format(_T("%d"),settings->LEFT_BORDER));
-    left_border_text->SetRange(0, 1000);
+    left_border_text = new wxTextCtrl(panel,-1,wxString::Format(_T("%d"),settings->LEFT_BORDER));
+    left_border_text->SetMaxLength(5);
     itemSizer0->Add(new wxStaticText(panel,-1,_T("Left Border")),wxGROW|wxALL,5);
     itemSizer0->Add(left_border_text,wxGROW|wxALL,5);
     item0->Add(itemSizer0, 0, wxGROW|wxALL, 5);
     
     /* Right border */
     wxBoxSizer* itemSizer1 = new wxBoxSizer( wxHORIZONTAL );
-    right_border_text = new wxSpinCtrl(panel, ID_RIGHT_BORDER, wxString::Format(_T("%d"),settings->RIGHT_BORDER));
-    right_border_text->SetRange(0, 1000);
+    right_border_text = new wxTextCtrl(panel,-1,wxString::Format(_T("%d"),settings->RIGHT_BORDER));
+    right_border_text->SetMaxLength(5);
     itemSizer1->Add(new wxStaticText(panel,-1,_T("Right Border")),wxGROW|wxALL,5);
     itemSizer1->Add(right_border_text,wxGROW|wxALL,5);
     item0->Add(itemSizer1, 0, wxGROW|wxALL, 5);
     
     /* Bottom border */
     wxBoxSizer* itemSizer2 = new wxBoxSizer( wxHORIZONTAL );
-    bottom_border_text = new wxSpinCtrl(panel,ID_BOTTOM_BORDER,wxString::Format(_T("%d"),settings->BOTTOM_BORDER));
-    bottom_border_text->SetRange(0, 1000);
+    bottom_border_text = new wxTextCtrl(panel,-1,wxString::Format(_T("%d"),settings->BOTTOM_BORDER));
+    bottom_border_text->SetMaxLength(5);
     itemSizer2->Add(new wxStaticText(panel,-1,_T("Bottom Border")),wxGROW|wxALL,5);
     itemSizer2->Add(bottom_border_text,wxGROW|wxALL,5);
     item0->Add(itemSizer2, 0, wxGROW|wxALL, 5);
     
     /* Spacer */
     wxBoxSizer* itemSizer3 = new wxBoxSizer( wxHORIZONTAL );
-    spacer_border_text = new wxSpinCtrl(panel,ID_SPACER,wxString::Format(_T("%d"),settings->SPACER));
-    spacer_border_text->SetRange(0, 1000);
+    spacer_border_text = new wxTextCtrl(panel,-1,wxString::Format(_T("%d"),settings->SPACER));
+    spacer_border_text->SetMaxLength(5);
     itemSizer3->Add(new wxStaticText(panel,-1,_T("Icons spacer")),wxGROW|wxALL,5);
     itemSizer3->Add(spacer_border_text,wxGROW|wxALL,5);
     item0->Add(itemSizer3, 0, wxGROW|wxALL, 5);
@@ -376,16 +367,16 @@ wxPanel* SettingsDialog::CreateAestheticSettingsPage(wxWindow* parent)
     
     /* Icons width */
     wxBoxSizer* itemSizer4 = new wxBoxSizer( wxHORIZONTAL );
-    width_text = new wxSpinCtrl(panel, ID_ICONW,wxString::Format(_T("%d"),settings->ICONW));
-    width_text->SetRange(0, 200);
+    width_text = new wxTextCtrl(panel,-1,wxString::Format(_T("%d"),settings->ICONW));
+    width_text->SetMaxLength(5);
     itemSizer4->Add(new wxStaticText(panel,-1,_T("Icons width")),wxGROW|wxALL,5);
     itemSizer4->Add(width_text,wxGROW|wxALL,5);
     item1->Add(itemSizer4, 0, wxGROW|wxALL, 5);
     
     /* Icons height */
     wxBoxSizer* itemSizer5 = new wxBoxSizer( wxHORIZONTAL );
-    height_text = new wxSpinCtrl(panel, ID_ICONH,wxString::Format(_T("%d"),settings->ICONH));
-    height_text->SetRange(0, 200);
+    height_text = new wxTextCtrl(panel,-1,wxString::Format(_T("%d"),settings->ICONH));
+    height_text->SetMaxLength(5);
     itemSizer5->Add(new wxStaticText(panel,-1,_T("Icons height")),wxGROW|wxALL,5);
     itemSizer5->Add(height_text,wxGROW|wxALL,5);
     item1->Add(itemSizer5, 0, wxGROW|wxALL, 5);
@@ -405,29 +396,15 @@ wxPanel* SettingsDialog::CreateAestheticSettingsPage(wxWindow* parent)
 
 void SettingsDialog::OnBrowseEvent(wxCommandEvent& event)
 {
-    wxFileName fn(bg_path_text->GetValue());
+wxFileName fn(bg_path_text->GetValue());
 
-    wxString filename = wxFileSelector(_T("Choose a file to open"),fn.GetPath(), _T(""), _T("png"), _T( "BMP files (*.bmp)|*.bmp|GIF files (*.gif)|*.gif|PNG files (*.png)|*.png|All files (*.*)|*.*"), wxOPEN | wxFILE_MUST_EXIST);
-    if ( !filename.empty() )
-    {
-        bg_path_text->SetValue(filename);
-    }
-    this->OnChange(event);
+wxString filename = wxFileSelector(_T("Choose a file to open"),fn.GetPath(), _T(""), _T("png"), _T( "BMP files (*.bmp)|*.bmp|GIF files (*.gif)|*.gif|PNG files (*.png)|*.png|All files (*.*)|*.*"), wxOPEN | wxFILE_MUST_EXIST);
+if ( !filename.empty() )
+{
+	bg_path_text->SetValue(filename);
 }
 
-void SettingsDialog::OnChange(wxCommandEvent& event) {
-    this->SaveSettings();
-}
-void SettingsDialog::OnSpinChange(wxSpinEvent& event) {
-    this->SaveSettings();
-}
 
-void SettingsDialog::SaveSettings() {
-    simSettings *settings = this->GetSettings ();
-    if (settings) {
-        simGconf_saveSettings (settings);
-    }
-    
 }
 
 
