@@ -45,6 +45,8 @@ void simGconf_loadSettings (struct simSettings* data)
     SimGconf::GetBool(client, APPLICATION_PATH GCONF_AUTO_POSITION, &data->AUTO_POSITION);
     SimGconf::GetBool(client, APPLICATION_PATH GCONF_ENABLE_TASKS, &data->ENABLE_TASKS);
 
+    SimGconf::GetBool(client, APPLICATION_PATH GCONF_ENABLE_MINIMIZE, &data->ENABLE_MINIMIZE);
+
     
       g_object_unref (client);
 }
@@ -79,6 +81,8 @@ simGconf_saveSettings (struct simSettings* data)
     SimGconf::SetInt(client, APPLICATION_PATH GCONF_REFLEX_ALPHA, &data->REFLEX_ALPHA);
     SimGconf::SetBool(client, APPLICATION_PATH GCONF_AUTO_POSITION, &data->AUTO_POSITION);
     SimGconf::SetBool(client, APPLICATION_PATH GCONF_ENABLE_TASKS, &data->ENABLE_TASKS);
+    
+    SimGconf::SetBool(client, APPLICATION_PATH GCONF_ENABLE_MINIMIZE, &data->ENABLE_MINIMIZE);
 
     g_object_unref (client);
 

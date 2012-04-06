@@ -58,6 +58,7 @@ protected:
     /* Behaviour*/
     wxCheckBox* auto_position;
     wxCheckBox* enable_tasks;
+    wxCheckBox* enable_minimize;
     /* Zoom */
     wxTextCtrl* zoom_text;
     wxTextCtrl* range_text;

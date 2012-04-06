@@ -50,6 +50,7 @@ Window tasks_getFromName (const char *name, int nameLength);
 int tasks_getProcessName (unsigned int pid, char *target_name, int size_targetname);
 void tasks_fillList (ImagesArray * ImagesList,simSettings* settings);
 void tasks_raise (WnckWindow* win);
+void tasks_minimize (WnckWindow* win);
 void tasks_register_signals(ImagesArray * ImagesList,simSettings* settings);
 /* Adds a new image to the images list given a window and task informations */
 void tasks_addNewImage(WnckWindow *window, ImagesArray* ImagesList, simSettings* settings,const taskInfo& ti);

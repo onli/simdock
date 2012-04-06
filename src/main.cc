@@ -351,13 +351,14 @@ MyApp::OnInit ()
 
 
     long options = wxNO_BORDER;
+    options = options | wxFRAME_TOOL_WINDOW;
     if (!showInTray)
     {
 	  options = options | wxFRAME_NO_TASKBAR;
     }
 
     if (onTop)
-	options = options | wxSTAY_ON_TOP;
+        options = options | wxSTAY_ON_TOP;
 
     frame = new MyFrame (NULL, settings,ImagesList,-1, _T ("SimDock"), wxPoint (10, 10),
 			 wxSize (450, 150), options);
@@ -411,6 +412,10 @@ MyApp::OnInit ()
         backImage = getRootWallpaper();
     }
     frame->SetWallpaper(backImage);
+
+    //a dock should always be shown on all desktops by default
+    //TODO: Find a better way to get this as WnckWindow* or pin via wxWidget
+    wnck_window_pin(wnck_screen_get_active_window(wnck_screen_get_default()));
     
 	frame->Thaw();
     

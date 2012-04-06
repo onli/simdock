@@ -179,6 +179,7 @@ simSettings (int LEFT_BORDER, int RIGHT_BORDER,int BOTTOM_BORDER,int ICONW,int I
     	this->MAXSIZE = ICONW + ICONW * PERCENT / 100;
     	this->AUTO_POSITION = AUTO_POSITION;
     	this->ENABLE_TASKS = ENABLE_TASKS;
+    	this->ENABLE_MINIMIZE = ENABLE_MINIMIZE;
 
     }
     int LEFT_BORDER;
@@ -193,6 +194,7 @@ simSettings (int LEFT_BORDER, int RIGHT_BORDER,int BOTTOM_BORDER,int ICONW,int I
     wxString BG_PATH;
     bool SHOW_REFLEXES;
     bool ENABLE_TASKS;
+    bool ENABLE_MINIMIZE;
     bool AUTO_POSITION;
     int REFLEX_SCALING;
     int REFLEX_ALPHA;

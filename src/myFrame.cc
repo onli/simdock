@@ -597,11 +597,11 @@ MyFrame::OnMouseLeave (wxMouseEvent & event)
      * int style = this->GetWindowStyle(); style = style & wxSTAY_ON_TOP;
      * this->SetWindowStyle(style); 
      */
-    if (!wxGetApp ().onTop)
+    /*if (!wxGetApp ().onTop)
     {
         SetWindowStyleFlag (frameOptions);
           // Lower ();
-    }
+    }*/
     Refresh (false);
 }
 
@@ -690,30 +690,45 @@ MyFrame::OnLeftUp (wxMouseEvent & event) {
         simImage *img = (*ImagesList)[i];
         if (img->isIn (event.m_x, event.m_y)) {
             if (img->windowCount() > 0) {
-                tasks_raise(img->getWindow());
+                if (settings->ENABLE_MINIMIZE && img->active) {
+                    if (img->allNotMinimized()) {
+                        img->cycleMinimize = true;
+                    }
+                    if (img->allMinimized()) {
+                        img->cycleMinimize = false;
+                    }
+                    
+                    if (img->cycleMinimize) {
+                        tasks_minimize(img->getWindow());
+                    } else {
+                        tasks_raise(img->getWindow());
+                    }
+                } else {
+                    tasks_raise(img->getWindow());
+                }
                 return;
             }
 
-        /* process identifier */
-        int pid;		
+            /* process identifier */
+            int pid;		
 
-        pid = fork ();
-        if (pid < 0) {
-            wxDialog dlg (this, -1, wxT ("Damn, could not fork...."));
-            dlg.ShowModal ();
-	    }
+            pid = fork ();
+            if (pid < 0) {
+                wxDialog dlg (this, -1, wxT ("Damn, could not fork...."));
+                dlg.ShowModal ();
+            }
 
-        if (pid == 0) {
-            system (wx2std (img->link).c_str ());
-            exit (0);
-	    }
-        
-        img->status = STATUS_INCREASING;
+            if (pid == 0) {
+                system (wx2std (img->link).c_str ());
+                exit (0);
+            }
+            
+            img->status = STATUS_INCREASING;
 
-        if (! blurTimer->IsRunning()) {
-            blurTimer->Start (TIMER_TIMEOUT_BLUR);
-        }
-        return;
+            if (! blurTimer->IsRunning()) {
+                blurTimer->Start (TIMER_TIMEOUT_BLUR);
+            }
+            return;
 
         }
     }

@@ -181,6 +181,7 @@ simSettings* SettingsDialog::GetSettings()
 	settings->SHOW_REFLEXES = reflex_enabled->IsChecked();
 	settings->AUTO_POSITION = auto_position->IsChecked();
 	settings->ENABLE_TASKS = enable_tasks->IsChecked();	
+	settings->ENABLE_MINIMIZE = enable_minimize->IsChecked();	
     
   return settings;
     
@@ -227,6 +228,11 @@ wxPanel* SettingsDialog::CreateGeneralSettingsPage(wxWindow* parent)
     enable_tasks = new wxCheckBox(panel,-1,_T("Show tasks"));
     enable_tasks->SetValue(settings->ENABLE_TASKS);
     item3->Add(enable_tasks, 0, wxGROW|wxALL, 5);
+    
+    /* Enable minimize */
+    enable_minimize = new wxCheckBox(panel,-1,_T("Minimize Windows"));
+    enable_minimize->SetValue(settings->ENABLE_MINIMIZE);
+    item3->Add(enable_minimize, 0, wxGROW|wxALL, 5);
 
     topSizer->Add( item3, 1, wxGROW|wxALIGN_CENTRE|wxALL, 5 );
     /* ---------------  BEHAVIOUR STUFF  ----------------------*/

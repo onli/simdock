@@ -51,6 +51,7 @@ simImage::simImage (wxImage img, const wxString& img_link, const wxString& link,
   blur = MAX_BLUR;
   pid = PID_NONE;
   lastWindow = 0;
+  this->cycleMinimize = true;
   /*
      status = STATUS_NONE;
      blur = 0;
@@ -69,8 +70,8 @@ WnckWindow* simImage::getWindow()
   	return NULL;
   	
   	
-  	WnckWindow* value = array[lastWindow];
-  	lastWindow = (lastWindow+1) % count;
+  	WnckWindow* value = array[this->lastWindow];
+  	this->lastWindow = (lastWindow+1) % count;
   	return value;
 }
 
@@ -118,6 +119,31 @@ bool simImage::loadImage(const wxString& path)
    return true;	
 }
 
+bool simImage::allNotMinimized() {
+    int count = array.GetCount();
+    int i = 0;
+    while (i < count) {
+        bool comp =  wnck_window_is_minimized(array[i]);
+        if (comp) {
+            return false;
+        }
+        i++;
+    }
+    return true;
+}
+
+bool simImage::allMinimized() {
+    int count = array.GetCount();
+    int i = 0;
+    while (i < count) {
+        bool comp =  wnck_window_is_minimized(array[i]);
+        if (!comp) {
+            return false;
+        }
+        i++;
+    }
+    return true;
+}
 
 void
 simImage::handleStatus ()

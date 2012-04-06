@@ -38,6 +38,7 @@
 #define GCONF_REFLEX_ALPHA "reflexes_alpha"
 #define GCONF_AUTO_POSITION "auto_position"
 #define GCONF_ENABLE_TASKS "enable_tasks"
+#define GCONF_ENABLE_MINIMIZE "enable_minimize"
 
 
 #define GCONF_BG_HEIGHT "bg_height"
