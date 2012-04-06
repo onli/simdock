@@ -31,15 +31,17 @@ bool taskInfo::Init(WnckWindow* window)
 
     /*First set the icon. This will work always, as wnck_window_get_icon
     returns a fallbackicon if necessary, the rest may fail*/
-    GdkPixbuf *pb = wnck_window_get_icon (window);
-	if (!pb)
+    GdkPixbuf* pb = gdk_pixbuf_copy(wnck_window_get_icon (window));
+	if (!pb) {
 		return false;
-	
-	wxBitmap bmp1;
-	bmp1.SetPixbuf (pb);
-	if (!bmp1.IsOk ())
+	}
+    
+	wxBitmap bmp;
+	bmp.SetPixbuf(pb);
+	if (!bmp.IsOk ()) {
 		return false;
-    icon = bmp1;
+    }
+    this->icon = bmp;
     
 	enum { BUFFERSIZE = 1024 };
 	char processName[BUFFERSIZE];
@@ -147,7 +149,7 @@ static void tasks_window_closed (WnckScreen *screen, WnckWindow *window,callback
 {
 	if (!WNCK_IS_WINDOW (window))
 		return;
-	
+
 	ImagesArray * ImagesList = ca->ImagesList;
 	simSettings* settings = ca->settings;
 	if (!ImagesList)
@@ -172,14 +174,21 @@ static void tasks_window_closed (WnckScreen *screen, WnckWindow *window,callback
   				wxGetApp ().reposition ();
 				wxGetApp ().updateSize ();  		
 		  	}
-		  	wxGetApp ().refresh();
+
+            if (img->windowCount() > 0) {
+                taskInfo ti;
+                ti.Init(img->getWindow());
+                img->img = ti.icon.ConvertToImage();
+                
+            }
+		  	wxGetApp().refresh();
 		  	return;
 	  	}
 	}	
 
 }
 
-static void tasks_window_opened (WnckScreen *screen, WnckWindow *window,callbackArgs* ca )
+static void tasks_window_opened (WnckScreen *screen, WnckWindow *window, callbackArgs* ca )
 {
 	if (!ca || !ca->ImagesList || !ca->settings)
 	{
@@ -205,10 +214,10 @@ static void tasks_window_opened (WnckScreen *screen, WnckWindow *window,callback
 		{
 		  	img->addWindow(window);
 		  	img->pid = ti.pid;
-            //refresh the icon, sometimes the splash-screen has no
-            //valid one, but the program does
+            // refresh the icon, cause sometimes the splash-screen has not
+            // a valid icon, but the program does
             img->img = ti.icon.ConvertToImage();
-		  	wxGetApp ().refresh();
+		  	wxGetApp().refresh();
 		  	return;
 	  	}
 	}
@@ -219,12 +228,42 @@ static void tasks_window_opened (WnckScreen *screen, WnckWindow *window,callback
 	}
 }
 
-void tasks_window_background_change (WnckScreen *screen, WnckWindow *window,callbackArgs* ca )
+void tasks_window_background_change (WnckScreen *screen, WnckWindow *window, callbackArgs* ca )
 {
     wxBitmap* backImage = getRootWallpaper();
     wxGetApp().SetWallpaper(backImage);
 }
 
+void tasks_track_active_window (WnckScreen *screen, WnckWindow *window, callbackArgs* ca ) {
+    if (!WNCK_IS_WINDOW (window))
+		return;
+
+
+	ImagesArray * ImagesList = ca->ImagesList;
+	simSettings* settings = ca->settings;
+	if (!ImagesList)
+	{
+		return;
+	}
+	if (wnck_window_is_skip_tasklist (window)) {
+        // note that this also catches simdock itself
+		return;
+	}
+    
+	unsigned int i;
+    for (i = 0; i < ImagesList->GetCount (); i++)
+	{
+		simImage *img = (*ImagesList)[i];
+
+		if (img->hasWindow(window))
+		{
+            img->active = true;
+	  	} else {
+            img->active = false;
+        }
+	}	
+
+}
 
 
 void tasks_register_signals(ImagesArray * ImagesList,simSettings* settings)
@@ -244,6 +283,10 @@ void tasks_register_signals(ImagesArray * ImagesList,simSettings* settings)
 
 	g_signal_connect (G_OBJECT(defaultScreen), "window_closed",
 	                  G_CALLBACK(tasks_window_closed),
+	                  ca);
+                      
+	g_signal_connect (G_OBJECT(defaultScreen), "active-window-changed",
+	                  G_CALLBACK(tasks_track_active_window),
 	                  ca);
 }
 
@@ -340,14 +383,38 @@ tasks_getFromName (const char *name, int nameLength)
     {
       curr_Win = (WnckWindow *) g_list_nth_data (windowz, i);
       WnckApplication *app = wnck_window_get_application (curr_Win);
-
       if (strncmp (name, wnck_application_get_name (app), nameLength) == 0)
 	return wnck_window_get_xid (curr_Win);
 
     }
 
   return 0;
+}
 
+Window
+tasks_getFromWindowName (const char *name, int nameLength)
+{
+
+  if (!name)
+    return 0;
+
+  WnckScreen *defaultScreen = wnck_screen_get_default ();
+  wnck_screen_force_update (defaultScreen);
+  GList *windowz = wnck_screen_get_windows (defaultScreen);
+
+  WnckWindow *curr_Win;
+  int l = g_list_length (windowz);
+
+  for (int i = 0; i < l; i++)
+    {
+      curr_Win = (WnckWindow *) g_list_nth_data (windowz, i);
+      printf("%s \n", wnck_window_get_name (curr_Win));
+      if (strncmp (name, wnck_window_get_name (curr_Win), nameLength) == 0)
+	return wnck_window_get_xid (curr_Win);
+
+    }
+
+  return 0;
 }
 
 void tasks_raise (WnckWindow* win)
@@ -357,8 +424,15 @@ void tasks_raise (WnckWindow* win)
 	
 	if (wnck_window_is_minimized(win))
 	{
-		wnck_window_unminimize(win,100);
+		wnck_window_unminimize(win, gtk_get_current_event_time());
 	}
-	
-	xstuff_raiseWindow(wnck_window_get_xid (win));
+	wnck_window_activate(win, gtk_get_current_event_time());
+}
+
+void tasks_minimize (WnckWindow* win)
+{
+	if(!win)
+		return;
+
+    wnck_window_minimize(win);
 }

@@ -27,7 +27,23 @@
 
 
 enum {
-ID_Browse_Bg = 1,
+    ID_Browse_Bg = 1,
+    ID_Enable_Minimize = 2,
+    ID_LEFT_BORDER = 3,
+    ID_RIGHT_BORDER = 4,
+    ID_BOTTOM_BORDER = 5,
+    ID_ICONW = 6,
+    ID_ICONH = 7,
+    ID_PERCENT = 8,
+    ID_RANGE = 9,
+    ID_SPACER = 11,
+    ID_BG_HEIGHT = 12,
+    ID_bgPath = 13,
+    ID_SHOW_REFLEXES = 14,
+    ID_REFLEX_SCALING = 15,
+    ID_REFLEX_ALPHA = 16,
+    ID_AUTO_POSITION = 17,
+    ID_ENABLE_TASKS = 18,
 };
 
 // Property sheet dialog
@@ -42,10 +58,13 @@ public:
     wxPanel* CreateAestheticSettingsPage(wxWindow* parent);
     wxPanel* CreateBackgroundPage(wxWindow* parent);
     simSettings* GetSettings();
+    void SaveSettings();
     
 protected:
     void OnBrowseEvent(wxCommandEvent& event);
-    /* Hey you! if you add something, remember to add it to the destructor! */
+    void OnChange(wxCommandEvent& event);
+    void OnSpinChange(wxSpinEvent& event);
+    /* TODO: make sure the destroyer really gets all of this */
     wxBookCtrlBase* notebook;
     wxPanel* generalSettings;
     wxPanel* aestheticSettings;
@@ -58,23 +77,24 @@ protected:
     /* Behaviour*/
     wxCheckBox* auto_position;
     wxCheckBox* enable_tasks;
+    wxCheckBox* enable_minimize;
     /* Zoom */
-    wxTextCtrl* zoom_text;
-    wxTextCtrl* range_text;
+    wxSpinCtrl* zoom_text;
+    wxSpinCtrl* range_text;
     /* Background */
-    wxTextCtrl* bg_height_text;
+    wxSpinCtrl* bg_height_text;
     wxTextCtrl* bg_path_text;
     /* Borders */
-    wxTextCtrl* left_border_text;
-    wxTextCtrl* right_border_text;
-    wxTextCtrl* bottom_border_text;
-    wxTextCtrl* spacer_border_text;
-    wxTextCtrl* width_text;
-    wxTextCtrl* height_text;
+    wxSpinCtrl* left_border_text;
+    wxSpinCtrl* right_border_text;
+    wxSpinCtrl* bottom_border_text;
+    wxSpinCtrl* spacer_border_text;
+    wxSpinCtrl* width_text;
+    wxSpinCtrl* height_text;
     /* Reflexes */
     wxCheckBox* reflex_enabled;
-    wxTextCtrl* reflex_scaling_text;
-    wxTextCtrl* reflex_alpha_text;
+    wxSpinCtrl* reflex_scaling_text;
+    wxSpinCtrl* reflex_alpha_text;
     
     wxButton* browse_button;
 

@@ -43,6 +43,8 @@ public:
   wxString link;
   wxString name;
   wxString descr;
+  bool active;  // keep track of the currently active window
+  bool cycleMinimize;  // minimize all windows one by one
   
   unsigned int pid;
   bool task; //This launcher is a task. It will not be saved
@@ -73,6 +75,8 @@ public:
   bool removeWindow(WnckWindow* window);
   int windowCount();
   bool hasWindow(WnckWindow* window);
+  bool allNotMinimized();
+  bool allMinimized();
   
 private:
   windowArray array;

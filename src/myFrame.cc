@@ -447,30 +447,16 @@ MyFrame::OnAbout (wxCommandEvent & WXUNUSED (event))
 void
 MyFrame::OnSettings (wxCommandEvent & WXUNUSED (event))
 {
-  simSettings initSettings = *settings;
-  //initSettings = settings;
-  /*
-     { LEFT_BORDER, RIGHT_BORDER, BOTTOM_BORDER, ICONW, ICONH,
-     PERCENT, RANGE,
-     SPACER, BG_HEIGHT, bgPath, SHOW_REFLEXES,
-     REFLEX_SCALING, REFLEX_ALPHA
-     }; */
-  settingsDialog = new SettingsDialog (this, &initSettings);
+    simSettings initSettings = *settings;
 
-  if (settingsDialog->ShowModal () == wxID_OK)
-    {
+    settingsDialog = new SettingsDialog (this, &initSettings);
+    settingsDialog->Show();
 
-      simSettings *settings = settingsDialog->GetSettings ();
-      if (settings)
-	{
-	  simGconf_saveSettings (settings);
-	  wxMessageBox (_T
-			("Changes will have effect\nthe next time you will start the application"),
-			_T ("SimDock"), wxOK | wxICON_INFORMATION, NULL);
-	}
-
-    }
-  settingsDialog->Destroy ();
+    // the setting-window spawns wrongly only on the workspace simdock
+    // was started on, so show it now on the current workspace
+    GdkWindow * settingsWindow = gtk_widget_get_window(settingsDialog->GetHandle());
+    gdk_x11_window_move_to_current_desktop(settingsWindow);
+    settingsDialog->ShowModal();
 }
 
 void
@@ -597,11 +583,11 @@ MyFrame::OnMouseLeave (wxMouseEvent & event)
      * int style = this->GetWindowStyle(); style = style & wxSTAY_ON_TOP;
      * this->SetWindowStyle(style); 
      */
-    if (!wxGetApp ().onTop)
+    /*if (!wxGetApp ().onTop)
     {
         SetWindowStyleFlag (frameOptions);
           // Lower ();
-    }
+    }*/
     Refresh (false);
 }
 
@@ -690,30 +676,45 @@ MyFrame::OnLeftUp (wxMouseEvent & event) {
         simImage *img = (*ImagesList)[i];
         if (img->isIn (event.m_x, event.m_y)) {
             if (img->windowCount() > 0) {
-                tasks_raise(img->getWindow());
+                if (settings->ENABLE_MINIMIZE && img->active) {
+                    if (img->allNotMinimized()) {
+                        img->cycleMinimize = true;
+                    }
+                    if (img->allMinimized()) {
+                        img->cycleMinimize = false;
+                    }
+                    
+                    if (img->cycleMinimize) {
+                        tasks_minimize(img->getWindow());
+                    } else {
+                        tasks_raise(img->getWindow());
+                    }
+                } else {
+                    tasks_raise(img->getWindow());
+                }
                 return;
             }
 
-        /* process identifier */
-        int pid;		
+            /* process identifier */
+            int pid;		
 
-        pid = fork ();
-        if (pid < 0) {
-            wxDialog dlg (this, -1, wxT ("Damn, could not fork...."));
-            dlg.ShowModal ();
-	    }
+            pid = fork ();
+            if (pid < 0) {
+                wxDialog dlg (this, -1, wxT ("Damn, could not fork...."));
+                dlg.ShowModal ();
+            }
 
-        if (pid == 0) {
-            system (wx2std (img->link).c_str ());
-            exit (0);
-	    }
-        
-        img->status = STATUS_INCREASING;
+            if (pid == 0) {
+                system (wx2std (img->link).c_str ());
+                exit (0);
+            }
+            
+            img->status = STATUS_INCREASING;
 
-        if (! blurTimer->IsRunning()) {
-            blurTimer->Start (TIMER_TIMEOUT_BLUR);
-        }
-        return;
+            if (! blurTimer->IsRunning()) {
+                blurTimer->Start (TIMER_TIMEOUT_BLUR);
+            }
+            return;
 
         }
     }
