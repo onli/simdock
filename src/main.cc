@@ -73,30 +73,7 @@ wxString questionPath = _T (DATA_DIR "/question.png");
 bool
 loadSettings (simSettings* settings)
 {
-    // Loading default settings
-    //struct simSettings data ;
-    /*
-	{ LEFT_BORDER, RIGHT_BORDER, BOTTOM_BORDER, ICONW, ICONH,
-	PERCENT, RANGE,
-	SPACER, BG_HEIGHT, bgPath, SHOW_REFLEXES,
-	REFLEX_SCALING, REFLEX_ALPHA
-    };*/
     simGconf_loadSettings (settings);
-    /*
-    LEFT_BORDER = data.LEFT_BORDER;
-    RIGHT_BORDER = data.RIGHT_BORDER;
-    BOTTOM_BORDER = data.BOTTOM_BORDER;
-    ICONW = data.ICONW;
-    ICONH = data.ICONH;
-    PERCENT = data.PERCENT;
-    RANGE = data.RANGE;
-    SPACER = data.SPACER;
-    BG_HEIGHT = data.BG_HEIGHT;
-    bgPath = data.BG_PATH;
-    SHOW_REFLEXES = data.SHOW_REFLEXES;
-    REFLEX_SCALING = data.REFLEX_SCALING;
-    REFLEX_ALPHA = data.REFLEX_ALPHA;
-*/
     simGconf_loadPosition (&startPositionX, &startPositionY);
     settings->MAXSIZE = settings->ICONW + settings->ICONW * settings->PERCENT / 100;
 
