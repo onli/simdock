@@ -18,6 +18,8 @@
 #include "xstuff.h"
 #include "main.h"
 
+static int (*old_error_handler)(Display *, XErrorEvent *) = NULL;
+
 static int client_msg(Display *disp, Window win, char *msg, 
         unsigned long data0, unsigned long data1, 
         unsigned long data2, unsigned long data3,
@@ -56,6 +58,18 @@ void xstuff_raiseWindow(Window winID)
  	
 	XCloseDisplay (dpy);
 }
+
+int ignore_bad_window(Display *d, XErrorEvent *e)
+{
+    /* Ignore bad window errors here, handle elsewhere */
+    if (e->error_code != BadWindow) {
+        assert(old_error_handler);
+        (*old_error_handler)(d, e);
+    }
+
+    return 0;
+}
+
 unsigned int xstuff_getWindowPID(Window w)
 {
         Atom atom,actual_type;
@@ -71,13 +85,22 @@ unsigned int xstuff_getWindowPID(Window w)
                          
         atom = XInternAtom(dpy, "_NET_WM_PID", True);
         atom_name = XGetAtomName (dpy,atom);
- 	
+
+        /* from http://www.oreillynet.com/linux/blog/2007/10/where_does_my_time_go.html
+        * ignore bad window here because it get raised always when
+        * closing multiple windows, from tasks_window_closed
+        * */
+        old_error_handler = XSetErrorHandler(ignore_bad_window);
+       
         status = XGetWindowProperty(dpy, w, atom, 0, 1024,
                                     False, AnyPropertyType,
                                     &actual_type,
                                     &actual_format, &nitems,
                                     &bytes_after,
                                     &prop);
+
+        XSetErrorHandler(old_error_handler);
+
         if (status!=0 || !prop) 
         {
 		return 0;
