@@ -16,7 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 #include "main.h"
-#define SIMDOCK_INFOS "SimDock " SIMDOCK_VERSION " version by Simone Della Longa\nYou can add new programs to the list editing the file ~/.simdock/settings.xml"
+#define SIMDOCK_INFOS "SimDock " SIMDOCK_VERSION " by Simone Della Longa, Malte Paskuda\nYou can add new programs to the list editing the file ~/.simdock/settings.xml"
 using namespace std;
 
 void
