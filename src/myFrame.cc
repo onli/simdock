@@ -145,7 +145,6 @@ drawBmp (wxDC * dc, const wxBitmap & bmp, const int &x, const int &y,
 void drawTooltip(wxDC * dc, wxString tooltip, simImage* hoveringIcon)
 {
     wxPoint iconCenter = hoveringIcon->center();
-    int iconWidth = hoveringIcon->img.GetWidth();
     int iconHeight = hoveringIcon->img.GetHeight();
     wxCoord* textWidth = new wxCoord();
     wxCoord* textHeight = new wxCoord();
@@ -332,13 +331,11 @@ MyFrame::OnMouseMove (wxMouseEvent & event)
         return;
     }
 
-    int position = 0;
     for (unsigned int i = 0; i < ImagesList->GetCount (); i++)
         {
         simImage *img = (*ImagesList)[i];
         if (img->isIn (event.m_x, event.m_y))
         {
-            position = i;
             if (hoveringIcon != img) {
                 OnMouseLeaveIcon(event);
                 OnMouseEnterIcon(event, img);
@@ -354,7 +351,7 @@ MyFrame::OnMouseMove (wxMouseEvent & event)
         hoverTimer->Start(3000, wxTIMER_ONE_SHOT);
     }
 
-    appSize = PositionIcons (GetClientSize (), position, settings, ImagesList);
+    appSize = PositionIcons (GetClientSize (), settings, ImagesList);
 
     Refresh (false);
 }
@@ -475,7 +472,7 @@ MyFrame::OnAdd (wxCommandEvent & event)
 	    (settings->MAXSIZE + settings->BOTTOM_BORDER) - settings->ICONH -
 	    settings->BOTTOM_BORDER;
 	  ImagesList->Add (sim);
-	  appSize = PositionIcons (GetClientSize (), 0, settings, ImagesList);
+	  appSize = PositionIcons (GetClientSize (), settings, ImagesList);
 	  updateSize();
 
 	  // New icon will fade :p
@@ -578,7 +575,7 @@ MyFrame::OnMouseLeave (wxMouseEvent & event)
         RefreshSizes (img, INT_MAX);
     }
 
-    appSize = PositionIcons (GetClientSize (), 0, settings, ImagesList);
+    appSize = PositionIcons (GetClientSize (), settings, ImagesList);
     /*
      * int style = this->GetWindowStyle(); style = style & wxSTAY_ON_TOP;
      * this->SetWindowStyle(style); 
@@ -667,7 +664,7 @@ MyFrame::OnLeftUp (wxMouseEvent & event) {
         moving = false;
         //it's possible the launchers were moved, save new order:
         wxGetApp().launchersModified = true;
-        appSize = PositionIcons (GetClientSize (), id, settings, ImagesList);
+        appSize = PositionIcons (GetClientSize (), settings, ImagesList);
         Refresh (false);
         return;
     }

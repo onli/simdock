@@ -75,7 +75,7 @@ WnckWindow* simImage::getWindow()
   	return value;
 }
 
-bool simImage::removeWindow(WnckWindow* window)
+void simImage::removeWindow(WnckWindow* window)
 {
 	/*
 	int idx = array.Index(window);
@@ -89,9 +89,9 @@ bool simImage::removeWindow(WnckWindow* window)
 		lastWindow--;
 	}
 
-	array.Remove(window);	
-  	
+	array.Remove(window);
 }
+
 bool simImage::hasWindow(WnckWindow* window)
 {
 	return array.Index(window) != wxNOT_FOUND;

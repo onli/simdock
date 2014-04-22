@@ -147,10 +147,9 @@ void register_sigint (MyApp * application);
 
 /* Reposition icons according to their size and order
  * Currently repositioning starts from index 0 so all the icons are moved to the right
- * "ind" is currently ignored.
  * TODO: Implement right side and left side repositioning starting from "ind" index?
  */
-wxSize PositionIcons (wxSize sz, int ind, simSettings* settings, ImagesArray* ImagesList);
+wxSize PositionIcons (wxSize sz, simSettings* settings, ImagesArray* ImagesList);
 wxSize FirstPosition (wxSize sz, simSettings* settings, ImagesArray* list);
 
 /* ------ Various functions for simImage array manipulation -------*/
@@ -220,7 +219,7 @@ public:
 
   bool onTop;
   void SetWallpaper (wxBitmap * newBitmap) {if (frame) frame->SetWallpaper(newBitmap); }
-  wxBitmap * GetWallpaper (){if (frame) frame->GetWallpaper(); }
+  wxBitmap * GetWallpaper (){if (frame) return frame->GetWallpaper(); }
 private:
 
   simSettings* settings;

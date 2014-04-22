@@ -119,11 +119,9 @@ xstuff_resizeScreen (const wxString & program_name, const wxFrame & frame, bool 
 //doesnt work. Window w = tasks_getFromName((char*)program_name.c_str(),program_name.Len());
   
   wxSize sz = wxGetDisplaySize();
-  int screenWidth = sz.GetWidth();
-  int screenHeight = sz.GetHeight();
   
   int frameHeight = frame.GetClientSize ().GetHeight ();
-  int frameWidth = frame.GetClientSize ().GetWidth ();
+
 
   Display *xdisplay = NULL;
   xdisplay = XOpenDisplay (NULL);
@@ -146,14 +144,8 @@ xstuff_resizeScreen (const wxString & program_name, const wxFrame & frame, bool 
   {
 	xstuff_setDock (xdisplay, w);
   }
-  /*if (position)
-  {
-  	printf("positioning\n");
-  XMoveWindow (xdisplay, w, (screenWidth - frameWidth) / 2,
-	       screenHeight - frameHeight);
-  }*/
-  XCloseDisplay (xdisplay);
 
+  XCloseDisplay (xdisplay);
 
   return true;
 }

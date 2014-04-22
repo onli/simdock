@@ -156,7 +156,7 @@ loadPrograms (wxString fullPath, ImagesArray * list,simSettings* settings)
 }
 
 void
-loadAll (ImagesArray * list, wxSize sz, simSettings* settings)
+loadAll (ImagesArray * list, simSettings* settings)
 {
     wxString home = wxGetHomeDir ();
     if (home.IsEmpty ())
@@ -187,39 +187,8 @@ loadAll (ImagesArray * list, wxSize sz, simSettings* settings)
 
 
 wxSize
-PositionIcons (wxSize sz, int ind, simSettings* settings, ImagesArray* ImagesList)
+PositionIcons (wxSize sz, simSettings* settings, ImagesArray* ImagesList)
 {
-	 /*
-     * Trying to implement right AND left side repositioning.... 
-     */
-#if 0    
-     int index ; if (ind < 0 || ind >ImagesList.GetCount()-1) { index =
-      ImagesList.GetCount() /2; cout << "ERROR: Invalid index value"
-      <<endl; } else { index = id; }
-      
-      int width = ImagesList[index]->w; int positionX =
-      ImagesList[index]->x; for (unsigned int i =index;
-      i<ImagesList.GetCount() ; i++) { simImage *img = ImagesList[i];
-      img->x = positionX; positionX += img->w + SPACER; }
-      
-      if (index > 0) { positionX = ImagesList[index]->x; for (int i
-      =index-1; i>=0 ; i--) {
-      
-      simImage *img = ImagesList[i]; positionX -= img->w + SPACER; img->x 
-      = positionX; }
-      
-      } if (ImagesList.GetCount() >0) {
-      wxSize(ImagesList[ImagesList.GetCount()-1]->x +
-      ImagesList[ImagesList.GetCount()-1]->w + LEFT_BORDER,
-      sz.GetHeight()); }
-      
-      return wxSize();
-      
- #endif
-    
-    /*
-     * -------------------Right-side only repositioning--------------- 
-     */
     int positionX = settings->LEFT_BORDER;
 
     for (unsigned int i = 0; i < ImagesList->GetCount (); i++)
@@ -249,7 +218,7 @@ PositionIcons (wxSize sz, int ind, simSettings* settings, ImagesArray* ImagesLis
 wxSize
 FirstPosition (wxSize sz, simSettings* settings, ImagesArray* list)
 {
-    return PositionIcons (sz, 0, settings,list);
+    return PositionIcons (sz, settings,list);
 }
 
 
@@ -350,7 +319,7 @@ MyApp::OnInit ()
     
 
 
-    loadAll (ImagesList, frame->GetClientSize (), settings);
+    loadAll (ImagesList, settings);
 
 	frame->updateSize();
 	

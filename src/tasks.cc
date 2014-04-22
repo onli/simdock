@@ -151,7 +151,6 @@ static void tasks_window_closed (WnckScreen *screen, WnckWindow *window,callback
 		return;
 
 	ImagesArray * ImagesList = ca->ImagesList;
-	simSettings* settings = ca->settings;
 	if (!ImagesList)
 	{
 		return;
@@ -240,7 +239,6 @@ void tasks_track_active_window (WnckScreen *screen, WnckWindow *window, callback
 
 
 	ImagesArray * ImagesList = ca->ImagesList;
-	simSettings* settings = ca->settings;
 	if (!ImagesList)
 	{
 		return;

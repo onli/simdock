@@ -72,7 +72,7 @@ public:
 
   void addWindow(WnckWindow* window);
   WnckWindow* getWindow();
-  bool removeWindow(WnckWindow* window);
+  void removeWindow(WnckWindow* window);
   int windowCount();
   bool hasWindow(WnckWindow* window);
   bool allNotMinimized();

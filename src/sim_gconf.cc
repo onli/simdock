@@ -86,10 +86,10 @@ SimGconf::GetString (GConfClient * client, const char *key, wxString * result)
 bool
 SimGconf::SetString (GConfClient * client, const char *key, wxString * value)
 {
-  const gchar *data = wx2std (*value).c_str ();
-  bool result = gconf_client_set_string (client, key, data, NULL);
-  return result;
-
+    std::string tmp = wx2std(*value);
+    const gchar *data = tmp.c_str ();
+    bool result = gconf_client_set_string (client, key, data, NULL);
+    return result;
 }
 
 bool

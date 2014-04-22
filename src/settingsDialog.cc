@@ -129,7 +129,7 @@ SettingsDialog::~SettingsDialog()
     delete (notebook);
 }
 
-bool checkInt(wxSpinCtrl* control, int* value, unsigned long minvalue, unsigned long maxvalue)
+bool checkInt(wxSpinCtrl* control, int* value, signed long minvalue, signed long maxvalue)
 {
 
     if (control->GetValue() < minvalue || control->GetValue() > maxvalue)

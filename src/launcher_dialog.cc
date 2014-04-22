@@ -136,11 +136,10 @@ LauncherDialog::LauncherDialog(wxWindow* parent, simImage* launcher): wxDialog(p
 }
 void LauncherDialog::OnBrowseEvent(wxCommandEvent& event)
 {
-	wxString startingPath;
-	if (!bmp_path.IsEmpty())
+	wxString startingPath = lastPath;
+	if (!bmp_path.IsEmpty()) {
 		startingPath = bmp_path;
-	else
-		startingPath = lastPath;
+	}
 	
 	wxFileName fn(startingPath);
 	
