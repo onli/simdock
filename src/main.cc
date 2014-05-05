@@ -43,7 +43,7 @@ std::string wx2std (const wxString & input)
     wxec.Init (wxFONTENCODING_UNICODE, wxFONTENCODING_ISO8859_1);
     wxec.Convert (input.wc_str (wxConvUTF8), buffer);
     std::string temp (buffer);
-    delete buffer;
+    delete [] buffer;
     return temp;
 }
 
