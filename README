@@ -1,20 +1,16 @@
 This is simdock, an eye-candy deskbar for Linux.
-This program is free software and still in development
-process.
+
+![simdock example](https://lh5.googleusercontent.com/-2a1A0WrrDzo/ThWuhAmT7OI/AAAAAAAABtI/5KGx3Ev2ErY/s800/simdock.jpg)
 
 Installing:
 ---------------------------------------------
-1) Launch ./configure
-2) Type 'make' to compile
-3) Type 'make install' as ROOT to install
+1. Install dependencies. Under Ubuntu:
 
-See INSTALLING file if you have problems or if you
-need compiling options
+    sudo apt-get install pkg-config libglib2.0-dev libgconf2-dev libgtk2.0-dev libwnck-dev libwxgtk2.8-dev
 
-Required libraries:
----------------------------------------------
-libwxgtk2.8-0
-libwxgtk2.8-0-dev
+1. Type `make` to compile
+1. Type `sudo make install` to install
+1. Start with `simdock`
 
 
 Original:
