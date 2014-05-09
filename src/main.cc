@@ -60,7 +60,6 @@ IMPLEMENT_APP (MyApp)
 int	startPositionX = 50;
 int startPositionY = 50;
 wxString dirPath;
-wxString programsPath;
 
 wxString markPath = _T (DATA_DIR "/mark.png");
 wxString questionPath = _T (DATA_DIR "/question.png");
@@ -169,7 +168,6 @@ loadAll (ImagesArray * list, simSettings* settings)
       }
 
     dirPath = home + _T ("/") + _T (CONF_DIR);
-    programsPath = dirPath + _T ("/") + _T (CONF_FILE);
 
     if (!fixSimDir (&dirPath))
       {
@@ -179,7 +177,7 @@ loadAll (ImagesArray * list, simSettings* settings)
       {
 	  exit (1);
       }
-    if (!loadPrograms (programsPath, list,settings))
+    if (!loadPrograms (PROGRAMS_PATH, list,settings))
       {
 	  exit (1);
       }
@@ -234,13 +232,13 @@ MyApp::GracefullyExit ()
       {
 	  simGconf_savePosition (frame->GetPosition ().x, frame->GetPosition ().y);
 	  if (launchersModified)
-	  	saveLaunchers (ImagesList, programsPath);
+	  	saveLaunchers (ImagesList);
       }
     else
       {
 	  simGconf_savePosition (frame->lastPosition.x, frame->lastPosition.y);
 	  if (launchersModified)
-	  	saveLaunchers (ImagesList, programsPath);
+	  	saveLaunchers (ImagesList);
       }
 }
 

@@ -477,6 +477,7 @@ MyFrame::OnAdd (wxCommandEvent & event)
 	  // Disabled. Unefficient
 	  // timer->Start (timer_timeout);
 	  wxGetApp ().launchersModified = true;
+      saveLaunchers(ImagesList);
 	  Refresh (false);
 
 	}
@@ -512,6 +513,7 @@ void MyFrame::OnKeep(wxCommandEvent & event) {
         newLauncher->img_link = iconPath;
         wxGetApp ().launchersModified = true;
         newLauncher->task = false;
+        saveLaunchers(ImagesList);
     } else {
         cout << "Not enough data to create launcher.";
     }
@@ -527,12 +529,11 @@ MyFrame::OnEdit (wxCommandEvent & event)
     }
 
   LauncherDialog *dlg = new LauncherDialog (this, (*ImagesList)[clickedID]);
-  if (dlg->ShowModal () == wxID_OK)
-    {
-      dlg->saveChanges ();
-      Refresh (false);
-      wxGetApp ().launchersModified = true;
-
+  if (dlg->ShowModal () == wxID_OK) {
+        dlg->saveChanges ();
+        Refresh (false);
+        wxGetApp ().launchersModified = true;
+        saveLaunchers(ImagesList);
     }
 
   dlg->Destroy ();
@@ -555,6 +556,7 @@ MyFrame::OnDelete (wxCommandEvent & event)
         ImagesList->RemoveAt (clickedID);
     }
     wxGetApp ().launchersModified = true;
+    saveLaunchers(ImagesList);
     updateSize();
     Refresh (false);
 }

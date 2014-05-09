@@ -108,7 +108,7 @@ SettingsDialog::SettingsDialog(wxWindow* win, simSettings* settings)
 SettingsDialog::~SettingsDialog()
 { 
     delete(m_imageList); 
- /*   delete (zoom_text); 
+    delete (zoom_text); 
     delete (range_text); 
     delete(bg_height_text);
     delete (bg_path_text);
@@ -122,7 +122,6 @@ SettingsDialog::~SettingsDialog()
     delete (reflex_scaling_text);
     delete (reflex_alpha_text);
     delete (browse_button);
-    */
     delete (generalSettings);
     delete (aestheticSettings);
     delete (backgroundSettings);

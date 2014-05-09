@@ -36,7 +36,7 @@ wxXmlNode* createNode(const wxString& name, const wxString& text)
 	return x_node;
 }
 
-bool saveLaunchers(ImagesArray* list, const wxString& location)
+bool saveLaunchers(ImagesArray* list)
 {
 	
 	wxXmlNode* Program = new wxXmlNode(wxXML_ELEMENT_NODE,_T(XML_PROGRAM));
@@ -60,6 +60,6 @@ bool saveLaunchers(ImagesArray* list, const wxString& location)
         
 	wxXmlDocument doc;
 	doc.SetRoot(Program);
-    return doc.Save(location);
+    return doc.Save(PROGRAMS_PATH);
 
 }

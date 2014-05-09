@@ -131,6 +131,7 @@ WX_DEFINE_ARRAY (simImage *, ImagesArray);
 
 /* wxString to std::string converter. Useful for printing stuff */
 std::string wx2std (const wxString & input);
+const wxString PROGRAMS_PATH = wxGetHomeDir() + _T ("/") + _T (CONF_DIR) + _T ("/") + _T (CONF_FILE);
 
 /* Creates the given directory only if it does not exist */
 bool fixSimDir (wxString * dirPath);
@@ -139,7 +140,7 @@ bool openOrInitialize (wxString * fullPath, char *initializeData);
 /* Opens the given filename or creates it if does not exist */
 bool openOrCreate (wxFile * settingsFile, wxString * fullPath);
 /* Saves the given images array to the given filesystem location*/
-bool saveLaunchers(ImagesArray* list, const wxString& location);
+bool saveLaunchers(ImagesArray* list);
 
 /* Register the sigint callback to call MyApp::GracefullyExit ()*/
 void register_sigint (MyApp * application);
@@ -172,6 +173,7 @@ public:
   bool onTop;
   void SetWallpaper (wxBitmap * newBitmap) {if (frame) frame->SetWallpaper(newBitmap); }
   wxBitmap * GetWallpaper (){if (frame) return frame->GetWallpaper(); }
+  
 private:
 
   simSettings settings;
