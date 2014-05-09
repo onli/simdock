@@ -20,7 +20,7 @@
 
 static int (*old_error_handler)(Display *, XErrorEvent *) = NULL;
 
-static int client_msg(Display *disp, Window win, char *msg, 
+static int client_msg(Display *disp, Window win, std::string msg, 
         unsigned long data0, unsigned long data1, 
         unsigned long data2, unsigned long data3,
         unsigned long data4) {
@@ -30,7 +30,7 @@ static int client_msg(Display *disp, Window win, char *msg,
     event.xclient.type = ClientMessage;
     event.xclient.serial = 0;
     event.xclient.send_event = True;
-    event.xclient.message_type = XInternAtom(disp, msg, False);
+    event.xclient.message_type = XInternAtom(disp, msg.c_str(), False);
     event.xclient.window = win;
     event.xclient.format = 32;
     event.xclient.data.l[0] = data0;
@@ -43,7 +43,7 @@ static int client_msg(Display *disp, Window win, char *msg,
         return EXIT_SUCCESS;
     }
     else {
-        fprintf(stderr, "Cannot send %s event.\n", msg);
+        fprintf(stderr, "Cannot send %s event.\n", msg.c_str());
         return EXIT_FAILURE;
     }
 }
@@ -52,8 +52,8 @@ void xstuff_raiseWindow(Window winID)
 {
 	Display *dpy;
  	dpy = XOpenDisplay (NULL);
- 	
- 	client_msg(dpy, winID, "_NET_ACTIVE_WINDOW", 
+    std::string msg("_NET_ACTIVE_WINDOW");
+ 	client_msg(dpy, winID, msg, 
             0, 0, 0, 0, 0);
  	
 	XCloseDisplay (dpy);
