@@ -187,20 +187,20 @@ loadAll (ImagesArray * list, simSettings* settings)
 
 
 wxSize
-PositionIcons (wxSize sz, simSettings* settings, ImagesArray* ImagesList)
+PositionIcons (wxSize sz, simSettings settings, ImagesArray* ImagesList)
 {
-    int positionX = settings->LEFT_BORDER;
+    int positionX = settings.LEFT_BORDER;
 
     for (unsigned int i = 0; i < ImagesList->GetCount (); i++)
       {
 	  simImage *img = (*ImagesList)[i];
 
 	  img->x = positionX;
-	  positionX += img->w + settings->SPACER;
+	  positionX += img->w + settings.SPACER;
 
 	  if (i == ImagesList->GetCount () - 1)
 	    {
-		return wxSize (positionX - settings->SPACER + settings->LEFT_BORDER,
+		return wxSize (positionX - settings.SPACER + settings.LEFT_BORDER,
 			       sz.GetHeight ());
 	    }
 #ifdef SIMDOCK_DEBUG_ICON_POSITIONING
@@ -216,7 +216,7 @@ PositionIcons (wxSize sz, simSettings* settings, ImagesArray* ImagesList)
  * Might change this if i'll implement right and left side repositioning 
  */
 wxSize
-FirstPosition (wxSize sz, simSettings* settings, ImagesArray* list)
+FirstPosition (wxSize sz, simSettings settings, ImagesArray* list)
 {
     return PositionIcons (sz, settings,list);
 }
@@ -264,37 +264,28 @@ MyApp::OnInit ()
 	launchersModified = false;
 	wxInitAllImageHandlers ();
 	
-	//default values
-	int LEFT_BORDER = 30;	// 30
-    int RIGHT_BORDER = 90;	// 90
-    int BOTTOM_BORDER = 15;	// 30 space from bottom to the icon list
-    int ICONW = 30;		// Default icon size
-    int ICONH = 30;		// Default icon size
-    int PERCENT = 50;	// 100 //Maximum increase
-    int RANGE = 90;		// 180 //Where it has no effect
-    int SPACER = 8;		// 10 //Pixel space between 2 starters
-    int BG_HEIGHT = 30;	// 70
-	bool ENABLE_TASKS = true;
-	bool ENABLE_MINIMIZE = true;
-    bool AUTO_POSITION = true;
-	bool SHOW_REFLEXES = true;
-    int REFLEX_SCALING = 5;
-    int REFLEX_ALPHA = 100;
-	wxString bgPath = _T (DATA_DIR "/bg5.png");
-	 
-	settings = new simSettings( LEFT_BORDER, RIGHT_BORDER, BOTTOM_BORDER, ICONW, ICONH,
-	PERCENT, RANGE,
-	SPACER, BG_HEIGHT, bgPath, SHOW_REFLEXES,
-	REFLEX_SCALING, REFLEX_ALPHA,AUTO_POSITION,ENABLE_TASKS, ENABLE_MINIMIZE
-    );
-    
-    //sMAXSIZE = settings->ICONW + settings->ICONW * settings->PERCENT / 100;
-
-  
-	
+    //default values 
+	simSettings settings = {
+        30,  // LEFT_BORDER,
+        90,  //RIGHT_BORDER,
+        15,  // BOTTOM_BORDER,
+        30,  //ICONW,
+        30,  //ICONH,
+        50,  //PERCENT,
+        90,  // RANGE,
+        8,   // SPACER,
+        30,  // BG_HEIGHT,
+        5,   // REFLEX_SCALING,
+        100, // REFLEX_ALPHA,
+        30,
+        _T (DATA_DIR "/bg5.png"), // bgPath,
+        true, // SHOW_REFLEXES,
+        true, // ENABLE_TASKS,
+        true, // ENABLE_MINIMIZE,
+        true //AUTO_POSITION
+    };
       
-      
-    //src_dc = new wxMemoryDC (*backImage);
+    loadAll (ImagesList, & settings);
 
 
     long options = wxNO_BORDER;
@@ -309,8 +300,8 @@ MyApp::OnInit ()
 
     frame = new MyFrame (NULL, settings,ImagesList,-1, _T ("SimDock"), wxPoint (10, 10),
 			 wxSize (450, 150), options);
-    wxImage* appBackground = new wxImage (settings->BG_PATH);
-    appBackground->Rescale (frame->GetClientSize ().GetWidth(), settings->BG_HEIGHT, wxIMAGE_QUALITY_HIGH);
+    wxImage* appBackground = new wxImage (settings.BG_PATH);
+    appBackground->Rescale (frame->GetClientSize ().GetWidth(), settings.BG_HEIGHT, wxIMAGE_QUALITY_HIGH);
 	frame->SetBG(appBackground);
 	
 	wxBitmap* bmp = new wxBitmap(wxImage (markPath));
@@ -319,7 +310,6 @@ MyApp::OnInit ()
     
 
 
-    loadAll (ImagesList, settings);
 
 	frame->updateSize();
 	
@@ -328,14 +318,14 @@ MyApp::OnInit ()
     frame->Show (TRUE);
     frame->Freeze();
     xstuff_resizeScreen (wxFileNameFromPath (wxString (argv[0])), *frame,true);
-    if (settings->ENABLE_TASKS)
+    if (settings.ENABLE_TASKS)
     {
-		tasks_fillList(ImagesList,settings);
-		tasks_register_signals(ImagesList,settings);
+		tasks_fillList(ImagesList, settings);
+		tasks_register_signals(ImagesList, settings);
     }
-	frame->appSize = FirstPosition (frame->GetClientSize (),settings,ImagesList);
+	frame->appSize = FirstPosition (frame->GetClientSize (), settings, ImagesList);
 	frame->updateSize();
-	if (!settings->AUTO_POSITION)
+	if (!settings.AUTO_POSITION)
     {
 		frame->Move (startPositionX, startPositionY);
     }

@@ -27,7 +27,7 @@ class callbackArgs
 {
 public:
 	ImagesArray * ImagesList;
-	simSettings* settings;	
+	simSettings settings;	
 };
 
 class taskInfo
@@ -49,12 +49,12 @@ public:
 Window tasks_getFromName (const char *name, int nameLength);
 Window tasks_getFromWindowName (const char *name, int nameLength);
 int tasks_getProcessName (unsigned int pid, char *target_name, int size_targetname);
-void tasks_fillList (ImagesArray * ImagesList,simSettings* settings);
+void tasks_fillList (ImagesArray * ImagesList,simSettings settings);
 void tasks_raise (WnckWindow* win);
 void tasks_minimize (WnckWindow* win);
-void tasks_register_signals(ImagesArray * ImagesList,simSettings* settings);
+void tasks_register_signals(ImagesArray * ImagesList,simSettings settings);
 /* Adds a new image to the images list given a window and task informations */
-void tasks_addNewImage(WnckWindow *window, ImagesArray* ImagesList, simSettings* settings,const taskInfo& ti);
+void tasks_addNewImage(WnckWindow *window, ImagesArray* ImagesList, simSettings settings,const taskInfo& ti);
 wxBitmap* tasks_getRootWallpaper();
 
 #endif

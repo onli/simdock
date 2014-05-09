@@ -189,14 +189,14 @@ static void tasks_window_closed (WnckScreen *screen, WnckWindow *window,callback
 
 static void tasks_window_opened (WnckScreen *screen, WnckWindow *window, callbackArgs* ca )
 {
-	if (!ca || !ca->ImagesList || !ca->settings)
+	if (!ca || !ca->ImagesList)
 	{
 		printf("tasks_window_opened NULL ARGUMENT!\n");
 		return;
 	}
 	
 	ImagesArray * ImagesList = ca->ImagesList;
-	simSettings* settings = ca->settings;
+	simSettings settings = ca->settings;
 	
 	if (wnck_window_is_skip_tasklist (window))
 		return;
@@ -264,7 +264,7 @@ void tasks_track_active_window (WnckScreen *screen, WnckWindow *window, callback
 }
 
 
-void tasks_register_signals(ImagesArray * ImagesList,simSettings* settings)
+void tasks_register_signals(ImagesArray * ImagesList,simSettings settings)
 {
 	callbackArgs* ca = new callbackArgs();
 	ca->ImagesList = ImagesList;
@@ -289,9 +289,9 @@ void tasks_register_signals(ImagesArray * ImagesList,simSettings* settings)
 }
 
 
-void tasks_addNewImage(WnckWindow *window, ImagesArray* ImagesList, simSettings* settings,const taskInfo& ti)
+void tasks_addNewImage(WnckWindow *window, ImagesArray* ImagesList, simSettings settings,const taskInfo& ti)
 {
-	if (!window || !ImagesList || !settings)
+	if (!window || !ImagesList)
 	{
 		printf("addNewImage::Null argument\n");
 		return;	
@@ -303,9 +303,9 @@ void tasks_addNewImage(WnckWindow *window, ImagesArray* ImagesList, simSettings*
 
 	si->addWindow(window);
 	si->pid = ti.pid;
-	si->w = settings->ICONW;
-	si->h = settings->ICONH;
-	si->y = (settings->MAXSIZE + settings->BOTTOM_BORDER) - settings->ICONH - settings->BOTTOM_BORDER;
+	si->w = settings.ICONW;
+	si->h = settings.ICONH;
+	si->y = (settings.MAXSIZE + settings.BOTTOM_BORDER) - settings.ICONH - settings.BOTTOM_BORDER;
 	si->task = true;
 	si->status = STATUS_NONE;
   	si->blur = 0;
@@ -315,7 +315,7 @@ void tasks_addNewImage(WnckWindow *window, ImagesArray* ImagesList, simSettings*
 }
 
 void
-tasks_fillList (ImagesArray * ImagesList, simSettings* settings)
+tasks_fillList (ImagesArray * ImagesList, simSettings settings)
 {
   WnckScreen *defaultScreen = wnck_screen_get_default ();
   wnck_screen_force_update (defaultScreen);

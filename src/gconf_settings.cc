@@ -23,7 +23,7 @@ using namespace std;
 
 
 
-void simGconf_loadSettings (struct simSettings* data)
+void simGconf_loadSettings (simSettings* data)
 {
 
     GConfClient *client = SimGconf::GetClient ();

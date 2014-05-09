@@ -77,7 +77,8 @@ WX_DEFINE_ARRAY (simImage *, ImagesArray);
 #include "background.h"
 
 //windows list
-#include "tasks.h" 
+#include "tasks.h"
+#include "simSettings.h"
 
 
 
@@ -149,59 +150,10 @@ void register_sigint (MyApp * application);
  * Currently repositioning starts from index 0 so all the icons are moved to the right
  * TODO: Implement right side and left side repositioning starting from "ind" index?
  */
-wxSize PositionIcons (wxSize sz, simSettings* settings, ImagesArray* ImagesList);
-wxSize FirstPosition (wxSize sz, simSettings* settings, ImagesArray* list);
+wxSize PositionIcons (wxSize sz, simSettings settings, ImagesArray* ImagesList);
+wxSize FirstPosition (wxSize sz, simSettings settings, ImagesArray* list);
 
 /* ------ Various functions for simImage array manipulation -------*/
-
-class simSettings
-{
-public:
-simSettings (int LEFT_BORDER, int RIGHT_BORDER,int BOTTOM_BORDER,int ICONW,int ICONH,
-	int PERCENT,int RANGE,
-	int SPACER,int BG_HEIGHT,wxString bgPath,bool SHOW_REFLEXES,int
-	REFLEX_SCALING,int REFLEX_ALPHA, bool AUTO_POSITION, bool ENABLE_TASKS,
-    bool ENABLE_MINIMIZE
-    )
-    {
-    	this->LEFT_BORDER = LEFT_BORDER;
-    	this->RIGHT_BORDER = RIGHT_BORDER;
-    	this->BOTTOM_BORDER = BOTTOM_BORDER;
-    	this->ICONW = ICONW;
-    	this->ICONH = ICONH;
-    	this->PERCENT = PERCENT;
-    	this->RANGE = RANGE;
-    	this->SPACER = SPACER;
-    	this->BG_HEIGHT = BG_HEIGHT;
-    	this->BG_PATH = bgPath;
-    	this->SHOW_REFLEXES = SHOW_REFLEXES;
-    	this->REFLEX_SCALING = REFLEX_SCALING;
-    	this->REFLEX_ALPHA = REFLEX_ALPHA;
-    	this->MAXSIZE = ICONW + ICONW * PERCENT / 100;
-    	this->AUTO_POSITION = AUTO_POSITION;
-    	this->ENABLE_TASKS = ENABLE_TASKS;
-    	this->ENABLE_MINIMIZE = ENABLE_MINIMIZE;
-
-    }
-    int LEFT_BORDER;
-    int RIGHT_BORDER;
-    int BOTTOM_BORDER;
-    int ICONW;
-    int ICONH;
-    int PERCENT;
-    int RANGE;
-    int SPACER;
-    int BG_HEIGHT;
-    wxString BG_PATH;
-    bool SHOW_REFLEXES;
-    bool ENABLE_TASKS;
-    bool ENABLE_MINIMIZE;
-    bool AUTO_POSITION;
-    int REFLEX_SCALING;
-    int REFLEX_ALPHA;
-    int MAXSIZE;
-};
-
 
 class MyApp:public wxApp
 {
@@ -222,7 +174,7 @@ public:
   wxBitmap * GetWallpaper (){if (frame) return frame->GetWallpaper(); }
 private:
 
-  simSettings* settings;
+  simSettings settings;
   /* -----Custom background stuff-----  */
   wxString customBackground;
   int customBackgroundType;

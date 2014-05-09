@@ -19,7 +19,7 @@
 #ifndef GCONF_SETTINGS_H_
 #define GCONF_SETTINGS_H
 
-//#include "main.h"
+#include "simSettings.h"
 
 // Gconf does not accept slash-ended strings as keys. Just in case
 #define APPLICATION_PATH "/apps/simdock/" 
@@ -44,6 +44,7 @@
 #define GCONF_BG_HEIGHT "bg_height"
 #define GCONF_BG_URL "bg_url"
 #define GCONF_WALLPAPER_URL "wallpaper_url"
+
 
 /* Loads simdock settings from libgconf2 */
 void simGconf_loadSettings (simSettings* data);

@@ -20,6 +20,7 @@
 #define _MYFRAME_H
 #include "settingsDialog.h"
 #include "launcher_dialog.h"
+#include "simSettings.h"
 
 
 /* Forward declaration */
@@ -30,7 +31,7 @@ class MyFrame:public wxFrame
 {
 
 public:
-  MyFrame (wxWindow * parent,simSettings* ss, ImagesArray* array, wxWindowID id, const wxString & title,
+  MyFrame (wxWindow * parent,simSettings ss, ImagesArray* array, wxWindowID id, const wxString & title,
 	   const wxPoint & pos = wxDefaultPosition, const wxSize & size =
 	   wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE);
   wxPoint lastPosition;		//Last position on-screen before being destroyed
@@ -99,7 +100,7 @@ private:
     wxPoint draggedPos;
 
 
-    simSettings* settings;
+    simSettings settings;
     ImagesArray* ImagesList;
 
     wxTimer *	 blurTimer;

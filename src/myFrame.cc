@@ -159,7 +159,7 @@ void drawTooltip(wxDC * dc, wxString tooltip, simImage* hoveringIcon)
 
 
 
-MyFrame::MyFrame (wxWindow * parent, simSettings * set, ImagesArray * array,
+MyFrame::MyFrame (wxWindow * parent, simSettings set, ImagesArray * array,
 		  wxWindowID id, const wxString & title, const wxPoint & pos,
 		  const wxSize & size, long style):
 wxFrame (parent, id, title, pos, size, style)
@@ -295,12 +295,12 @@ MyFrame::updateSize ()
    * depends on the configuration. See "main.h" 
    */
   int width =
-    (settings->ICONW + settings->SPACER) * (ImagesList->GetCount () - 1) +
-    settings->LEFT_BORDER + settings->RIGHT_BORDER;
-  int height = settings->MAXSIZE + settings->BOTTOM_BORDER;
+    (settings.ICONW + settings.SPACER) * (ImagesList->GetCount () - 1) +
+    settings.LEFT_BORDER + settings.RIGHT_BORDER;
+  int height = settings.MAXSIZE + settings.BOTTOM_BORDER;
 
   SetSize (width, height);
-  if (settings->AUTO_POSITION)
+  if (settings.AUTO_POSITION)
   {
   	wxSize sz = wxGetDisplaySize();
   	Move(sz.GetWidth() /2 - width /2,GetPosition().y);
@@ -376,7 +376,7 @@ MyFrame::OnMiddleUp (wxMouseEvent & event) {
             }
 
             if (pid == 0) {
-                system (wx2std (hoveringIcon->link).c_str ());
+                cout << wx2std(hoveringIcon->link).c_str();
                 exit (0);
             }
             
@@ -444,9 +444,7 @@ MyFrame::OnAbout (wxCommandEvent & WXUNUSED (event))
 void
 MyFrame::OnSettings (wxCommandEvent & WXUNUSED (event))
 {
-    simSettings initSettings = *settings;
-
-    settingsDialog = new SettingsDialog (this, &initSettings);
+    settingsDialog = new SettingsDialog (this, &settings);
     settingsDialog->Show();
 
     // the setting-window spawns wrongly only on the workspace simdock
@@ -466,11 +464,11 @@ MyFrame::OnAdd (wxCommandEvent & event)
       if (dlg->saveChanges ())
 	{
 
-	  sim->w = settings->ICONW;
-	  sim->h = settings->ICONH;
+	  sim->w = settings.ICONW;
+	  sim->h = settings.ICONH;
 	  sim->y =
-	    (settings->MAXSIZE + settings->BOTTOM_BORDER) - settings->ICONH -
-	    settings->BOTTOM_BORDER;
+	    (settings.MAXSIZE + settings.BOTTOM_BORDER) - settings.ICONH -
+	    settings.BOTTOM_BORDER;
 	  ImagesList->Add (sim);
 	  appSize = PositionIcons (GetClientSize (), settings, ImagesList);
 	  updateSize();
@@ -673,7 +671,7 @@ MyFrame::OnLeftUp (wxMouseEvent & event) {
         simImage *img = (*ImagesList)[i];
         if (img->isIn (event.m_x, event.m_y)) {
             if (img->windowCount() > 0) {
-                if (settings->ENABLE_MINIMIZE && img->active) {
+                if (settings.ENABLE_MINIMIZE && img->active) {
                     if (img->allNotMinimized()) {
                         img->cycleMinimize = true;
                     }
@@ -702,7 +700,7 @@ MyFrame::OnLeftUp (wxMouseEvent & event) {
             }
 
             if (pid == 0) {
-                system (wx2std (img->link).c_str ());
+                cout << wx2std(img->link).c_str();
                 exit (0);
             }
             
@@ -788,7 +786,7 @@ MyFrame::OnBlurTimerTick (wxTimerEvent & event)
 	  changed = true;
 	  RefreshRect (wxRect (img->x, img->y, img->w, img->h), false);
 	  wxSize shadowSize =
-	    ImageToShadow (img->w, img->h, settings->REFLEX_SCALING);
+	    ImageToShadow (img->w, img->h, settings.REFLEX_SCALING);
 	  RefreshRect (wxRect
 		       (img->x, img->y + img->h, shadowSize.GetWidth (),
 			shadowSize.GetHeight ()));
@@ -822,34 +820,34 @@ void MyFrame::OnHoverTimerTick(wxTimerEvent & event)
 void
 MyFrame::RefreshSizes (simImage * img, int distance)
 {
-  int newW = settings->ICONW;
-  int newH = settings->ICONH;
+  int newW = settings.ICONW;
+  int newH = settings.ICONH;
 
   if (distance == 0)
     {
-      newW = settings->MAXSIZE;
-      newH = settings->MAXSIZE;
+      newW = settings.MAXSIZE;
+      newH = settings.MAXSIZE;
     }
   else
     {
-      if (distance < settings->RANGE)
+      if (distance < settings.RANGE)
 	{
 
 	  /*
 	   * int diff = distance * ICONW / RANGE; //(RANGE - MINIMUM);
 	   * newW = MAXSIZE - diff; 
 	   */
-	  newW = (int) zoom (settings->RANGE, distance, settings->MAXSIZE);
+	  newW = (int) zoom (settings.RANGE, distance, settings.MAXSIZE);
 
-	  if (newW < settings->ICONW)
-	    newW = settings->ICONW;
+	  if (newW < settings.ICONW)
+	    newW = settings.ICONW;
 	  newH = newW;
 
 	}
     }
   if (img->w != newW)
     {
-      img->y = GetClientSize ().GetHeight () - newH - settings->BOTTOM_BORDER;
+      img->y = GetClientSize ().GetHeight () - newH - settings.BOTTOM_BORDER;
       img->w = newW;
       img->h = newH;
     }
@@ -879,8 +877,8 @@ MyFrame::OnPaint (wxPaintEvent & event)
   // BG_HEIGHT);
 
     drawBmp (&dc, wxBitmap (*appBackground), 0,
-	   sz.GetHeight () - settings->BG_HEIGHT, appSize.GetWidth (),
-	   settings->BG_HEIGHT);
+	   sz.GetHeight () - settings.BG_HEIGHT, appSize.GetWidth (),
+	   settings.BG_HEIGHT);
 
 
   /*
@@ -917,12 +915,12 @@ MyFrame::OnPaint (wxPaintEvent & event)
             drawBmp (&dc, wxBitmap (img->img), img->x, img->y, img->w, img->h);
         }
         wxSize shadowSize;
-        if (settings->SHOW_REFLEXES)
+        if (settings.SHOW_REFLEXES)
         {
             wxImage wxImage3 (img->reflex);
-            fade (&wxImage3, settings->REFLEX_ALPHA + img->blur * 10);
+            fade (&wxImage3, settings.REFLEX_ALPHA + img->blur * 10);
             shadowSize =
-                ImageToShadow (img->w, img->h, settings->REFLEX_SCALING);
+                ImageToShadow (img->w, img->h, settings.REFLEX_SCALING);
             drawBmp (&dc, wxBitmap (wxImage3), img->x, img->y + img->h,
                 shadowSize.GetWidth (), shadowSize.GetHeight ());
         }
@@ -938,7 +936,7 @@ MyFrame::OnPaint (wxPaintEvent & event)
     {
       simImage *img = (*ImagesList)[draggedID];
       drawBmp (&dc, wxBitmap (img->img), draggedPos.x,
-	       draggedPos.y, settings->ICONW, settings->ICONH);
+	       draggedPos.y, settings.ICONW, settings.ICONH);
     }
 
     if (showTooltip && hoveringIcon != None) {
