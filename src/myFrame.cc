@@ -664,6 +664,7 @@ MyFrame::OnLeftUp (wxMouseEvent & event) {
         moving = false;
         //it's possible the launchers were moved, save new order:
         wxGetApp().launchersModified = true;
+        saveLaunchers(ImagesList);
         appSize = PositionIcons (GetClientSize (), settings, ImagesList);
         Refresh (false);
         return;
@@ -702,8 +703,7 @@ MyFrame::OnLeftUp (wxMouseEvent & event) {
             }
 
             if (pid == 0) {
-                cout << wx2std(img->link).c_str();
-                exit (0);
+                exit (system(wx2std(img->link).c_str()));
             }
             
             img->status = STATUS_INCREASING;
