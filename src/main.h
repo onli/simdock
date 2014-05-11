@@ -167,8 +167,6 @@ public:
   void reposition() { if (frame) frame->appSize = FirstPosition (frame->GetClientSize (),settings,ImagesList); }
   void updateSize() { if (frame) frame->updateSize();}
   void refresh() { if (frame) frame->Refresh(false);}
-  /* If launchers list have been modified from the starting */
-  bool launchersModified;
 
   bool onTop;
   void SetWallpaper (wxBitmap * newBitmap) {if (frame) frame->SetWallpaper(newBitmap); }

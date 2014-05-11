@@ -221,25 +221,16 @@ FirstPosition (wxSize sz, simSettings settings, ImagesArray* list)
 
 
 void
-MyApp::GracefullyExit ()
-{
-    if (!frame)
-      {
-	  cout << "GracefullyExit: Null Frame!!" << endl;
-	  return;
-      }
-    if (!frame->disposed)
-      {
-	  simGconf_savePosition (frame->GetPosition ().x, frame->GetPosition ().y);
-	  if (launchersModified)
-	  	saveLaunchers (ImagesList);
-      }
-    else
-      {
-	  simGconf_savePosition (frame->lastPosition.x, frame->lastPosition.y);
-	  if (launchersModified)
-	  	saveLaunchers (ImagesList);
-      }
+MyApp::GracefullyExit () {
+    if (!frame) {
+        cout << "GracefullyExit: Null Frame!!" << endl;
+        return;
+    }
+    if (!frame->disposed) {
+        simGconf_savePosition (frame->GetPosition ().x, frame->GetPosition ().y);
+    } else {
+        simGconf_savePosition (frame->lastPosition.x, frame->lastPosition.y);
+    }
 }
 
 int
@@ -259,7 +250,6 @@ MyApp::OnInit ()
 	return false;
 	
 	ImagesList = new ImagesArray ();
-	launchersModified = false;
 	wxInitAllImageHandlers ();
 	
     //default values 

@@ -476,7 +476,6 @@ MyFrame::OnAdd (wxCommandEvent & event)
 	  // New icon will fade :p
 	  // Disabled. Unefficient
 	  // timer->Start (timer_timeout);
-	  wxGetApp ().launchersModified = true;
       saveLaunchers(ImagesList);
 	  Refresh (false);
 
@@ -511,7 +510,6 @@ void MyFrame::OnKeep(wxCommandEvent & event) {
         wxString iconPath = dirPath + _T ("/") + ti.name + _T(".png");
         ti.icon.SaveFile(iconPath, wxBITMAP_TYPE_PNG);
         newLauncher->img_link = iconPath;
-        wxGetApp ().launchersModified = true;
         newLauncher->task = false;
         saveLaunchers(ImagesList);
     } else {
@@ -532,7 +530,6 @@ MyFrame::OnEdit (wxCommandEvent & event)
   if (dlg->ShowModal () == wxID_OK) {
         dlg->saveChanges ();
         Refresh (false);
-        wxGetApp ().launchersModified = true;
         saveLaunchers(ImagesList);
     }
 
@@ -555,7 +552,6 @@ MyFrame::OnDelete (wxCommandEvent & event)
         delete (*ImagesList)[clickedID];
         ImagesList->RemoveAt (clickedID);
     }
-    wxGetApp ().launchersModified = true;
     saveLaunchers(ImagesList);
     updateSize();
     Refresh (false);
@@ -662,8 +658,6 @@ MyFrame::OnLeftUp (wxMouseEvent & event) {
 
         dragging = false;
         moving = false;
-        //it's possible the launchers were moved, save new order:
-        wxGetApp().launchersModified = true;
         saveLaunchers(ImagesList);
         appSize = PositionIcons (GetClientSize (), settings, ImagesList);
         Refresh (false);
