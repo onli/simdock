@@ -17,22 +17,7 @@
  */
 #include "math.h"
 #include "main.h"
-// #include <wx/listimpl.cpp> //To use Lists
-
-char defaultLaunchers[] = "<Program>\n"
-    "<SimDock>\n"
-    "<path>/usr/bin/firefox</path>\n"
-    "<icon>/usr/share/firefox/icons/mozicon128.png</icon>\n"
-    "<description>Firefox web browser</description>\n"
-    "<name>Firefox</name>\n" "</SimDock>\n" "</Program>\n";
-
-char defaultSetts[] = "<Program><SimDock>\n"
-    "<x>100</x>\n" "<y>100</y>\n" "</SimDock></Program>";
-
-char first_time[] =
-    "This is the first time you run this program.\n"
-    "Generated a default settings file\nPlease edit ~/" CONF_DIR "/"
-    CONF_FILE " to add new launchers\n";
+using namespace std;
 
 #define _P(x) wx2std(x)
 std::string wx2std (const wxString & input)
@@ -47,10 +32,19 @@ std::string wx2std (const wxString & input)
     return temp;
 }
 
-using namespace std;
+string
+getGTKIconPath(string name) {
+    GtkIconInfo *iconInfo = gtk_icon_theme_lookup_icon (gtk_icon_theme_get_default(),
+                                   name.c_str(), // icon name
+                                   48,
+                                   GTK_ICON_LOOKUP_FORCE_SIZE);
+    const char *filename;
 
-
-
+    if (iconInfo != NULL) {
+        return gtk_icon_info_get_filename (iconInfo);
+    }
+    return string("");
+}
 
 
 IMPLEMENT_APP (MyApp)
@@ -65,10 +59,6 @@ wxString markPath = _T (DATA_DIR "/mark.png");
 wxString questionPath = _T (DATA_DIR "/question.png");
 
 
-
-
-
-
 bool
 loadSettings (simSettings* settings)
 {
@@ -80,9 +70,9 @@ loadSettings (simSettings* settings)
 }
 
 bool
-loadPrograms (wxString fullPath, ImagesArray * list,simSettings* settings)
+loadPrograms (wxString fullPath, ImagesArray * list,simSettings* settings, string defaultLaunchers)
 {
-    openOrInitialize (&fullPath, defaultLaunchers);
+    openOrInitialize (&fullPath, &defaultLaunchers);
     wxXmlDocument doc;
     if (!doc.Load (fullPath))
       {
@@ -155,7 +145,7 @@ loadPrograms (wxString fullPath, ImagesArray * list,simSettings* settings)
 }
 
 void
-loadAll (ImagesArray * list, simSettings* settings)
+loadAll (ImagesArray * list, simSettings* settings, string defaultLaunchers)
 {
     wxString home = wxGetHomeDir ();
     if (home.IsEmpty ())
@@ -177,7 +167,7 @@ loadAll (ImagesArray * list, simSettings* settings)
       {
 	  exit (1);
       }
-    if (!loadPrograms (PROGRAMS_PATH, list,settings))
+    if (!loadPrograms (PROGRAMS_PATH, list,settings, defaultLaunchers))
       {
 	  exit (1);
       }
@@ -210,15 +200,11 @@ PositionIcons (wxSize sz, simSettings settings, ImagesArray* ImagesList)
 
 }
 
-/*
- * Might change this if i'll implement right and left side repositioning 
- */
 wxSize
 FirstPosition (wxSize sz, simSettings settings, ImagesArray* list)
 {
     return PositionIcons (sz, settings,list);
 }
-
 
 void
 MyApp::GracefullyExit () {
@@ -240,14 +226,23 @@ MyApp::OnExit ()
     return 0;			// Reference sais this is ignored..
 }
 
-
-
-
 bool
-MyApp::OnInit ()
-{
-    if (!wxApp::OnInit ())
-	return false;
+MyApp::OnInit () {
+    if (!wxApp::OnInit ()) { return false; }
+
+    string filepath = getGTKIconPath("firefox");
+    defaultLaunchers = "<Program>\n"
+        "<SimDock>\n"
+        "</SimDock>\n"
+        "</Program>\n";
+    if (filepath != "") {
+        defaultLaunchers = "<Program>\n"
+        "<SimDock>\n"
+        "<path>/usr/bin/firefox</path>\n"
+        "<icon>" + getGTKIconPath("firefox") + "</icon>\n"
+        "<description>Firefox web browser</description>\n"
+        "<name>Firefox</name>\n" "</SimDock>\n" "</Program>\n";
+    }
 	
 	ImagesList = new ImagesArray ();
 	wxInitAllImageHandlers ();
@@ -273,7 +268,7 @@ MyApp::OnInit ()
         true //AUTO_POSITION
     };
       
-    loadAll (ImagesList, & settings);
+    loadAll (ImagesList, & settings, defaultLaunchers);
 
 
     long options = wxNO_BORDER;

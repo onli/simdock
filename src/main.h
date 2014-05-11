@@ -132,11 +132,12 @@ WX_DEFINE_ARRAY (simImage *, ImagesArray);
 /* wxString to std::string converter. Useful for printing stuff */
 std::string wx2std (const wxString & input);
 const wxString PROGRAMS_PATH = wxGetHomeDir() + _T ("/") + _T (CONF_DIR) + _T ("/") + _T (CONF_FILE);
+std::string getGTKIconPath(std::string name);
 
 /* Creates the given directory only if it does not exist */
 bool fixSimDir (wxString * dirPath);
 /* Opens the given filename or initialize it with given data */
-bool openOrInitialize (wxString * fullPath, char *initializeData);
+bool openOrInitialize (wxString * fullPath, std::string *initializeData);
 /* Opens the given filename or creates it if does not exist */
 bool openOrCreate (wxFile * settingsFile, wxString * fullPath);
 /* Saves the given images array to the given filesystem location*/
@@ -173,7 +174,7 @@ public:
   wxBitmap * GetWallpaper (){if (frame) return frame->GetWallpaper(); }
   
 private:
-
+    
   simSettings settings;
   /* -----Custom background stuff-----  */
   wxString customBackground;
@@ -183,8 +184,8 @@ private:
   MyFrame *frame;
   bool showInTray;
   ImagesArray* ImagesList;
-
   SettingsDialog* sd;
+  std::string defaultLaunchers;
 };
 
 

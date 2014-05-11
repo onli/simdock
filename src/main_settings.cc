@@ -33,31 +33,22 @@ fixSimDir (wxString * dirPath)
 }
 
 bool
-openOrInitialize (wxString * fullPath, char *initializeData)
+openOrInitialize (wxString * fullPath, string *initializeData)
 {
-  //cout << "Loading " << wx2std (*fullPath) << endl;
-  wxFile settingsFile;
-  if (!settingsFile.Exists (*fullPath))
-    {
-      if (!openOrCreate (&settingsFile, fullPath))
-	{
-	  exit (1);
-	}
+    wxFile settingsFile;
+    if (!settingsFile.Exists (*fullPath)) {
+        if (!openOrCreate (&settingsFile, fullPath)) {
+            exit (1);
+        }
 
-      unsigned int wrote = settingsFile.Write (initializeData,
-					       sizeof (char) *
-					       strlen (initializeData));
-      if (wrote != sizeof (char) * strlen (initializeData))
-	{
-	  wxMessageBox (_T ("Some error occurred writing to file?"),
-			_T ("SimDock"), wxOK | wxICON_INFORMATION, NULL);
-	  return FALSE;
-	}
-    }
-  //cout << "Loading settings file:" << wx2std (*fullPath) << endl;       
+        if (! settingsFile.Write (wxString(initializeData->c_str(), wxConvUTF8))) {
+            wxMessageBox (  _T ("Some error occurred writing to file?"),
+                            _T ("SimDock"), wxOK | wxICON_INFORMATION, NULL);
+            return FALSE;
+        }
+    }     
 
-  return TRUE;
-
+    return TRUE;
 }
 
 
