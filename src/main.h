@@ -92,7 +92,7 @@ WX_DEFINE_ARRAY (simImage *, ImagesArray);
 #endif
 
 
-#define CONF_DIR ".SimDock"
+#define CONF_DIR ".simdock"
 #define CONF_FILE "launchers.xml"
 
 /* XML nodes */
