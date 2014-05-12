@@ -260,7 +260,8 @@ MyApp::OnInit () {
         30,  // BG_HEIGHT,
         5,   // REFLEX_SCALING,
         100, // REFLEX_ALPHA,
-        30,
+        30,  // MAXSIZE
+        50,  //BLUR_TIMEOUT
         _T (DATA_DIR "/bg5.png"), // bgPath,
         true, // SHOW_REFLEXES,
         true, // ENABLE_TASKS,

@@ -41,6 +41,7 @@ EVT_SPINCTRL(ID_SPACER, SettingsDialog::OnSpinChange)
 EVT_SPINCTRL(ID_BG_HEIGHT, SettingsDialog::OnSpinChange)
 EVT_SPINCTRL(ID_REFLEX_SCALING , SettingsDialog::OnSpinChange)
 EVT_SPINCTRL(ID_REFLEX_ALPHA, SettingsDialog::OnSpinChange)
+EVT_SPINCTRL(ID_BLUR_TIMEOUT, SettingsDialog::OnSpinChange)
 
 END_EVENT_TABLE()
 
@@ -108,20 +109,6 @@ SettingsDialog::SettingsDialog(wxWindow* win, simSettings* settings)
 SettingsDialog::~SettingsDialog()
 { 
     delete(m_imageList); 
-    delete (zoom_text); 
-    delete (range_text); 
-    delete(bg_height_text);
-    delete (bg_path_text);
-    delete (left_border_text);
-    delete (right_border_text);
-    delete (bottom_border_text);
-    delete (spacer_border_text);
-    delete (width_text);
-    delete (height_text);
-    delete (reflex_enabled);
-    delete (reflex_scaling_text);
-    delete (reflex_alpha_text);
-    delete (browse_button);
     delete (generalSettings);
     delete (aestheticSettings);
     delete (backgroundSettings);
@@ -189,8 +176,11 @@ simSettings* SettingsDialog::GetSettings()
 	settings->SHOW_REFLEXES = reflex_enabled->IsChecked();
 	settings->AUTO_POSITION = auto_position->IsChecked();
 	settings->ENABLE_TASKS = enable_tasks->IsChecked();	
-	settings->ENABLE_MINIMIZE = enable_minimize->IsChecked();	
-    
+	settings->ENABLE_MINIMIZE = enable_minimize->IsChecked();
+
+    if (!checkInt(blur_timeout_text, &settings->BLUR_TIMEOUT,10,200)) {
+        return NULL;
+    }
   return settings;
     
 
@@ -241,6 +231,14 @@ wxPanel* SettingsDialog::CreateGeneralSettingsPage(wxWindow* parent)
     enable_minimize = new wxCheckBox(panel,ID_Enable_Minimize,_T("Minimize Windows"));
     enable_minimize->SetValue(settings->ENABLE_MINIMIZE);
     item3->Add(enable_minimize, 0, wxGROW|wxALL, 5);
+
+    
+    wxBoxSizer* itemSizer8 = new wxBoxSizer( wxHORIZONTAL );
+    blur_timeout_text =  new wxSpinCtrl(panel, ID_BLUR_TIMEOUT,wxString::Format(_T("%d"),settings->BLUR_TIMEOUT));
+    blur_timeout_text->SetRange(10, 200);
+    itemSizer8->Add(new wxStaticText(panel,-1,_T("Blur length")),wxGROW|wxALL,5);
+    itemSizer8->Add(blur_timeout_text,wxGROW|wxALL,5);
+    item3->Add(itemSizer8, 0, wxGROW|wxALL, 5);
 
     topSizer->Add( item3, 1, wxGROW|wxALIGN_CENTRE|wxALL, 5 );
     /* ---------------  BEHAVIOUR STUFF  ----------------------*/

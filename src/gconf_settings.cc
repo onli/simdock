@@ -37,6 +37,7 @@ void simGconf_loadSettings (simSettings* data)
     SimGconf::GetInt(client, APPLICATION_PATH GCONF_RANGE, &data->RANGE);
     SimGconf::GetInt(client, APPLICATION_PATH GCONF_BG_HEIGHT, &data->BG_HEIGHT);
     SimGconf::GetInt(client, APPLICATION_PATH GCONF_SPACER, &data->SPACER);
+    SimGconf::GetInt(client, APPLICATION_PATH GCONF_BLUR_TIMEOUT, &data->BLUR_TIMEOUT);
     SimGconf::GetString(client, APPLICATION_PATH GCONF_BG_URL, &data->BG_PATH);
     
     SimGconf::GetBool(client, APPLICATION_PATH GCONF_SHOW_REFLEXES, &data->SHOW_REFLEXES);
@@ -75,6 +76,7 @@ simGconf_saveSettings (struct simSettings* data)
     SimGconf::SetInt(client, APPLICATION_PATH GCONF_RANGE, &data->RANGE);
     SimGconf::SetInt(client, APPLICATION_PATH GCONF_BG_HEIGHT, &data->BG_HEIGHT);
     SimGconf::SetInt(client, APPLICATION_PATH GCONF_SPACER, &data->SPACER);
+    SimGconf::SetInt(client, APPLICATION_PATH GCONF_BLUR_TIMEOUT, &data->BLUR_TIMEOUT);
     SimGconf::SetString(client, APPLICATION_PATH GCONF_BG_URL, &data->BG_PATH);
     SimGconf::SetBool(client, APPLICATION_PATH GCONF_SHOW_REFLEXES, &data->SHOW_REFLEXES);
     SimGconf::SetInt(client, APPLICATION_PATH GCONF_REFLEX_SCALING, &data->REFLEX_SCALING);

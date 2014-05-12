@@ -14,6 +14,7 @@ struct simSettings {
     int REFLEX_SCALING;
     int REFLEX_ALPHA;
     int MAXSIZE;    // ICONW + ICONW * PERCENT / 100;
+    int BLUR_TIMEOUT;
     wxString BG_PATH;
     bool SHOW_REFLEXES;
     bool ENABLE_TASKS;

@@ -191,7 +191,7 @@ wxFrame (parent, id, title, pos, size, style)
     */
 
     blurTimer = new wxTimer (this, ID_blur_Timer);
-    blurTimer->Start (TIMER_TIMEOUT_BLUR);
+    blurTimer->Start (settings.BLUR_TIMEOUT);
     hoverTimer = new wxTimer(this, ID_hover_Timer);
     /*
     * Menu stuff 
@@ -383,7 +383,7 @@ MyFrame::OnMiddleUp (wxMouseEvent & event) {
             hoveringIcon->status = STATUS_INCREASING;
 
             if (! blurTimer->IsRunning()) {
-                blurTimer->Start (TIMER_TIMEOUT_BLUR);
+                blurTimer->Start (settings.BLUR_TIMEOUT);
             }
         } 
            //else "Not hovering an icon";
@@ -703,7 +703,7 @@ MyFrame::OnLeftUp (wxMouseEvent & event) {
             img->status = STATUS_INCREASING;
 
             if (! blurTimer->IsRunning()) {
-                blurTimer->Start (TIMER_TIMEOUT_BLUR);
+                blurTimer->Start (settings.BLUR_TIMEOUT);
             }
             return;
 

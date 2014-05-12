@@ -44,6 +44,7 @@ enum {
     ID_REFLEX_ALPHA = 16,
     ID_AUTO_POSITION = 17,
     ID_ENABLE_TASKS = 18,
+    ID_BLUR_TIMEOUT = 19
 };
 
 // Property sheet dialog
@@ -78,6 +79,7 @@ protected:
     wxCheckBox* auto_position;
     wxCheckBox* enable_tasks;
     wxCheckBox* enable_minimize;
+    wxSpinCtrl* blur_timeout_text;
     /* Zoom */
     wxSpinCtrl* zoom_text;
     wxSpinCtrl* range_text;
