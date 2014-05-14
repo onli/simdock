@@ -20,6 +20,10 @@
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
+#include <X11/Xlib-xcb.h>
+#include <xcb/xcb.h>
+#include <xcb/xproto.h>
+#include <xcb/xcb_ewmh.h>
 #include "main.h"
 #include "tasks.h"
 

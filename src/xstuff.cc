@@ -16,7 +16,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 #include "xstuff.h"
-#include "main.h"
 
 static int (*old_error_handler)(Display *, XErrorEvent *) = NULL;
 
@@ -194,22 +193,28 @@ xstuff_setStrut (Display * xdisplay, Window winID, int size)
 
 /* Stolen from gnome-panel */
 bool
-xstuff_setDock (Display * xdisplay, Window winID)
-{
-  if (winID == 0)
-    return false;
+xstuff_setDock (Display * xdisplay, Window winID) {
+    //if (winID == 0 || !xdisplay) {
+        //return false;
+    //}
 
-  if (!xdisplay)
-    return false;
+//
+    //xcb_connection_t *c = XGetXCBConnection(xdisplay);
+    //xcb_ewmh_connection_t EWMH;
+    //xcb_intern_atom_cookie_t *EWMHCookie = xcb_ewmh_init_atoms(c, &EWMH);
+    //if(! xcb_ewmh_init_atoms_replies(&EWMH, EWMHCookie, NULL)) {
+        //return false;
+    //}
+           //
+    //xcb_change_property(c,       /* Connection to the X server */
+                        //XCB_PROP_MODE_REPLACE,     /* Property mode */
+                        //winID,   /* Window */
+                        //EWMH._NET_WM_WINDOW_TYPE, /* Property to change */
+                        //XCB_ATOM_ATOM,     /* Type of the property */
+                        //32,   /* Format of the property (8, 16, 32) */
+                        //1, /* Length of the data parameter */
+                        //&(EWMH._NET_WM_WINDOW_TYPE_DOCK));    /* Data */
+    //return true;
 
-
-  Atom a[2] = { None, None };
-  a[0] = XInternAtom (xdisplay, "_NET_WM_WINDOW_TYPE_DOCK", FALSE);
-  Atom a2 = XInternAtom (xdisplay, "_NET_WM_WINDOW_TYPE", FALSE);
-
-  XChangeProperty (xdisplay,
-		   winID,
-		   a2, XA_ATOM, 32, PropModeReplace, (unsigned char *) a, 1);
-  return true;
-
+    
 }
