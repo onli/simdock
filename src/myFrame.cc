@@ -473,9 +473,6 @@ MyFrame::OnAdd (wxCommandEvent & event)
 	  appSize = PositionIcons (GetClientSize (), settings, ImagesList);
 	  updateSize();
 
-	  // New icon will fade :p
-	  // Disabled. Unefficient
-	  // timer->Start (timer_timeout);
       saveLaunchers(ImagesList);
 	  Refresh (false);
 

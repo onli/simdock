@@ -80,6 +80,8 @@ WX_DEFINE_ARRAY (simImage *, ImagesArray);
 #include "tasks.h"
 #include "simSettings.h"
 
+#include "xstuff.h"
+
 
 
 /* Loading wxStrings from chars */

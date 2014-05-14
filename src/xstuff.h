@@ -18,12 +18,11 @@
 #ifndef XSTUFF_H_
 #define XSTUFF_H_
 
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
-#include <X11/Xlib-xcb.h>
 #include <xcb/xcb.h>
 #include <xcb/xproto.h>
 #include <xcb/xcb_ewmh.h>
+#define WNCK_I_KNOW_THIS_IS_UNSTABLE 1
+#include <libwnck/libwnck.h>
 #include "main.h"
 #include "tasks.h"
 
@@ -32,7 +31,7 @@
  * if dock then sets the window style to dock
  * if position then automatically positions the wxFrame
  */
-bool xstuff_resizeScreen (const wxString & program_name, const wxFrame & frame, bool dock);
+bool xstuff_resizeScreen(Window winID, const wxFrame & frame);
 
 /* 
 Returns the pid associated with the window.
@@ -42,10 +41,9 @@ unsigned int xstuff_getWindowPID(Window w);
 
 void xstuff_raiseWindow(Window winID);
 
-/* Private stuff */
-bool xstuff_setStrut(Display* xdisplay, Window winID, int size);
+void xstuff_setDefaultWindowFlags(Window winID);
 
-bool xstuff_setDock(Display* xdisplay, Window winID);
+bool xstuff_setStrut(Window winID, int size);
 
 
 

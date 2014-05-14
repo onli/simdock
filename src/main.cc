@@ -301,7 +301,11 @@ MyApp::OnInit () {
     
     frame->Show (TRUE);
     frame->Freeze();
-    xstuff_resizeScreen (wxFileNameFromPath (wxString (argv[0])), *frame,true);
+
+    GtkWidget* widget = frame->GetHandle();
+    XID xid = GDK_WINDOW_XWINDOW(widget->window); 
+    
+    xstuff_resizeScreen(xid, *frame);
     if (settings.ENABLE_TASKS)
     {
 		tasks_fillList(ImagesList, settings);
@@ -335,11 +339,9 @@ MyApp::OnInit () {
     frame->SetWallpaper(backImage);
 
     //a dock should always be shown on all desktops by default
-    //TODO: Find a better way to get this as WnckWindow* or pin via wxWidget
-    wnck_window_pin(wnck_screen_get_active_window(wnck_screen_get_default()));
-    wnck_window_make_above(wnck_screen_get_active_window(wnck_screen_get_default()));
     
 	frame->Thaw();
+    xstuff_setDefaultWindowFlags(xid);
     
     return TRUE;
 }

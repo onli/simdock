@@ -62,7 +62,7 @@ bool taskInfo::Init(WnckWindow* window)
     
     if (!tasks_getProcessName(pid, &processName[0], sizeof (processName) -1))
 	{
-		printf("Could not get process name for 0x%x\n",(unsigned int) wnck_window_get_xid (window));
+		printf("Could not get process name for %d\n", pid);
 	 	return false;
 	}
     

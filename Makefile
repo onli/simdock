@@ -8,8 +8,7 @@ SRCDIR ?= src/
 SHELL ?= /bin/sh
 CC = g++
 CCFLAGS ?= -O2
-LDLIBS ?= -lX11
-DEPS = $(shell pkg-config --libs --cflags glib-2.0 gconf-2.0 gtk+-2.0 libwnck-1.0)
+DEPS = $(shell pkg-config --libs --cflags glib-2.0 gconf-2.0 gtk+-2.0 libwnck-1.0 xcb-ewmh)
 DEPS += $(shell wx-config --cflags --libs)
 
 .PHONY: install uninstall
