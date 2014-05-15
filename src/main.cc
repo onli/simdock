@@ -64,8 +64,7 @@ loadSettings (simSettings* settings)
 {
     simGconf_loadSettings (settings);
     simGconf_loadPosition (&startPositionX, &startPositionY);
-    settings->MAXSIZE = settings->ICONW + settings->ICONW * settings->PERCENT / 100;
-
+    settings->MAXSIZE = (int)(settings->ICONH + (settings->ICONH * ((double)settings->PERCENT / 100)));
     return TRUE;
 }
 
@@ -175,28 +174,25 @@ loadAll (ImagesArray * list, simSettings* settings, string defaultLaunchers)
 
 
 wxSize
-PositionIcons (wxSize sz, simSettings settings, ImagesArray* ImagesList)
-{
+PositionIcons (wxSize sz, simSettings settings, ImagesArray* ImagesList) {
     int positionX = settings.LEFT_BORDER;
+    int zoomSpace = 0;
 
-    for (unsigned int i = 0; i < ImagesList->GetCount (); i++)
-      {
-	  simImage *img = (*ImagesList)[i];
+    for (unsigned int i = 0; i < ImagesList->GetCount (); i++) {
+        simImage *img = (*ImagesList)[i];
 
-	  img->x = positionX;
-	  positionX += img->w + settings.SPACER;
+        img->x = positionX;
+        positionX += img->w + settings.SPACER;
+        zoomSpace += img->w - settings.ICONW;
+        
 
-	  if (i == ImagesList->GetCount () - 1)
-	    {
-		return wxSize (positionX - settings.SPACER + settings.LEFT_BORDER,
-			       sz.GetHeight ());
-	    }
-#ifdef SIMDOCK_DEBUG_ICON_POSITIONING
-	  cout << "ID:" << img->id << "[" << img->x << "," << img->
-	      y << "]" << "[" << img->w << "," << img->h << "]" << endl;
-#endif
-      }
-    return wxSize ();
+        #ifdef SIMDOCK_DEBUG_ICON_POSITIONING
+            cout << "ID:" << img->id << "[" << img->x << "," << img->
+            y << "]" << "[" << img->w << "," << img->h << "]" << endl;
+        #endif
+    }
+    return wxSize (positionX - settings.SPACER + settings.RIGHT_BORDER + zoomSpace,
+                    settings.MAXSIZE);
 
 }
 
@@ -250,7 +246,7 @@ MyApp::OnInit () {
     //default values 
 	simSettings settings = {
         30,  // LEFT_BORDER,
-        90,  //RIGHT_BORDER,
+        30,  //RIGHT_BORDER,
         15,  // BOTTOM_BORDER,
         30,  //ICONW,
         30,  //ICONH,
@@ -291,11 +287,8 @@ MyApp::OnInit () {
 	wxBitmap* bmp = new wxBitmap(wxImage (markPath));
 	frame->SetMarkBitmap(bmp);
     frame->frameOptions = options;
-    
 
-
-
-	frame->updateSize();
+    frame->updateSize();
 	
     register_sigint (this);	// CTRL-C Handling
     

@@ -289,23 +289,15 @@ wxMenu* MyFrame::GetPopMenu()
 void
 MyFrame::updateSize ()
 {
-  /*
-   * This is approximately the maximim width reachable stretching
-   * images. It is hard to get a 100% exact maximum width since it
-   * depends on the configuration. See "main.h" 
-   */
-  int width =
-    (settings.ICONW + settings.SPACER) * (ImagesList->GetCount () - 1) +
-    settings.LEFT_BORDER + settings.RIGHT_BORDER;
-  int height = settings.MAXSIZE + settings.BOTTOM_BORDER;
+    int width = (settings.ICONW + settings.SPACER) * (ImagesList->GetCount ()) +
+                    settings.LEFT_BORDER + settings.RIGHT_BORDER;
+    int height = settings.MAXSIZE + settings.BOTTOM_BORDER;
 
-  SetSize (width, height);
-  if (settings.AUTO_POSITION)
-  {
-  	wxSize sz = wxGetDisplaySize();
-  	Move(sz.GetWidth() /2 - width /2,GetPosition().y);
-  }
-  
+    SetSize (width, height);
+    if (settings.AUTO_POSITION) {
+        wxSize sz = wxGetDisplaySize();
+        Move(sz.GetWidth() /2 - width /2,GetPosition().y);
+    }
 }
 
 void
@@ -351,7 +343,7 @@ MyFrame::OnMouseMove (wxMouseEvent & event)
         hoverTimer->Start(3000, wxTIMER_ONE_SHOT);
     }
 
-    appSize = PositionIcons (GetClientSize (), settings, ImagesList);
+    PositionIcons (GetClientSize (), settings, ImagesList);
 
     Refresh (false);
 }
@@ -807,7 +799,7 @@ void MyFrame::OnHoverTimerTick(wxTimerEvent & event)
 
 
 /*
- * Changes simImage y (Not X) position and Widht, Height according to the
+ * Changes simImage y (Not X) position and Width, Height according to the
  * mouse distance. Return TRUE if size was changed, false otherwise 
  */
 void

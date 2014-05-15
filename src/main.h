@@ -64,7 +64,7 @@ class simSettings;
 class MyApp;
 WX_DEFINE_ARRAY (simImage *, ImagesArray);
 
-#define SIMDOCK_VERSION "1.2.6"
+#define SIMDOCK_VERSION "1.3"
 #define SIMDOCK_WEBSITE "http://sourceforge.net/projects/simdock"
 //#define SIMDOCK_DEBUG
 //#define SIMDOCK_DEBUG_ICON_POSITIONING //this is very verbose
@@ -167,7 +167,7 @@ public:
   virtual bool OnInit ();
   virtual void OnInitCmdLine (wxCmdLineParser & parser);
   virtual bool OnCmdLineParsed (wxCmdLineParser & parser);
-  void reposition() { if (frame) frame->appSize = FirstPosition (frame->GetClientSize (),settings,ImagesList); }
+  void reposition() { if (frame) frame->appSize = FirstPosition (frame->GetClientSize (),frame->settings,ImagesList); }
   void updateSize() { if (frame) frame->updateSize();}
   void refresh() { if (frame) frame->Refresh(false);}
 
@@ -176,8 +176,6 @@ public:
   wxBitmap * GetWallpaper (){if (frame) return frame->GetWallpaper(); }
   
 private:
-    
-  simSettings settings;
   /* -----Custom background stuff-----  */
   wxString customBackground;
   int customBackgroundType;

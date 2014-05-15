@@ -51,6 +51,7 @@ public:
   /* Auto-hide feature */
   int frameOptions;
   wxSize appSize;
+  simSettings settings;
 private:
     void RefreshSizes (simImage * img, int distance);
     /* Mouse */
@@ -100,7 +101,7 @@ private:
     wxPoint draggedPos;
 
 
-    simSettings settings;
+    
     ImagesArray* ImagesList;
 
     wxTimer *	 blurTimer;
