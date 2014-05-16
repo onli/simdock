@@ -7,9 +7,11 @@ SRCDIR ?= src/
 
 SHELL ?= /bin/sh
 CC = g++
-CCFLAGS ?= -march=native -Ofast -flto
-DEPS = $(shell pkg-config --libs --cflags glib-2.0 gconf-2.0 gtk+-2.0 libwnck-1.0 xcb-ewmh)
-DEPS += $(shell wx-config --cflags --libs)
+CCFLAGS ?= -march=native -O2 -flto
+DEPS = $(shell pkg-config --cflags glib-2.0 gconf-2.0 gtk+-2.0 libwnck-1.0 xcb-ewmh)
+DEPS += $(shell wx-config --cflags )
+LDFLAGS = $(shell pkg-config --libs glib-2.0 gconf-2.0 gtk+-2.0 libwnck-1.0 xcb-ewmh)
+LDFLAGS +=  $(shell wx-config --libs)
 SRCS = $(SRCDIR)background.o $(SRCDIR)main_arguments.o $(SRCDIR)save_launchers.o $(SRCDIR)tasks.o $(SRCDIR)gconf_settings.o $(SRCDIR)settingsDialog.o $(SRCDIR)xstuff.o $(SRCDIR)interrupts.o $(SRCDIR)main_settings.o $(SRCDIR)sim_gconf.o $(SRCDIR)launcher_dialog.o $(SRCDIR)myFrame.o $(SRCDIR)simImage.o $(SRCDIR)main.o
 
 .PHONY: install clean uninstall
@@ -17,10 +19,13 @@ SRCS = $(SRCDIR)background.o $(SRCDIR)main_arguments.o $(SRCDIR)save_launchers.o
 all: simdock
 
 simdock: $(SRCS)
-	$(CC) $(CCFLAGS) $(SRCS) $(DEPS) $(LDLIBS) -I$(SRCDIR) -o simdock
+	$(CC) $(CCFLAGS) $(SRCS) $(LDFLAGS) -I$(SRCDIR) -o simdock
 	 
+%.o: %.cc %.h
+	$(CC) $(CCFLAGS) $< $(DEPS) -c -o $@
+
 %.o: %.cc
-	$(CC) $(CCFLAGS) $< $(DEPS) $(LDLIBS) -c -o $@
+	$(CC) $(CCFLAGS) $< $(DEPS) -c -o $@
 
 install: 
 	@install -d "$(DESTDIR)$(BINDIR)" "$(DESTDIR)$(APPDIR)" "$(DESTDIR)$(ICONDIR)"
