@@ -264,7 +264,7 @@ MyApp::OnInit () {
         true, // ENABLE_MINIMIZE,
         true //AUTO_POSITION
     };
-      
+
     loadAll (ImagesList, & settings, defaultLaunchers);
 
 

@@ -175,6 +175,8 @@ public:
   void SetWallpaper (wxBitmap * newBitmap) {if (frame) frame->SetWallpaper(newBitmap); }
   wxBitmap * GetWallpaper (){if (frame) return frame->GetWallpaper(); }
   
+  
+  
 private:
   /* -----Custom background stuff-----  */
   wxString customBackground;

@@ -48,11 +48,14 @@ bool taskInfo::Init(WnckWindow* window)
 	/* Since X doesn't rely on pids there's not a clear way to get the
      * pid associated with a window. We use 2 different ways to get the
      * pid. None of them is 100% accurate. (aMSN!!!) */
-    WnckApplication *app = wnck_window_get_application (window);
-        
-    pid = xstuff_getWindowPID (wnck_window_get_xid (window));	
-    if (!pid)
+    
+
+    
+    pid = wnck_window_get_pid (window);	
+    if (!pid) {
+        WnckApplication *app = wnck_window_get_application (window);
 		pid = wnck_application_get_pid (app);
+    }
 		
 	if (!pid)
 	{

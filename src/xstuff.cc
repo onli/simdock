@@ -17,28 +17,6 @@
  */
 #include "xstuff.h"
 
-void
-xstuff_raiseWindow(Window winID) {
-	wnck_window_activate(wnck_window_get(winID), 0);
-}
-
-unsigned int
-xstuff_getWindowPID(Window winID) {
-    xcb_connection_t* conn = xcb_connect (NULL, NULL);
-    xcb_ewmh_connection_t ewmh_conn;
-    xcb_intern_atom_cookie_t* ewmh_cookie = xcb_ewmh_init_atoms(conn, &ewmh_conn);
-    if(! xcb_ewmh_init_atoms_replies(&ewmh_conn, ewmh_cookie, NULL)) {
-        return false;
-    }
-
-    uint32_t pid;
-    xcb_ewmh_get_wm_pid_reply(&ewmh_conn, xcb_ewmh_get_wm_pid(&ewmh_conn, winID), &pid, NULL);
-
-    xcb_disconnect(conn);
-    return pid;
-}
-
-
 bool
 xstuff_resizeScreen (Window winID, const wxFrame & frame) {  
     int frameHeight = frame.GetClientSize ().GetHeight();
@@ -55,46 +33,51 @@ xstuff_setStrut (Window winID, int size) {
     if (winID == 0 || size <= 0) {
         return false;
     }
-
-    xcb_connection_t* conn = xcb_connect (NULL, NULL);;
-    xcb_ewmh_connection_t ewmh_conn;
-    xcb_intern_atom_cookie_t* ewmh_cookie = xcb_ewmh_init_atoms(conn, &ewmh_conn);
-    if(! xcb_ewmh_init_atoms_replies(&ewmh_conn, ewmh_cookie, NULL)) {
-        return false;
-    }
-
-    
-    xcb_ewmh_set_wm_strut( &ewmh_conn, winID, 0, 0, 0, size);
+    xcb_ewmh_connection_t* ewmh_conn = xstuff_getConnection();
+    xcb_ewmh_set_wm_strut(ewmh_conn, winID, 0, 0, 0, size);
     
     int screenHeight = wnck_screen_get_height(wnck_screen_get_default());
     xcb_ewmh_wm_strut_partial_t wm_strut = {0, 0, 0, size, 0, 0, 0, 0, 0, 0, screenHeight - size, screenHeight};
-    xcb_ewmh_set_wm_strut_partial(  &ewmh_conn,
+    xcb_ewmh_set_wm_strut_partial(  ewmh_conn,
                                     winID,
                                     wm_strut);
-                            
-    xcb_flush(conn);
-    xcb_disconnect(conn);
+    xcb_flush(ewmh_conn->connection);
+    xstuff_closeConnection(ewmh_conn);
     return true;
 }
 
 void
 xstuff_setDefaultWindowFlags(Window winID) {
-    WnckWindow* window = wnck_window_get(winID);
-    wnck_window_pin(window);
-    wnck_window_set_window_type(window, WNCK_WINDOW_DOCK);
+    // the wnck-functions don't work here reliably, at least on my system, so set the states with xcb
+    xcb_ewmh_connection_t* ewmh_conn = xstuff_getConnection();
+    xcb_ewmh_request_change_wm_desktop(ewmh_conn, 0 /* Screen */, winID, 0xFFFFFFFF, XCB_EWMH_CLIENT_SOURCE_TYPE_NORMAL);
+
+    xcb_atom_t states[3] = {ewmh_conn->_NET_WM_STATE_SKIP_PAGER, ewmh_conn->_NET_WM_STATE_SKIP_TASKBAR,ewmh_conn->_NET_WM_STATE_ABOVE};
+    xcb_atom_t types[1] = {ewmh_conn->_NET_WM_WINDOW_TYPE_DOCK};
     
-    // skip_pager with wnck doesn't work, at least on my system, so set the states with xcb
-    xcb_connection_t* conn = xcb_connect (NULL, NULL);
-    xcb_ewmh_connection_t ewmh_conn;
-    xcb_intern_atom_cookie_t* ewmh_cookie = xcb_ewmh_init_atoms(conn, &ewmh_conn);
-    if(! xcb_ewmh_init_atoms_replies(&ewmh_conn, ewmh_cookie, NULL)) {
-        return;
+    xcb_ewmh_set_wm_state(ewmh_conn, winID, 3, states);
+    xcb_ewmh_set_wm_window_type(ewmh_conn, winID, 1, types);
+    
+    xcb_flush(ewmh_conn->connection);
+    xstuff_closeConnection(ewmh_conn);
+}
+
+xcb_ewmh_connection_t*
+xstuff_getConnection() {
+    xcb_connection_t* conn = xcb_connect(NULL, NULL);
+    xcb_ewmh_connection_t* ewmh_conn = new xcb_ewmh_connection_t;
+    xcb_intern_atom_cookie_t* ewmh_cookie = xcb_ewmh_init_atoms(conn, ewmh_conn);
+    if(! xcb_ewmh_init_atoms_replies(ewmh_conn, ewmh_cookie, NULL)) {
+        std::cout << "Could not initialize X-connection \n";
+        return NULL;
     }
+    return ewmh_conn;
+}
 
-    xcb_atom_t states[3] = {ewmh_conn._NET_WM_STATE_SKIP_PAGER, ewmh_conn._NET_WM_STATE_SKIP_TASKBAR, ewmh_conn._NET_WM_STATE_ABOVE};
-
-    xcb_ewmh_set_wm_state(&ewmh_conn, winID, 3, states);
-    xcb_flush(conn);
-    xcb_disconnect(conn);
+void
+xstuff_closeConnection(xcb_ewmh_connection_t* ewmh_conn) {
+    xcb_ewmh_connection_wipe(ewmh_conn);
+    xcb_disconnect(ewmh_conn->connection);
+    free(ewmh_conn);
 }
 

@@ -21,8 +21,6 @@
 #include <xcb/xcb.h>
 #include <xcb/xproto.h>
 #include <xcb/xcb_ewmh.h>
-#define WNCK_I_KNOW_THIS_IS_UNSTABLE 1
-#include <libwnck/libwnck.h>
 #include "main.h"
 #include "tasks.h"
 
@@ -33,18 +31,12 @@
  */
 bool xstuff_resizeScreen(Window winID, const wxFrame & frame);
 
-/* 
-Returns the pid associated with the window.
-0 if unable to get the pid
-*/
-unsigned int xstuff_getWindowPID(Window w);
-
-void xstuff_raiseWindow(Window winID);
-
 void xstuff_setDefaultWindowFlags(Window winID);
 
 bool xstuff_setStrut(Window winID, int size);
 
+xcb_ewmh_connection_t* xstuff_getConnection();
 
+void xstuff_closeConnection(xcb_ewmh_connection_t* ewmh_conn);
 
 #endif
