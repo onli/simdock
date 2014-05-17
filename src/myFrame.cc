@@ -486,8 +486,8 @@ void MyFrame::OnKeep(wxCommandEvent & event) {
         cout << "Error! invalid ClickedID value! " << clickedID << endl;
         return;
     }
-    simImage* newLauncher = new simImage();
-    newLauncher = (*ImagesList)[clickedID];
+
+    simImage* newLauncher = (*ImagesList)[clickedID];
     
     taskInfo ti;
     //it is quite possible that TaskInfo cant find the data of the window

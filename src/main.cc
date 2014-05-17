@@ -38,7 +38,6 @@ getGTKIconPath(string name) {
                                    name.c_str(), // icon name
                                    48,
                                    GTK_ICON_LOOKUP_FORCE_SIZE);
-    const char *filename;
 
     if (iconInfo != NULL) {
         return gtk_icon_info_get_filename (iconInfo);

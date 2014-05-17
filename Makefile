@@ -7,7 +7,8 @@ SRCDIR ?= src/
 
 SHELL ?= /bin/sh
 CC = g++
-CCFLAGS ?= -march=native -O2 -flto
+# CC := clang --analyze
+CCFLAGS ?= -march=native -O3 -flto -Wall
 DEPS = $(shell pkg-config --cflags glib-2.0 gconf-2.0 gtk+-2.0 libwnck-1.0 xcb-ewmh)
 DEPS += $(shell wx-config --cflags )
 LDFLAGS = $(shell pkg-config --libs glib-2.0 gconf-2.0 gtk+-2.0 libwnck-1.0 xcb-ewmh)
@@ -19,7 +20,7 @@ SRCS = $(SRCDIR)background.o $(SRCDIR)main_arguments.o $(SRCDIR)save_launchers.o
 all: simdock
 
 simdock: $(SRCS)
-	$(CC) $(CCFLAGS) $(SRCS) $(LDFLAGS) -I$(SRCDIR) -o simdock
+	$(CC) $(CCFLAGS) $(SRCS) $(LDFLAGS) -o simdock
 	 
 %.o: %.cc %.h
 	$(CC) $(CCFLAGS) $< $(DEPS) -c -o $@
