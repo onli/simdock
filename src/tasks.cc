@@ -15,11 +15,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-#define WNCK_I_KNOW_THIS_IS_UNSTABLE 1	// LOL !!
-#include <libwnck/libwnck.h>
-#include "limits.h"
+ 
 #include "tasks.h"
-
 
 bool taskInfo::Init(WnckWindow* window)
 {
@@ -148,21 +145,18 @@ tasks_getProcessName (unsigned int pid, char *target_name, int size_targetname)
     return true;
 }
 
-static void tasks_window_closed (WnckScreen *screen, WnckWindow *window,callbackArgs* ca )
-{
-	if (!WNCK_IS_WINDOW (window))
+static void tasks_window_closed (WnckScreen *screen, WnckWindow *window,callbackArgs* ca ) {
+    
+	if (!WNCK_IS_WINDOW (window) || wnck_window_is_skip_tasklist (window)) {
 		return;
-
+    }
+    
 	ImagesArray * ImagesList = ca->ImagesList;
-	if (!ImagesList)
-	{
-		return;
-	}
-	if (wnck_window_is_skip_tasklist (window))
-		return;
+    if (!ImagesList) {
+        return;
+    }
 	
-	unsigned int i;
-    for (i = 0; i < ImagesList->GetCount (); i++)
+    for (unsigned int i = 0; i < ImagesList->GetCount (); i++)
 	{
 		simImage *img = (*ImagesList)[i];
 
@@ -175,7 +169,10 @@ static void tasks_window_closed (WnckScreen *screen, WnckWindow *window,callback
   				ImagesList->RemoveAt (i);
   				wxGetApp ().reposition ();
 				wxGetApp ().updateSize ();  		
-		  	}
+		  	} else if (img->windowCount() == 0) {
+                // we need to fall back to the default image, if a starter
+                img->loadImage(img->img_link);
+            }
 
             if (img->windowCount() > 0) {
                 taskInfo ti;
