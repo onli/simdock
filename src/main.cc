@@ -175,25 +175,24 @@ loadAll (ImagesArray * list, simSettings* settings, string defaultLaunchers)
 
 wxSize
 PositionIcons (wxSize sz, simSettings settings, ImagesArray* ImagesList) {
-    int positionX = settings.LEFT_BORDER;
-    int zoomSpace = 0;
-
+    int neededSpace = 0;
+    int availableSpace = settings.LEFT_BORDER;
     for (unsigned int i = 0; i < ImagesList->GetCount (); i++) {
         simImage *img = (*ImagesList)[i];
-
+        neededSpace += img->w + settings.SPACER;
+        availableSpace += settings.ICONW + settings.SPACER;
+    }
+    availableSpace += settings.RIGHT_BORDER - settings.SPACER;
+    neededSpace -= settings.SPACER;
+    double ratio = (double)settings.LEFT_BORDER / (settings.LEFT_BORDER + settings.RIGHT_BORDER);
+    int positionX = (availableSpace - neededSpace) * ratio;
+    for (unsigned int i = 0; i < ImagesList->GetCount (); i++) {
+        simImage *img = (*ImagesList)[i];
         img->x = positionX;
         positionX += img->w + settings.SPACER;
-        zoomSpace += img->w - settings.ICONW;
-        
-
-        #ifdef SIMDOCK_DEBUG_ICON_POSITIONING
-            cout << "ID:" << img->id << "[" << img->x << "," << img->
-            y << "]" << "[" << img->w << "," << img->h << "]" << endl;
-        #endif
     }
-    return wxSize (positionX - settings.SPACER + settings.RIGHT_BORDER + zoomSpace,
-                    settings.MAXSIZE);
-
+    
+    return wxSize (availableSpace, settings.MAXSIZE);
 }
 
 wxSize
