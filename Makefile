@@ -34,7 +34,7 @@ install:
 	@install -m 0644 -v gfx/simdock.png "$(DESTDIR)$(ICONDIR)/"
 
 clean:
-	@rm -v $(SRCS) simdock
+	-rm -v $(SRCS) simdock
 
 uninstall:
 	@rm -vf "$(DESTDIR)$(BINDIR)/simdock" "$(DESTDIR)$(APPDIR)/*" "$(DESTDIR)$(ICONDIR)/simdock.png"
