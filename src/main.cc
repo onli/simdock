@@ -52,6 +52,7 @@ IMPLEMENT_APP (MyApp)
 
 int	startPositionX = 50;
 int startPositionY = 50;
+double borderRatio; // border size ratio, left to right
 wxString dirPath;
 
 wxString markPath = _T (DATA_DIR "/mark.png");
@@ -64,6 +65,7 @@ loadSettings (simSettings* settings)
     simGconf_loadSettings (settings);
     simGconf_loadPosition (&startPositionX, &startPositionY);
     settings->MAXSIZE = (int)(settings->ICONH + (settings->ICONH * ((double)settings->PERCENT / 100)));
+    borderRatio = (double)settings->LEFT_BORDER / (settings->LEFT_BORDER + settings->RIGHT_BORDER);
     return TRUE;
 }
 
@@ -175,17 +177,17 @@ loadAll (ImagesArray * list, simSettings* settings, string defaultLaunchers)
 wxSize
 PositionIcons (wxSize sz, simSettings settings, ImagesArray* ImagesList) {
     int neededSpace = 0;
-    int availableSpace = settings.LEFT_BORDER;
-    for (unsigned int i = 0; i < ImagesList->GetCount (); i++) {
+    unsigned int imgCount = ImagesList->GetCount();
+    int availableSpace = settings.LEFT_BORDER +
+                            imgCount * (settings.ICONW + settings.SPACER) +
+                            settings.RIGHT_BORDER - settings.SPACER;
+    for (unsigned int i = 0; i < imgCount; i++) {
         simImage *img = (*ImagesList)[i];
         neededSpace += img->w + settings.SPACER;
-        availableSpace += settings.ICONW + settings.SPACER;
     }
-    availableSpace += settings.RIGHT_BORDER - settings.SPACER;
     neededSpace -= settings.SPACER;
-    double ratio = (double)settings.LEFT_BORDER / (settings.LEFT_BORDER + settings.RIGHT_BORDER);
-    int positionX = (availableSpace - neededSpace) * ratio;
-    for (unsigned int i = 0; i < ImagesList->GetCount (); i++) {
+    int positionX = (availableSpace - neededSpace) * borderRatio;
+    for (unsigned int i = 0; i < imgCount; i++) {
         simImage *img = (*ImagesList)[i];
         img->x = positionX;
         positionX += img->w + settings.SPACER;
@@ -262,7 +264,6 @@ MyApp::OnInit () {
         true, // ENABLE_MINIMIZE,
         true //AUTO_POSITION
     };
-
     loadAll (ImagesList, & settings, defaultLaunchers);
 
 
@@ -275,7 +276,6 @@ MyApp::OnInit () {
 
     if (onTop)
         options = options | wxSTAY_ON_TOP;
-
     frame = new MyFrame (NULL, settings,ImagesList,-1, _T ("SimDock"), wxPoint (10, 10),
 			 wxSize (450, 150), options);
     wxImage* appBackground = new wxImage (settings.BG_PATH);
@@ -294,8 +294,7 @@ MyApp::OnInit () {
     frame->Freeze();
 
     GtkWidget* widget = frame->GetHandle();
-    XID xid = GDK_WINDOW_XWINDOW(widget->window); 
-    
+    XID xid = GDK_WINDOW_XWINDOW(widget->window);
     xstuff_resizeScreen(xid, *frame);
     if (settings.ENABLE_TASKS)
     {
@@ -328,9 +327,6 @@ MyApp::OnInit () {
         backImage = getRootWallpaper();
     }
     frame->SetWallpaper(backImage);
-
-    //a dock should always be shown on all desktops by default
-    
 	frame->Thaw();
     xstuff_setDefaultWindowFlags(xid);
     

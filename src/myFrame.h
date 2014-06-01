@@ -75,6 +75,7 @@ private:
     void OnPaint (wxPaintEvent & event);
     void OnBackground (wxEraseEvent & event);
     void OnBlurTimerTick (wxTimerEvent & event);
+    void OnAnimationTick (wxTimerEvent & event);
     void OnHoverTimerTick (wxTimerEvent & event);
     /* Menu callbacks */
     void OnQuit (wxCommandEvent & event);
@@ -107,6 +108,7 @@ private:
     wxTimer *	 blurTimer;
 
     wxTimer*	 hoverTimer;
+    wxTimer*	 animation;
     simImage* hoveringIcon;
     bool showTooltip;
 

@@ -307,7 +307,7 @@ void tasks_addNewImage(WnckWindow *window, ImagesArray* ImagesList, simSettings 
 	si->h = settings.ICONH;
 	si->y = (settings.MAXSIZE + settings.BOTTOM_BORDER) - settings.ICONH - settings.BOTTOM_BORDER;
 	si->task = true;
-	si->status = STATUS_NONE;
+	si->blurStatus = STATUS_NONE;
   	si->blur = 0;
 	ImagesList->Add (si);
 	wxGetApp ().reposition ();

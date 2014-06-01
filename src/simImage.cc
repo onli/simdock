@@ -21,11 +21,13 @@
 simImage::simImage()
 {
   img = wxImage();
-  status = STATUS_NONE;
+  blurStatus = STATUS_NONE;
   blur = 0;
   pid = PID_NONE;
   lastWindow = 0;
   task = false;
+  animationCounter = 0;
+  animationStatus = STATUS_NONE;
 }
 
 simImage::~simImage()
@@ -47,7 +49,7 @@ simImage::simImage (wxImage img, const wxString& img_link, const wxString& link,
   this->link = link;
   this->name = name;
   this->descr = descr;
-  status = STATUS_DECREASING;
+  blurStatus = STATUS_DECREASING;
   blur = MAX_BLUR;
   pid = PID_NONE;
   lastWindow = 0;
@@ -148,7 +150,7 @@ bool simImage::allMinimized() {
 void
 simImage::handleStatus ()
 {
-    switch (status)
+    switch (blurStatus)
     {
         case STATUS_NONE:
         break;
@@ -156,14 +158,14 @@ simImage::handleStatus ()
             blur--;
             if (blur == 0)
             {
-                status = STATUS_NONE;
+                blurStatus = STATUS_NONE;
             }
         break;
         case STATUS_INCREASING:
             blur++;
             if (blur >= MAX_BLUR)
             {
-                status = STATUS_DECREASING;
+                blurStatus = STATUS_DECREASING;
             }
         break;
     }

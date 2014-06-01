@@ -33,6 +33,7 @@ enum
   ID_Delete = 8,
   ID_hover_Timer = 9,
   ID_Keep = 10,
+  ID_animation = 11,
 };
 
 
@@ -50,6 +51,7 @@ EVT_LEAVE_WINDOW (MyFrame::OnMouseLeave)
 EVT_ENTER_WINDOW (MyFrame::OnMouseEnter)
 EVT_TIMER (ID_blur_Timer, MyFrame::OnBlurTimerTick)
 EVT_TIMER (ID_hover_Timer, MyFrame::OnHoverTimerTick)
+EVT_TIMER (ID_animation, MyFrame::OnAnimationTick)
 /*
 * Menu 
 */
@@ -193,6 +195,7 @@ wxFrame (parent, id, title, pos, size, style)
     blurTimer = new wxTimer (this, ID_blur_Timer);
     blurTimer->Start (settings.BLUR_TIMEOUT);
     hoverTimer = new wxTimer(this, ID_hover_Timer);
+    animation = new wxTimer(this, ID_animation);
     /*
     * Menu stuff 
     */
@@ -333,19 +336,10 @@ MyFrame::OnMouseMove (wxMouseEvent & event)
                 OnMouseEnterIcon(event, img);
             }
         }
-        int x = event.m_x - (img->x + img->w / 2);
-        int y = event.m_y - (img->y + img->h / 2);
-
-        int distance = (int) sqrt (x * x + y * y);
-        RefreshSizes (img, distance);
     }
     if (hoveringIcon != None) {
         hoverTimer->Start(3000, wxTIMER_ONE_SHOT);
     }
-
-    PositionIcons (GetClientSize (), settings, ImagesList);
-
-    Refresh (false);
 }
 
 
@@ -372,7 +366,7 @@ MyFrame::OnMiddleUp (wxMouseEvent & event) {
                 exit (0);
             }
             
-            hoveringIcon->status = STATUS_INCREASING;
+            hoveringIcon->blurStatus = STATUS_INCREASING;
 
             if (! blurTimer->IsRunning()) {
                 blurTimer->Start (settings.BLUR_TIMEOUT);
@@ -554,22 +548,6 @@ MyFrame::OnMouseLeave (wxMouseEvent & event)
 #endif
     showTooltip = false;
     OnMouseLeaveIcon(event);
-    for (unsigned int i = 0; i < ImagesList->GetCount (); i++)
-    {
-        simImage *img = (*ImagesList)[i];
-        RefreshSizes (img, INT_MAX);
-    }
-
-    appSize = PositionIcons (GetClientSize (), settings, ImagesList);
-    /*
-     * int style = this->GetWindowStyle(); style = style & wxSTAY_ON_TOP;
-     * this->SetWindowStyle(style); 
-     */
-    /*if (!wxGetApp ().onTop)
-    {
-        SetWindowStyleFlag (frameOptions);
-          // Lower ();
-    }*/
     Refresh (false);
 }
 
@@ -597,13 +575,20 @@ MyFrame::OnMouseEnter (wxMouseEvent & event)
 void MyFrame::OnMouseEnterIcon (wxMouseEvent & event, simImage* img)
 {
     hoveringIcon = img;
+    hoveringIcon->animationStatus = STATUS_INCREASING;
+    img->animationCounter = 40;
+    if (! animation->IsRunning()) {
+        animation->Start(32);   // 30 fps
+    }
 }
 
 //Pseudo-event, called manually
 void MyFrame::OnMouseLeaveIcon (wxMouseEvent & event)
 {
     hoveringIcon = None;
-    
+    if (! animation->IsRunning()) {
+        animation->Start(32);   // 30 fps
+    }
 }
 
 
@@ -689,7 +674,7 @@ MyFrame::OnLeftUp (wxMouseEvent & event) {
                 exit (system(wx2std(img->link).c_str()));
             }
             
-            img->status = STATUS_INCREASING;
+            img->blurStatus = STATUS_INCREASING;
 
             if (! blurTimer->IsRunning()) {
                 blurTimer->Start (settings.BLUR_TIMEOUT);
@@ -757,35 +742,28 @@ MyFrame::OnClose (wxCloseEvent & event)
 void
 MyFrame::OnBlurTimerTick (wxTimerEvent & event)
 {
-  bool changed = false;		// Some node is changing status
-  for (unsigned int i = 0; i < ImagesList->GetCount (); i++)
-    {
-      simImage *img = (*ImagesList)[i];
+    bool changed = false;		// Some node is changing status
+    for (unsigned int i = 0; i < ImagesList->GetCount (); i++) {
+        simImage *img = (*ImagesList)[i];
 
-      switch (img->status)
-	{
-	case STATUS_NONE:
-	  break;
-	default:
-	  img->handleStatus ();
-	  changed = true;
-	  RefreshRect (wxRect (img->x, img->y, img->w, img->h), false);
-	  wxSize shadowSize =
-	    ImageToShadow (img->w, img->h, settings.REFLEX_SCALING);
-	  RefreshRect (wxRect
-		       (img->x, img->y + img->h, shadowSize.GetWidth (),
-			shadowSize.GetHeight ()));
-	  break;
-	}
+        switch (img->blurStatus) {
+            case STATUS_NONE:
+                break;
+            default:
+                img->handleStatus ();
+                changed = true;
+                RefreshRect (wxRect (img->x, img->y, img->w, img->h), false);
+                wxSize shadowSize =
+                ImageToShadow (img->w, img->h, settings.REFLEX_SCALING);
+                RefreshRect (wxRect (img->x, img->y + img->h, shadowSize.GetWidth (),
+                            shadowSize.GetHeight ()));
+                break;
+        }
     }
 
-  if (!changed)
-    blurTimer->Stop ();
-  
-    /*if (changed)
-        Refresh(true); */
-   
-
+    if (!changed) {
+        blurTimer->Stop ();
+    }
 }
 
 void MyFrame::OnHoverTimerTick(wxTimerEvent & event)
@@ -794,6 +772,37 @@ void MyFrame::OnHoverTimerTick(wxTimerEvent & event)
     Refresh(true);
 }
 
+void MyFrame::OnAnimationTick(wxTimerEvent & event) {
+    bool changed = false;
+    for (unsigned int i = 0; i < ImagesList->GetCount(); i++) {
+        simImage *img = (*ImagesList)[i];
+        if (img->animationStatus == STATUS_NONE) {
+            continue;
+        }
+        if (img != hoveringIcon && img->animationStatus == STATUS_INCREASING) {
+            img->animationStatus = STATUS_DECREASING;
+        }
+        if (img->animationStatus == STATUS_DECREASING) {
+            if (img->animationCounter < 30) {
+                img->animationCounter += 5;
+                RefreshSizes(img, img->animationCounter);
+                changed  = true;
+            } else {
+                img->animationStatus = STATUS_NONE;
+            }
+        } else if (img->animationStatus == STATUS_INCREASING && img->animationCounter > 0) {
+            img->animationCounter -= 5;
+            RefreshSizes(img, img->animationCounter);
+            changed  = true;
+        }
+    }
+    if (! changed) {
+        animation->Stop();
+    }
+    PositionIcons (GetClientSize (), settings, ImagesList);
+    Refresh (false);
+   
+}
 
 
 
@@ -886,7 +895,7 @@ MyFrame::OnPaint (wxPaintEvent & event)
     {
         simImage *img = (*ImagesList)[i];
 
-        if (img->status != STATUS_NONE)
+        if (img->blurStatus != STATUS_NONE)
         {
 
             wxImage wxImage2 (img->img);
