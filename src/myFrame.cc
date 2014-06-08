@@ -332,7 +332,6 @@ MyFrame::OnMouseMove (wxMouseEvent & event)
         if (img->isIn (event.m_x, event.m_y))
         {
             if (hoveringIcon != img) {
-                OnMouseLeaveIcon(event);
                 OnMouseEnterIcon(event, img);
             }
         }
@@ -848,47 +847,18 @@ MyFrame::RefreshSizes (simImage * img, int distance)
 }
 
 void
-MyFrame::OnPaint (wxPaintEvent & event)
-{
-    wxPaintDC paint_dc (this);
-    wxBufferedDC dc (&paint_dc);
+MyFrame::OnPaint (wxPaintEvent & event) {
+    
+    wxAutoBufferedPaintDC dc (this);
     wxPoint framePos = this->GetScreenPosition ();
     wxSize sz = GetClientSize ();
 
-  /*
-   * -------------- Version using background bitmap ------------ 
-   */
     dc.Blit (0, 0, sz.GetWidth (), sz.GetHeight (), src_dc, framePos.x,
 	   framePos.y);
-
-    /*------------ Version using Screen device context BitBlit ---------------- */
-  /*
-   * wxScreenDC screen; dc.Blit(0, 0, sz.GetWidth(), sz.GetHeight(),
-   * &screen, framePos.x, framePos.y); 
-   */
-
-  // dc.DrawBitmap(wxBitmap(*appBackground),0,sz.GetHeight () -
-  // BG_HEIGHT);
 
     drawBmp (&dc, wxBitmap (*appBackground), 0,
 	   sz.GetHeight () - settings.BG_HEIGHT, appSize.GetWidth (),
 	   settings.BG_HEIGHT);
-
-
-  /*
-   * wxScreenDC scrDC; //
-   * scrDC.StartDrawingOnTop(&wxRect(framePos.x-10,framePos.y-10,ICONW,ICONH));
-   * scrDC.StartDrawingOnTop();
-   * 
-   * // drawBmp (&scrDC, wxBitmap (ImagesList[0]->img), framePos.x-10,
-   * framePos.y-10, ICONW,ICONH);
-   * 
-   * scrDC.DrawBitmap (wxBitmap (ImagesList[0]->img), framePos.x-10,
-   * framePos.y-10 );
-   * 
-   * scrDC.EndDrawingOnTop();
-   * 
-   */
 
 
     for (unsigned int i = 0; i < ImagesList->GetCount (); i++)
