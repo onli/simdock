@@ -623,18 +623,20 @@ MyFrame::getClickedIcon(wxMouseEvent & event) {
 void
 MyFrame::OnLeftUp (wxMouseEvent & event) {
     if (dragging && moving) {
-        int id = positionToId (wxPoint (event.m_x, event.m_y), ImagesList, 0,
-                                ImagesList->GetCount () - 1);
-        simImage *oldImg = (*ImagesList)[draggedID];
-        ImagesList->RemoveAt (draggedID);
-        ImagesList->Insert (oldImg, id);
-
         dragging = false;
         moving = false;
-        saveLaunchers(ImagesList);
-        appSize = PositionIcons (GetClientSize (), settings, ImagesList);
-        Refresh (false);
-        return;
+        int id = positionToId (wxPoint (event.m_x, event.m_y), ImagesList, 0,
+                                ImagesList->GetCount () - 1);
+        if (draggedID != id) {
+            simImage *oldImg = (*ImagesList)[draggedID];
+            ImagesList->RemoveAt (draggedID);
+            ImagesList->Insert (oldImg, id);
+            
+            saveLaunchers(ImagesList);
+            appSize = PositionIcons (GetClientSize (), settings, ImagesList);
+            Refresh (false);
+            return;
+        } 
     }
     dragging = false;
     for (unsigned int i = 0; i < ImagesList->GetCount (); i++) {
