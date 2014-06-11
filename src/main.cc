@@ -175,7 +175,7 @@ loadAll (ImagesArray * list, simSettings* settings, string defaultLaunchers)
 
 
 wxSize
-PositionIcons (wxSize sz, simSettings settings, ImagesArray* ImagesList) {
+PositionIcons (wxSize sz, simSettings settings, ImagesArray* ImagesList, bool* changeIcons) {
     int neededSpace = 0;
     unsigned int imgCount = ImagesList->GetCount();
     int availableSpace = settings.LEFT_BORDER +
@@ -189,7 +189,9 @@ PositionIcons (wxSize sz, simSettings settings, ImagesArray* ImagesList) {
     int positionX = (availableSpace - neededSpace) * borderRatio;
     for (unsigned int i = 0; i < imgCount; i++) {
         simImage *img = (*ImagesList)[i];
-        img->x = positionX;
+        if (changeIcons[i] == true) {
+            img->x = positionX;
+        }
         positionX += img->w + settings.SPACER;
     }
     
@@ -199,7 +201,11 @@ PositionIcons (wxSize sz, simSettings settings, ImagesArray* ImagesList) {
 wxSize
 FirstPosition (wxSize sz, simSettings settings, ImagesArray* list)
 {
-    return PositionIcons (sz, settings,list);
+    bool changeIcons[list->GetCount()];
+    for (unsigned int i = 0; i < list->GetCount(); i++) {
+        changeIcons[i] = true;
+    }
+    return PositionIcons (sz, settings,list, changeIcons);
 }
 
 void

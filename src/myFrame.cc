@@ -455,7 +455,9 @@ MyFrame::OnAdd (wxCommandEvent & event)
 	    (settings.MAXSIZE + settings.BOTTOM_BORDER) - settings.ICONH -
 	    settings.BOTTOM_BORDER;
 	  ImagesList->Add (sim);
-	  appSize = PositionIcons (GetClientSize (), settings, ImagesList);
+      bool changeIcons[ImagesList->GetCount()];
+      fill_n(changeIcons, ImagesList->GetCount(), true);
+	  appSize = PositionIcons (GetClientSize (), settings, ImagesList, changeIcons);
 	  updateSize();
 
       saveLaunchers(ImagesList);
@@ -633,7 +635,9 @@ MyFrame::OnLeftUp (wxMouseEvent & event) {
             ImagesList->Insert (oldImg, id);
             
             saveLaunchers(ImagesList);
-            appSize = PositionIcons (GetClientSize (), settings, ImagesList);
+            bool changeIcons[ImagesList->GetCount()];
+            fill_n(changeIcons, ImagesList->GetCount(), true);
+            appSize = PositionIcons (GetClientSize (), settings, ImagesList, changeIcons);
             Refresh (false);
             return;
         } 
@@ -774,7 +778,9 @@ void MyFrame::OnHoverTimerTick(wxTimerEvent & event)
 }
 
 void MyFrame::OnAnimationTick(wxTimerEvent & event) {
-    bool changed = false;
+    int changed = 0;
+    bool changeIcons[ImagesList->GetCount()];
+    fill_n(changeIcons, ImagesList->GetCount(), false);
     for (unsigned int i = 0; i < ImagesList->GetCount(); i++) {
         simImage *img = (*ImagesList)[i];
         if (img->animationStatus == STATUS_NONE) {
@@ -787,22 +793,27 @@ void MyFrame::OnAnimationTick(wxTimerEvent & event) {
             if (img->animationCounter < 30) {
                 img->animationCounter += 5;
                 RefreshSizes(img, img->animationCounter);
-                changed  = true;
+                changed++;
+                changeIcons[i] = true;
             } else {
                 img->animationStatus = STATUS_NONE;
             }
         } else if (img->animationStatus == STATUS_INCREASING && img->animationCounter > 0) {
             img->animationCounter -= 5;
             RefreshSizes(img, img->animationCounter);
-            changed  = true;
+            changed++;
+            changeIcons[i] = true;
         }
     }
-    if (! changed) {
+    if (changed == 0) {
         animation->Stop();
+    } else {
+        if (changed == 1) {
+            fill_n(changeIcons, ImagesList->GetCount(), true);
+        }
+        PositionIcons (GetClientSize (), settings, ImagesList, changeIcons);
+        Refresh (false);
     }
-    PositionIcons (GetClientSize (), settings, ImagesList);
-    Refresh (false);
-   
 }
 
 

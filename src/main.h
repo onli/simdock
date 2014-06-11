@@ -151,10 +151,8 @@ void register_sigint (MyApp * application);
 /* ------ Various functions for simImage array manipulation -------*/
 
 /* Reposition icons according to their size and order
- * Currently repositioning starts from index 0 so all the icons are moved to the right
- * TODO: Implement right side and left side repositioning starting from "ind" index?
  */
-wxSize PositionIcons (wxSize sz, simSettings settings, ImagesArray* ImagesList);
+wxSize PositionIcons (wxSize sz, simSettings settings, ImagesArray* ImagesList, bool* changeIcons);
 wxSize FirstPosition (wxSize sz, simSettings settings, ImagesArray* list);
 
 /* ------ Various functions for simImage array manipulation -------*/
