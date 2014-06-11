@@ -8,7 +8,7 @@ This is simdock, an eye-candy deskbar for Linux.
 
 ### PPA
 
-On launchpad, there is a PPA with daily builds. Add it with
+On launchpad, there is a [PPA with daily builds](https://launchpad.net/~onli/+archive/simdock). Add it with
 
     sudo add-apt-repository ppa:onli/simdock
 
