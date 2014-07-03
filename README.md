@@ -21,7 +21,7 @@ and install simdock
 
 1. Install dependencies. Under Ubuntu:
 
-        sudo apt-get install pkg-config libglib2.0-dev libgconf2-dev libgtk2.0-dev libwnck-dev libwxgtk2.8-dev libxcb1-dev libxcb-ewmh1-dev xcb-proto
+        sudo apt-get install pkg-config libglib2.0-dev libgconf2-dev libgtk2.0-dev libwnck-dev libwxgtk2.8-dev libxcb1-dev libxcb-ewmh-dev xcb-proto
 
 1. Type `make` to compile
 1. Type `sudo make install` to install
