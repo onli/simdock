@@ -53,7 +53,8 @@ public:
   wxSize appSize;
   simSettings settings;
 private:
-    void RefreshSizes (simImage * img, int distance);
+    void setFutures();
+    bool approachFutures();
     /* Mouse */
     void OnMiddleDown (wxMouseEvent & event);
     void OnMiddleUp (wxMouseEvent & event);

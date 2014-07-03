@@ -165,7 +165,6 @@ public:
   virtual bool OnInit ();
   virtual void OnInitCmdLine (wxCmdLineParser & parser);
   virtual bool OnCmdLineParsed (wxCmdLineParser & parser);
-  void reposition() { if (frame) frame->appSize = FirstPosition (frame->GetClientSize (),frame->settings,ImagesList); }
   void updateSize() { if (frame) frame->updateSize();}
   void refresh() { if (frame) frame->Refresh(false);}
 

@@ -53,10 +53,10 @@ public:
   int id;	//unique identificator
   wxCoord x, y; //position
   int w, h; //dimension
+  int future_w, future_h; // animation targets
+  wxCoord future_x; // animation target
   simImage_status blurStatus; // fadeout animation status
   int blur; // fadeout animation intensity
-  simImage_status animationStatus;
-  int animationCounter;
   simImage();
   
   virtual ~simImage();

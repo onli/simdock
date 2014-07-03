@@ -26,8 +26,6 @@ simImage::simImage()
   pid = PID_NONE;
   lastWindow = 0;
   task = false;
-  animationCounter = 0;
-  animationStatus = STATUS_NONE;
 }
 
 simImage::~simImage()

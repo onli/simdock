@@ -451,6 +451,8 @@ MyFrame::OnAdd (wxCommandEvent & event)
 
 	  sim->w = settings.ICONW;
 	  sim->h = settings.ICONH;
+	  sim->future_w = settings.ICONW;
+	  sim->future_h = settings.ICONH;
 	  sim->y =
 	    (settings.MAXSIZE + settings.BOTTOM_BORDER) - settings.ICONH -
 	    settings.BOTTOM_BORDER;
@@ -550,6 +552,10 @@ MyFrame::OnMouseLeave (wxMouseEvent & event)
     showTooltip = false;
     OnMouseLeaveIcon(event);
     Refresh (false);
+    setFutures();
+    if (! animation->IsRunning()) {
+        animation->Start(16);   // 60 fps
+    }
 }
 
 void
@@ -576,10 +582,9 @@ MyFrame::OnMouseEnter (wxMouseEvent & event)
 void MyFrame::OnMouseEnterIcon (wxMouseEvent & event, simImage* img)
 {
     hoveringIcon = img;
-    hoveringIcon->animationStatus = STATUS_INCREASING;
-    img->animationCounter = 40;
+    setFutures();
     if (! animation->IsRunning()) {
-        animation->Start(32);   // 30 fps
+        animation->Start(16);   // 60 fps
     }
 }
 
@@ -587,11 +592,7 @@ void MyFrame::OnMouseEnterIcon (wxMouseEvent & event, simImage* img)
 void MyFrame::OnMouseLeaveIcon (wxMouseEvent & event)
 {
     hoveringIcon = None;
-    if (! animation->IsRunning()) {
-        animation->Start(32);   // 30 fps
-    }
 }
-
 
 void
 MyFrame::OnLeftDown (wxMouseEvent & event)
@@ -778,85 +779,77 @@ void MyFrame::OnHoverTimerTick(wxTimerEvent & event)
 }
 
 void MyFrame::OnAnimationTick(wxTimerEvent & event) {
-    int changed = 0;
-    bool changeIcons[ImagesList->GetCount()];
-    fill_n(changeIcons, ImagesList->GetCount(), false);
-    for (unsigned int i = 0; i < ImagesList->GetCount(); i++) {
-        simImage *img = (*ImagesList)[i];
-        if (img->animationStatus == STATUS_NONE) {
-            continue;
-        }
-        if (img != hoveringIcon && img->animationStatus == STATUS_INCREASING) {
-            img->animationStatus = STATUS_DECREASING;
-        }
-        if (img->animationStatus == STATUS_DECREASING) {
-            if (img->animationCounter < 30) {
-                img->animationCounter += 5;
-                RefreshSizes(img, img->animationCounter);
-                changed++;
-                changeIcons[i] = true;
-            } else {
-                img->animationStatus = STATUS_NONE;
-            }
-        } else if (img->animationStatus == STATUS_INCREASING && img->animationCounter > 0) {
-            img->animationCounter -= 5;
-            RefreshSizes(img, img->animationCounter);
-            changed++;
-            changeIcons[i] = true;
-        }
-    }
-    if (changed == 0) {
+    cout << "animationTick \n";
+    if (approachFutures()) {
         animation->Stop();
-    } else {
-        if (changed == 1) {
-            fill_n(changeIcons, ImagesList->GetCount(), true);
+    }
+    Refresh(true);
+}
+
+// set icons width and position to the value they shall have in the future, after the animation
+void
+MyFrame::setFutures() {
+    int neededSpace = 0;
+    unsigned int imgCount = ImagesList->GetCount();
+    int availableSpace = settings.LEFT_BORDER +
+                            imgCount * (settings.ICONW + settings.SPACER) +
+                            settings.RIGHT_BORDER - settings.SPACER;
+                            
+    for (unsigned int i = 0; i < imgCount; i++) {
+        simImage *img = (*ImagesList)[i];
+        if (img == hoveringIcon) {
+            img->future_w = zoom(settings.RANGE, 0, settings.MAXSIZE);
+        } else {
+            img->future_w  = settings.ICONW;
         }
-        PositionIcons (GetClientSize (), settings, ImagesList, changeIcons);
-        Refresh (false);
+        img->future_h = img->future_w;
+        neededSpace += img->future_w + settings.SPACER;
+    }
+    neededSpace -= settings.SPACER;
+    double borderRatio = (double)settings.LEFT_BORDER / (settings.LEFT_BORDER + settings.RIGHT_BORDER);
+    int positionX = (availableSpace - neededSpace) * borderRatio;
+    
+    for (unsigned int i = 0; i < imgCount; i++) {
+        simImage *img = (*ImagesList)[i];
+        img->future_x = positionX;
+        positionX += img->future_w + settings.SPACER;
     }
 }
 
 
-
-
-/*
- * Changes simImage y (Not X) position and Width, Height according to the
- * mouse distance. Return TRUE if size was changed, false otherwise 
- */
-void
-MyFrame::RefreshSizes (simImage * img, int distance)
-{
-  int newW = settings.ICONW;
-  int newH = settings.ICONH;
-
-  if (distance == 0)
-    {
-      newW = settings.MAXSIZE;
-      newH = settings.MAXSIZE;
+// set icons width and position closer to their future position
+// return true if everything was changed
+bool
+MyFrame::approachFutures() {
+    unsigned int imgCount = ImagesList->GetCount();
+    bool ready = true;
+    int zoomChange = 1;
+    for (unsigned int i = 0; i < imgCount; i++) {
+        simImage *img = (*ImagesList)[i];
+        if (img->w > img->future_w) {
+            img->w -= zoomChange;
+            ready = false;
+            if (img->h > img->future_h) {
+                img->y += zoomChange;
+                img->h = img->w;
+            }
+        } else if (img->w < img->future_w) {
+            img->w += zoomChange;
+            ready = false;
+            if (img->h < img->future_h) {
+                img->y -= zoomChange;
+                img->h = img->w;
+            }
+        }
+        if (img->x > img->future_x) {
+            img->x -= zoomChange;
+            ready = false;
+        } else if (img->x < img->future_x) {
+            img->x += zoomChange;
+            ready = false;
+        }
     }
-  else
-    {
-      if (distance < settings.RANGE)
-	{
-
-	  /*
-	   * int diff = distance * ICONW / RANGE; //(RANGE - MINIMUM);
-	   * newW = MAXSIZE - diff; 
-	   */
-	  newW = (int) zoom (settings.RANGE, distance, settings.MAXSIZE);
-
-	  if (newW < settings.ICONW)
-	    newW = settings.ICONW;
-	  newH = newW;
-
-	}
-    }
-  if (img->w != newW)
-    {
-      img->y = GetClientSize ().GetHeight () - newH - settings.BOTTOM_BORDER;
-      img->w = newW;
-      img->h = newH;
-    }
+    return ready;
 }
 
 void
