@@ -459,7 +459,7 @@ MyFrame::OnAdd (wxCommandEvent & event)
 	  ImagesList->Add (sim);
       bool changeIcons[ImagesList->GetCount()];
       fill_n(changeIcons, ImagesList->GetCount(), true);
-	  appSize = PositionIcons (GetClientSize (), settings, ImagesList, changeIcons);
+	  appSize = PositionIcons (settings, ImagesList, changeIcons);
 	  updateSize();
 
       saveLaunchers(ImagesList);
@@ -638,7 +638,7 @@ MyFrame::OnLeftUp (wxMouseEvent & event) {
             saveLaunchers(ImagesList);
             bool changeIcons[ImagesList->GetCount()];
             fill_n(changeIcons, ImagesList->GetCount(), true);
-            appSize = PositionIcons (GetClientSize (), settings, ImagesList, changeIcons);
+            appSize = PositionIcons (settings, ImagesList, changeIcons);
             Refresh (false);
             return;
         } 
@@ -779,7 +779,6 @@ void MyFrame::OnHoverTimerTick(wxTimerEvent & event)
 }
 
 void MyFrame::OnAnimationTick(wxTimerEvent & event) {
-    cout << "animationTick \n";
     if (approachFutures()) {
         animation->Stop();
     }

@@ -175,7 +175,7 @@ loadAll (ImagesArray * list, simSettings* settings, string defaultLaunchers)
 
 
 wxSize
-PositionIcons (wxSize sz, simSettings settings, ImagesArray* ImagesList, bool* changeIcons) {
+PositionIcons (simSettings settings, ImagesArray* ImagesList, bool* changeIcons) {
     int neededSpace = 0;
     unsigned int imgCount = ImagesList->GetCount();
     int availableSpace = settings.LEFT_BORDER +
@@ -199,13 +199,13 @@ PositionIcons (wxSize sz, simSettings settings, ImagesArray* ImagesList, bool* c
 }
 
 wxSize
-FirstPosition (wxSize sz, simSettings settings, ImagesArray* list)
+FirstPosition (simSettings settings, ImagesArray* list)
 {
     bool changeIcons[list->GetCount()];
     for (unsigned int i = 0; i < list->GetCount(); i++) {
         changeIcons[i] = true;
     }
-    return PositionIcons (sz, settings,list, changeIcons);
+    return PositionIcons (settings,list, changeIcons);
 }
 
 void
@@ -307,7 +307,7 @@ MyApp::OnInit () {
 		tasks_fillList(ImagesList, settings);
 		tasks_register_signals(ImagesList, settings);
     }
-	frame->appSize = FirstPosition (frame->GetClientSize (), settings, ImagesList);
+	frame->appSize = FirstPosition (settings, ImagesList);
 	frame->updateSize();
 	if (!settings.AUTO_POSITION)
     {

@@ -152,8 +152,8 @@ void register_sigint (MyApp * application);
 
 /* Reposition icons according to their size and order
  */
-wxSize PositionIcons (wxSize sz, simSettings settings, ImagesArray* ImagesList, bool* changeIcons);
-wxSize FirstPosition (wxSize sz, simSettings settings, ImagesArray* list);
+wxSize PositionIcons (simSettings settings, ImagesArray* ImagesList, bool* changeIcons);
+wxSize FirstPosition (simSettings settings, ImagesArray* list);
 
 /* ------ Various functions for simImage array manipulation -------*/
 
@@ -171,7 +171,7 @@ public:
   bool onTop;
   void SetWallpaper (wxBitmap * newBitmap) {if (frame) frame->SetWallpaper(newBitmap); }
   wxBitmap * GetWallpaper (){if (frame) return frame->GetWallpaper(); }
-  
+  MyFrame *frame;
   
   
 private:
@@ -180,7 +180,6 @@ private:
   int customBackgroundType;
   wxColour customBackgroundColour;
   /* -----Custom background stuff-----  */
-  MyFrame *frame;
   bool showInTray;
   ImagesArray* ImagesList;
   SettingsDialog* sd;
