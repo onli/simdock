@@ -328,19 +328,12 @@ MyFrame::OnMouseMove (wxMouseEvent & event)
         draggedPos.y = event.m_y;
         Refresh (false);
     }
-
-    bool wasHovering = false;
-    if (hoveringIcon) {
-        wasHovering = true;
-    }
     
-    bool hover = false;
     for (unsigned int i = 0; i < ImagesList->GetCount (); i++)
         {
         simImage *img = (*ImagesList)[i];
         if (img->isIn (event.m_x, event.m_y))
         {
-            hover = true;
             if (hoveringIcon != img) {
                 OnMouseEnterIcon(event, img);
                 break;
@@ -348,10 +341,6 @@ MyFrame::OnMouseMove (wxMouseEvent & event)
         }
     }
 
-    if (wasHovering && ! hover) {
-        OnMouseLeaveIcon(event);
-    }
-    
     if (hoveringIcon != None) {
         hoverTimer->Start(3000, wxTIMER_ONE_SHOT);
     }
@@ -845,18 +834,18 @@ bool
 MyFrame::approachFutures() {
     unsigned int imgCount = ImagesList->GetCount();
     bool ready = true;
-    int zoomChange = 1;
+    int zoomChange = 2;     // if we move more than 1 px, we have to actively prevent flicker
     for (unsigned int i = 0; i < imgCount; i++) {
         simImage *img = (*ImagesList)[i];
         if (img->w > img->future_w) {
-            img->w -= zoomChange;
+            img->w = max(img->w - zoomChange, img->future_w);
             ready = false;
             if (img->h > img->future_h) {
                 img->y += zoomChange;
                 img->h = img->w;
             }
         } else if (img->w < img->future_w) {
-            img->w += zoomChange;
+            img->w = min(img->w + zoomChange, img->future_w);
             ready = false;
             if (img->h < img->future_h) {
                 img->y -= zoomChange;
@@ -864,10 +853,10 @@ MyFrame::approachFutures() {
             }
         }
         if (img->x > img->future_x) {
-            img->x -= zoomChange;
+            img->x = max(img->x - zoomChange, img->future_x);
             ready = false;
         } else if (img->x < img->future_x) {
-            img->x += zoomChange;
+            img->x = min(img->x + zoomChange, img->future_x);
             ready = false;
         }
     }
