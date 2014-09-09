@@ -623,7 +623,6 @@ MyFrame::OnLeftDown (wxMouseEvent & event)
                             ImagesList->GetCount () - 1);
         draggedPos.x = event.m_x;
         draggedPos.y = event.m_y;
-        Refresh (false);
         return;
     }
 
@@ -663,6 +662,7 @@ MyFrame::OnLeftUp (wxMouseEvent & event) {
         } 
     }
     dragging = false;
+    Refresh (false);
     for (unsigned int i = 0; i < ImagesList->GetCount (); i++) {
         simImage *img = (*ImagesList)[i];
         if (img->isIn (event.m_x, event.m_y)) {
