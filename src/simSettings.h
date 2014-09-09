@@ -20,6 +20,7 @@ struct simSettings {
     bool ENABLE_TASKS;
     bool ENABLE_MINIMIZE;
     bool AUTO_POSITION;
+    bool FAST_ANIMATIONS;
 };
 
 #endif

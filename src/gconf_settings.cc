@@ -47,9 +47,9 @@ void simGconf_loadSettings (simSettings* data)
     SimGconf::GetBool(client, APPLICATION_PATH GCONF_ENABLE_TASKS, &data->ENABLE_TASKS);
 
     SimGconf::GetBool(client, APPLICATION_PATH GCONF_ENABLE_MINIMIZE, &data->ENABLE_MINIMIZE);
+    SimGconf::GetBool(client, APPLICATION_PATH GCONF_FAST_ANIMATIONS, &data->FAST_ANIMATIONS);
 
-    
-      g_object_unref (client);
+    g_object_unref (client);
 }
 
 void simGconf_loadPosition (int* x, int* y)
@@ -85,6 +85,7 @@ simGconf_saveSettings (struct simSettings* data)
     SimGconf::SetBool(client, APPLICATION_PATH GCONF_ENABLE_TASKS, &data->ENABLE_TASKS);
     
     SimGconf::SetBool(client, APPLICATION_PATH GCONF_ENABLE_MINIMIZE, &data->ENABLE_MINIMIZE);
+    SimGconf::SetBool(client, APPLICATION_PATH GCONF_FAST_ANIMATIONS, &data->FAST_ANIMATIONS);
 
     g_object_unref (client);
 

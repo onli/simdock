@@ -132,9 +132,6 @@ loadPrograms (wxString fullPath, ImagesArray * list,simSettings* settings, strin
 #ifdef SIMDOCK_DEBUG
 			    cout << id << ":" << wx2std (name) << endl;
 #endif
-
-
-
 		  }
 	    }
 	  program = program->GetNext ();
@@ -268,7 +265,8 @@ MyApp::OnInit () {
         true, // SHOW_REFLEXES,
         true, // ENABLE_TASKS,
         true, // ENABLE_MINIMIZE,
-        true //AUTO_POSITION
+        true, //AUTO_POSITION
+		true  // FAST_ANIMATIONS
     };
     loadAll (ImagesList, & settings, defaultLaunchers);
 

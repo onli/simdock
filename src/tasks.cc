@@ -46,8 +46,6 @@ bool taskInfo::Init(WnckWindow* window)
      * pid associated with a window. We use 2 different ways to get the
      * pid. None of them is 100% accurate. (aMSN!!!) */
     
-
-    
     pid = wnck_window_get_pid (window);	
     if (!pid) {
         WnckApplication *app = wnck_window_get_application (window);

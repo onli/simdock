@@ -834,7 +834,10 @@ bool
 MyFrame::approachFutures() {
     unsigned int imgCount = ImagesList->GetCount();
     bool ready = true;
-    int zoomChange = 2;     // if we move more than 1 px, we have to actively prevent flicker
+    int zoomChange = 1;
+    if (settings.FAST_ANIMATIONS) {
+        zoomChange = 2;
+    }
     for (unsigned int i = 0; i < imgCount; i++) {
         simImage *img = (*ImagesList)[i];
         if (img->w > img->future_w) {

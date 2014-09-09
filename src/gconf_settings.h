@@ -40,6 +40,7 @@
 #define GCONF_ENABLE_TASKS "enable_tasks"
 #define GCONF_ENABLE_MINIMIZE "enable_minimize"
 #define GCONF_BLUR_TIMEOUT "blur_length"
+#define GCONF_FAST_ANIMATIONS "fast_animations"
 
 
 #define GCONF_BG_HEIGHT "bg_height"

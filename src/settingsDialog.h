@@ -23,9 +23,6 @@
 #include "main.h"
 
 
-
-
-
 enum {
     ID_Browse_Bg = 1,
     ID_Enable_Minimize = 2,
@@ -44,7 +41,8 @@ enum {
     ID_REFLEX_ALPHA = 16,
     ID_AUTO_POSITION = 17,
     ID_ENABLE_TASKS = 18,
-    ID_BLUR_TIMEOUT = 19
+    ID_BLUR_TIMEOUT = 19,
+    ID_FAST_ANIMATIONS = 20
 };
 
 // Property sheet dialog
@@ -79,6 +77,7 @@ protected:
     wxCheckBox* auto_position;
     wxCheckBox* enable_tasks;
     wxCheckBox* enable_minimize;
+    wxCheckBox* fast_animations;
     wxSpinCtrl* blur_timeout_text;
     /* Zoom */
     wxSpinCtrl* zoom_text;

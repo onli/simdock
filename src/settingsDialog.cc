@@ -30,6 +30,7 @@ EVT_CHECKBOX(ID_Enable_Minimize, SettingsDialog::OnChange)
 EVT_CHECKBOX(ID_SHOW_REFLEXES, SettingsDialog::OnChange)
 EVT_CHECKBOX(ID_AUTO_POSITION, SettingsDialog::OnChange)
 EVT_CHECKBOX(ID_ENABLE_TASKS, SettingsDialog::OnChange)
+EVT_CHECKBOX(ID_FAST_ANIMATIONS, SettingsDialog::OnChange)
 EVT_SPINCTRL(ID_LEFT_BORDER, SettingsDialog::OnSpinChange)
 EVT_SPINCTRL(ID_RIGHT_BORDER, SettingsDialog::OnSpinChange)
 EVT_SPINCTRL(ID_BOTTOM_BORDER, SettingsDialog::OnSpinChange)
@@ -144,14 +145,11 @@ simSettings* SettingsDialog::GetSettings()
     if (!checkInt(bg_height_text, &settings->BG_HEIGHT,0,1000))
 	return NULL;
 	
-    if (!wxFileExists(bg_path_text->GetValue()))
-    {
+    if (!wxFileExists(bg_path_text->GetValue())) {
 	    wxMessageBox (_T ("Invalid value for ") + bg_path_text->GetValue() , _T ("SimDock"), wxOK | wxICON_ERROR, NULL);
 	    return NULL;
-    }
-    else
-    {
-	settings->BG_PATH = bg_path_text->GetValue();
+    } else {
+        settings->BG_PATH = bg_path_text->GetValue();
     }
     
 	
@@ -177,13 +175,12 @@ simSettings* SettingsDialog::GetSettings()
 	settings->AUTO_POSITION = auto_position->IsChecked();
 	settings->ENABLE_TASKS = enable_tasks->IsChecked();	
 	settings->ENABLE_MINIMIZE = enable_minimize->IsChecked();
+	settings->FAST_ANIMATIONS = fast_animations->IsChecked();
 
     if (!checkInt(blur_timeout_text, &settings->BLUR_TIMEOUT,10,200)) {
         return NULL;
     }
-  return settings;
-    
-
+    return settings;
 }
 
 
@@ -210,6 +207,11 @@ wxPanel* SettingsDialog::CreateGeneralSettingsPage(wxWindow* parent)
     itemSizer7->Add(new wxStaticText(panel,-1,_T("Range")),wxGROW|wxALL,5);
     itemSizer7->Add(range_text,wxGROW|wxALL,5);
     item2->Add(itemSizer7, 0, wxGROW|wxALL, 5);
+
+    /* Fast Animations */
+    fast_animations = new wxCheckBox(panel,ID_FAST_ANIMATIONS, _T("Fast Animations"));
+    fast_animations->SetValue(settings->FAST_ANIMATIONS);
+    item2->Add(fast_animations, 0, wxGROW|wxALL, 5);
 
     topSizer->Add( item2, 1, wxGROW|wxALIGN_CENTRE|wxALL, 5 );
     /* ---------------  ZOOM STUFF  ----------------------*/
