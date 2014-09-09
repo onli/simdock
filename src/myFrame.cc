@@ -308,6 +308,7 @@ MyFrame::OnMouseMove (wxMouseEvent & event)
 {
     hoverTimer->Stop();
     showTooltip = false;
+    
     if (middleClicked)
     {
         wxPoint framePos = this->GetScreenPosition ();
@@ -317,6 +318,7 @@ MyFrame::OnMouseMove (wxMouseEvent & event)
         moving = true;
         return;
     }
+    
     if (dragging)
     {
         moving = true;
@@ -326,16 +328,29 @@ MyFrame::OnMouseMove (wxMouseEvent & event)
         return;
     }
 
+    bool wasHovering = false;
+    if (hoveringIcon) {
+        wasHovering = true;
+    }
+    
+    bool hover = false;
     for (unsigned int i = 0; i < ImagesList->GetCount (); i++)
         {
         simImage *img = (*ImagesList)[i];
         if (img->isIn (event.m_x, event.m_y))
         {
+            hover = true;
             if (hoveringIcon != img) {
                 OnMouseEnterIcon(event, img);
+                break;
             }
         }
     }
+
+    if (wasHovering && ! hover) {
+        OnMouseLeaveIcon(event);
+    }
+    
     if (hoveringIcon != None) {
         hoverTimer->Start(3000, wxTIMER_ONE_SHOT);
     }
@@ -592,6 +607,10 @@ void MyFrame::OnMouseEnterIcon (wxMouseEvent & event, simImage* img)
 void MyFrame::OnMouseLeaveIcon (wxMouseEvent & event)
 {
     hoveringIcon = None;
+    setFutures();
+    if (! animation->IsRunning()) {
+        animation->Start(16);   // 60 fps
+    }
 }
 
 void
