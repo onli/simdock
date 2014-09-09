@@ -209,6 +209,7 @@ wxFrame (parent, id, title, pos, size, style)
 
     dragging = false;
     draggedID = -1;
+    draggedStart = 0;
 
     showTooltip = false;
 }
@@ -309,8 +310,7 @@ MyFrame::OnMouseMove (wxMouseEvent & event)
     hoverTimer->Stop();
     showTooltip = false;
     
-    if (middleClicked)
-    {
+    if (middleClicked) {
         wxPoint framePos = this->GetScreenPosition ();
         framePos.x += event.m_x - middleClick.x;
         framePos.y += event.m_y - middleClick.y;
@@ -319,13 +319,14 @@ MyFrame::OnMouseMove (wxMouseEvent & event)
         return;
     }
     
-    if (dragging)
-    {
-        moving = true;
+    if (dragging) {
+        if (draggedStart - event.m_x > 5 || draggedStart - event.m_x < -5) {
+            // moving should indicate that the icon was clearly moved and not only accidentally dragged a bit while clicking
+            moving = true;
+        }
         draggedPos.x = event.m_x;
         draggedPos.y = event.m_y;
         Refresh (false);
-        return;
     }
 
     bool wasHovering = false;
@@ -622,6 +623,7 @@ MyFrame::OnLeftDown (wxMouseEvent & event)
         draggedID = positionToId(wxPoint (event.m_x, event.m_y), ImagesList, 0,
                             ImagesList->GetCount () - 1);
         draggedPos.x = event.m_x;
+        draggedStart = draggedPos.x;
         draggedPos.y = event.m_y;
         return;
     }
@@ -657,11 +659,13 @@ MyFrame::OnLeftUp (wxMouseEvent & event) {
             bool changeIcons[ImagesList->GetCount()];
             fill_n(changeIcons, ImagesList->GetCount(), true);
             appSize = PositionIcons (settings, ImagesList, changeIcons);
-            Refresh (false);
-            return;
-        } 
+        }
+        Refresh (false);
+        return;
     }
+    
     dragging = false;
+    moving = false;
     Refresh (false);
     for (unsigned int i = 0; i < ImagesList->GetCount (); i++) {
         simImage *img = (*ImagesList)[i];

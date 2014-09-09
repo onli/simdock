@@ -101,7 +101,7 @@ private:
     bool moving;
     int draggedID;
     wxPoint draggedPos;
-
+    int draggedStart;
 
     
     ImagesArray* ImagesList;
