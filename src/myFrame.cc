@@ -312,7 +312,7 @@ MyFrame::OnMouseMove (wxMouseEvent & event)
     }
     
     simImage *img = this->getClickedIcon(event);
-    if (hoveringIcon != img) {
+    if (img != None && hoveringIcon != img ) {
         OnMouseEnterIcon(event, img);
     }
 
