@@ -208,6 +208,7 @@ wxFrame (parent, id, title, pos, size, style)
     disposed = false;
 
     dragging = false;
+    moving = false;
     draggedID = -1;
     draggedStart = 0;
 
@@ -608,15 +609,13 @@ MyFrame::OnLeftDown (wxMouseEvent & event)
 {
     simImage *img = this->getClickedIcon(event);
     if (img != None) {
-        dragging = true;
         draggedID = positionToId(wxPoint (event.m_x, event.m_y), ImagesList, 0,
                             ImagesList->GetCount () - 1);
         draggedPos.x = event.m_x;
         draggedStart = draggedPos.x;
         draggedPos.y = event.m_y;
-        return;
+        dragging = true;
     }
-
 }
 
 simImage*
@@ -652,7 +651,6 @@ MyFrame::OnLeftUp (wxMouseEvent & event) {
         Refresh (false);
         return;
     }
-    
     dragging = false;
     moving = false;
     Refresh (false);

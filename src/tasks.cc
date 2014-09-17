@@ -155,11 +155,12 @@ static void tasks_window_closed (WnckScreen *screen, WnckWindow *window,callback
                 img->img = ti.icon.ConvertToImage();
             }
             
-              wxGetApp().frame->appSize = FirstPosition(ca->settings, ImagesList);
+            wxGetApp().frame->appSize = FirstPosition(ca->settings, ImagesList);
             wxGetApp().updateSize();
-              return;
-          }
-    }
+            wxGetApp().refresh();
+            return;
+        }
+    }    
 }
 
 static void tasks_window_opened (WnckScreen *screen, WnckWindow *window, callbackArgs* ca) {
@@ -187,6 +188,7 @@ static void tasks_window_opened (WnckScreen *screen, WnckWindow *window, callbac
             // refresh the icon, cause sometimes the splash-screen has not
             // a valid icon, but the program does
             img->img = ti.icon.ConvertToImage();
+            wxGetApp().refresh();
             return;
         }
     }
@@ -267,6 +269,7 @@ void tasks_addNewImage(WnckWindow *window, ImagesArray* ImagesList, simSettings 
     ImagesList->Add(si);
     wxGetApp().frame->appSize = FirstPosition(settings, ImagesList);
     wxGetApp().updateSize();
+    wxGetApp().refresh();
 }
 
 void tasks_fillList (ImagesArray * ImagesList, simSettings settings) {
