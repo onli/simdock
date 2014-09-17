@@ -172,25 +172,6 @@ wxFrame (parent, id, title, pos, size, style)
     appBackground = NULL;
     src_dc = NULL;
     backImage = NULL;
-    /*
-   * ------------ Initializing About menu ----------------- 
-   */
-    info = new wxAboutDialogInfo ();
-    info->SetVersion (_T (SIMDOCK_VERSION));
-    info->SetCopyright (_T
-                  (" (C) 2007 Simone Della Longa <simonedll@yahoo.it>\n"
-               "This program is free software; you can redistribute it and/or modify\n"
-               "it under the terms of the GNU General Public License as published by\n"
-               "the Free Software Foundation; either version 2 of the License, or\n"
-               "any later version.\n"));
-    info->AddDeveloper (_T ("Author: Simone Della Longa\n"
-                          "Contributor: Marco Garzola\n"));
-
-    info->SetName (_T ("SimDock"));
-    info->SetWebSite (_T (SIMDOCK_WEBSITE));
-    /*
-    * ------------ Initializing About menu -----------------
-    */
 
     blurTimer = new wxTimer (this, ID_blur_Timer);
     blurTimer->Start (settings.BLUR_TIMEOUT);
@@ -330,16 +311,9 @@ MyFrame::OnMouseMove (wxMouseEvent & event)
         Refresh (false);
     }
     
-    for (unsigned int i = 0; i < ImagesList->GetCount (); i++)
-        {
-        simImage *img = (*ImagesList)[i];
-        if (img->isIn (event.m_x, event.m_y))
-        {
-            if (hoveringIcon != img) {
-                OnMouseEnterIcon(event, img);
-                break;
-            }
-        }
+    simImage *img = this->getClickedIcon(event);
+    if (hoveringIcon != img) {
+        OnMouseEnterIcon(event, img);
     }
 
     if (hoveringIcon != None) {
@@ -429,7 +403,22 @@ MyFrame::OnQuit (wxCommandEvent & WXUNUSED (event))
 void
 MyFrame::OnAbout (wxCommandEvent & WXUNUSED (event))
 {
-  wxGenericAboutBox (*info);
+    info = new wxAboutDialogInfo ();
+    info->SetVersion (_T (SIMDOCK_VERSION));
+    info->SetCopyright (_T
+                  (" (C) 2007 Simone Della Longa <simonedll@yahoo.it>\n"
+                   " (C) 2011 Malte Paskuda <malte@paskuda.biz>\n"
+               "This program is free software; you can redistribute it and/or modify\n"
+               "it under the terms of the GNU General Public License as published by\n"
+               "the Free Software Foundation; either version 2 of the License, or\n"
+               "any later version.\n"));
+    info->AddDeveloper (_T("Simone Della Longa (Original Developer)"));
+    info->AddDeveloper (_T("Malte Paskuda (Developer)"));
+    info->AddDeveloper (_T("Marco Garzola (Contributor)"));
+
+    info->SetName (_T ("SimDock"));
+    info->SetWebSite (_T (SIMDOCK_WEBSITE));
+    wxGenericAboutBox (*info);
 }
 
 void
@@ -568,19 +557,11 @@ void
 MyFrame::OnMouseEnter (wxMouseEvent & event)
 {
 #ifdef SIMDOCK_DEBUG
-  cout << "OnmouseEnter" << endl;
+    cout << "OnmouseEnter" << endl;
 #endif
 
-  // Raise ();
-  /*
-   * int style = this->GetWindowStyle(); style = style | wxSTAY_ON_TOP;
-   * this->SetWindowStyle(style); 
-   */
-  // MakeModal(true);
-  if (!wxGetApp ().onTop)
-    {
-      // SetWindowStyleFlag(frameOptions |wxSTAY_ON_TOP);
-      Refresh (false);
+    if (!wxGetApp ().onTop) {
+        Refresh (false);
     }
 }
 
@@ -654,49 +635,45 @@ MyFrame::OnLeftUp (wxMouseEvent & event) {
     dragging = false;
     moving = false;
     Refresh (false);
-    for (unsigned int i = 0; i < ImagesList->GetCount (); i++) {
-        simImage *img = (*ImagesList)[i];
-        if (img->isIn (event.m_x, event.m_y)) {
-            if (img->windowCount() > 0) {
-                if (settings.ENABLE_MINIMIZE && img->active) {
-                    if (img->allNotMinimized()) {
-                        img->cycleMinimize = true;
-                    }
-                    if (img->allMinimized()) {
-                        img->cycleMinimize = false;
-                    }
-                    
-                    if (img->cycleMinimize) {
-                        tasks_minimize(img->getWindow());
-                    } else {
-                        tasks_raise(img->getWindow());
-                    }
+    simImage* img = this->getClickedIcon(event);
+    if (img != None) {
+        if (img->windowCount() > 0) {
+            if (settings.ENABLE_MINIMIZE && img->active) {
+                if (img->allNotMinimized()) {
+                    img->cycleMinimize = true;
+                }
+                if (img->allMinimized()) {
+                    img->cycleMinimize = false;
+                }
+                
+                if (img->cycleMinimize) {
+                    tasks_minimize(img->getWindow());
                 } else {
                     tasks_raise(img->getWindow());
                 }
-                return;
-            }
-
-            /* process identifier */
-            int pid;		
-
-            pid = fork ();
-            if (pid < 0) {
-                wxDialog dlg (this, -1, wxT ("Damn, could not fork...."));
-                dlg.ShowModal ();
-            }
-
-            if (pid == 0) {
-                exit (system(wx2std(img->link).c_str()));
-            }
-            
-            img->blurStatus = STATUS_INCREASING;
-
-            if (! blurTimer->IsRunning()) {
-                blurTimer->Start (settings.BLUR_TIMEOUT);
+            } else {
+                tasks_raise(img->getWindow());
             }
             return;
+        }
 
+        /* process identifier */
+        int pid;		
+
+        pid = fork ();
+        if (pid < 0) {
+            wxDialog dlg (this, -1, wxT ("Damn, could not fork...."));
+            dlg.ShowModal ();
+        }
+
+        if (pid == 0) {
+            exit (system(wx2std(img->link).c_str()));
+        }
+        
+        img->blurStatus = STATUS_INCREASING;
+
+        if (! blurTimer->IsRunning()) {
+            blurTimer->Start (settings.BLUR_TIMEOUT);
         }
     }
 }
