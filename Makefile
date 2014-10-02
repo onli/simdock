@@ -8,7 +8,7 @@ SRCDIR ?= src/
 SHELL ?= /bin/sh
 CC = g++
 # CC := clang --analyze
-CCFLAGS ?= -march=native -O3 -flto -Wall
+CCFLAGS ?= -march=native -O2 -flto -Wall -pipe
 DEPS = $(shell pkg-config --cflags glib-2.0 gconf-2.0 gtk+-2.0 libwnck-1.0 xcb-ewmh)
 DEPS += $(shell wx-config --cflags )
 LDFLAGS = $(shell pkg-config --libs glib-2.0 gconf-2.0 gtk+-2.0 libwnck-1.0 xcb-ewmh)
