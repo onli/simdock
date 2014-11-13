@@ -27,9 +27,6 @@ bool taskInfo::Init (WnckWindow* window) {
     /*First set the icon. This will work always, as wnck_window_get_icon
     returns a fallbackicon if necessary, the rest may fail*/
     GdkPixbuf* pb = gdk_pixbuf_copy(wnck_window_get_icon (window));
-    if (!pb) {
-        return false;
-    }
     
     wxBitmap bmp;
     bmp.SetPixbuf(pb);
@@ -46,7 +43,7 @@ bool taskInfo::Init (WnckWindow* window) {
     
     pid = wnck_window_get_pid (window);    
     if (!pid) {
-        pid = wnck_application_get_pid( wnck_window_get_application(window) );
+        pid = wnck_application_get_pid(wnck_window_get_application(window));
     }
         
     if (!pid){

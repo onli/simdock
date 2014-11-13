@@ -819,14 +819,14 @@ MyFrame::approachFutures() {
             img->w = max(img->w - zoomChange, img->future_w);
             ready = false;
             if (img->h > img->future_h) {
-                img->y += zoomChange;
+                img->y += img->h - img->w;  // we don't want to set this in different steps than the width, as this leads to hidden images under current X with Mesa 10.4.0-devel
                 img->h = img->w;
             }
         } else if (img->w < img->future_w) {
             img->w = min(img->w + zoomChange, img->future_w);
             ready = false;
             if (img->h < img->future_h) {
-                img->y -= zoomChange;
+                img->y -= img->w - img->h;
                 img->h = img->w;
             }
         }
