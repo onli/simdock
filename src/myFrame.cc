@@ -745,15 +745,10 @@ MyFrame::OnBlurTimerTick (wxTimerEvent & event)
             default:
                 img->handleStatus ();
                 changed = true;
-                RefreshRect (wxRect (img->x, img->y, img->w, img->h), false);
-                wxSize shadowSize =
-                ImageToShadow (img->w, img->h, settings.REFLEX_SCALING);
-                RefreshRect (wxRect (img->x, img->y + img->h, shadowSize.GetWidth (),
-                            shadowSize.GetHeight ()));
                 break;
         }
     }
-
+    Refresh(true);
     if (!changed) {
         blurTimer->Stop ();
     }
