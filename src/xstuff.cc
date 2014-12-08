@@ -78,6 +78,6 @@ void
 xstuff_closeConnection(xcb_ewmh_connection_t* ewmh_conn) {
     xcb_ewmh_connection_wipe(ewmh_conn);
     xcb_disconnect(ewmh_conn->connection);
-    free(ewmh_conn);
+    delete ewmh_conn;
 }
 
