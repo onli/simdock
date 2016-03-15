@@ -43,6 +43,7 @@ wxBitmap* getRootWallpaper()
                                 pm
                                 )
                             );
+		  return backImage;
     } else {
         wxSize sz = wxGetDisplaySize();
 		wxBitmap* backImage = new wxBitmap(sz.GetWidth(), sz.GetHeight());
@@ -51,6 +52,7 @@ wxBitmap* getRootWallpaper()
         dc.SetBackground(*wxTRANSPARENT_BRUSH);
         dc.Clear();
         dc.SelectObject(*backImage);
+		return backImage;
     }
     return backImage;
 }

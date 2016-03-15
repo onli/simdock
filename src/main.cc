@@ -273,13 +273,13 @@ MyApp::OnInit () {
 
     long options = wxNO_BORDER;
     options = options | wxFRAME_TOOL_WINDOW;
-    if (!showInTray)
-    {
+    if (!showInTray) {
 	  options = options | wxFRAME_NO_TASKBAR;
     }
 
-    if (onTop)
+    if (onTop) {
         options = options | wxSTAY_ON_TOP;
+	}
     frame = new MyFrame (NULL, settings,ImagesList,-1, _T ("SimDock"), wxPoint (10, 10),
 			 wxSize (450, 150), options);
     wxImage* appBackground = new wxImage (settings.BG_PATH);
@@ -300,19 +300,15 @@ MyApp::OnInit () {
     GtkWidget* widget = frame->GetHandle();
     XID xid = GDK_WINDOW_XWINDOW(widget->window);
     xstuff_resizeScreen(xid, *frame);
-    if (settings.ENABLE_TASKS)
-    {
+    if (settings.ENABLE_TASKS) {
 		tasks_fillList(ImagesList, settings);
 		tasks_register_signals(ImagesList, settings);
     }
 	frame->appSize = FirstPosition (settings, ImagesList);
 	frame->updateSize();
-	if (!settings.AUTO_POSITION)
-    {
+	if (!settings.AUTO_POSITION) {
 		frame->Move (startPositionX, startPositionY);
-    }
-    else
-    {
+    } else {
     	wxSize sz = wxGetDisplaySize();
     	frame->Move ((sz.GetWidth() - frame->GetClientSize().GetWidth()) / 2, 
     	sz.GetHeight() - frame->GetClientSize().GetHeight());
@@ -320,14 +316,10 @@ MyApp::OnInit () {
     //getting the background from root will only work at a late point
     //like this
 	wxBitmap * backImage;
-    if (!customBackground.IsEmpty ())
-    {
-        backImage =
-            fixImage (customBackground, customBackgroundType,
+    if (!customBackground.IsEmpty ()) {
+        backImage = fixImage (customBackground, customBackgroundType,
                         customBackgroundColour);
-    }
-    else
-    {
+    } else {
         backImage = getRootWallpaper();
     }
     frame->SetWallpaper(backImage);

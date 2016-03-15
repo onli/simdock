@@ -194,6 +194,8 @@ wxFrame (parent, id, title, pos, size, style)
     draggedStart = 0;
 
     showTooltip = false;
+    
+    SetBackgroundStyle(wxBG_STYLE_PAINT); // needed since wx2.9.1 for the autodc in onPaint
 }
 
 
@@ -838,7 +840,6 @@ MyFrame::approachFutures() {
 
 void
 MyFrame::OnPaint (wxPaintEvent & event) {
-    
     wxAutoBufferedPaintDC dc (this);
     wxPoint framePos = this->GetScreenPosition ();
     wxSize sz = GetClientSize ();
