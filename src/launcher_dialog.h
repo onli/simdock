@@ -42,7 +42,7 @@ static wxString lastPath;
 
 
 simImage* launcher;
-wxBitmapButton* bmp_button;
+wxButton* bmp_button;
 wxString bmp_path;
 wxTextCtrl* name_text;
 wxTextCtrl* command_text;

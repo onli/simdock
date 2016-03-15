@@ -38,14 +38,14 @@ wxBitmap* getRootWallpaper()
     }
     
     if (pm != None) {
-        backImage->SetPixmap(
+         wxBitmap* backImage = new wxBitmap(
                             gdk_pixmap_foreign_new(
                                 pm
                                 )
                             );
     } else {
         wxSize sz = wxGetDisplaySize();
-        backImage = new wxBitmap (sz.GetWidth(), sz.GetHeight());
+		wxBitmap* backImage = new wxBitmap(sz.GetWidth(), sz.GetHeight());
         wxMemoryDC dc;
         dc.SelectObject(*backImage);
         dc.SetBackground(*wxTRANSPARENT_BRUSH);

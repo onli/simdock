@@ -28,12 +28,11 @@ bool taskInfo::Init (WnckWindow* window) {
     returns a fallbackicon if necessary, the rest may fail*/
     GdkPixbuf* pb = gdk_pixbuf_copy(wnck_window_get_icon (window));
     
-    wxBitmap bmp;
-    bmp.SetPixbuf(pb);
-    if (!bmp.IsOk ()) {
+    wxBitmap* bmp = new wxBitmap(pb);
+    if (!bmp->IsOk ()) {
         return false;
     }
-    this->icon = bmp;
+    this->icon = *bmp;
     
     enum { BUFFERSIZE = 1024 };
     char processName[BUFFERSIZE];

@@ -406,7 +406,7 @@ void SettingsDialog::OnBrowseEvent(wxCommandEvent& event)
 {
     wxFileName fn(bg_path_text->GetValue());
 
-    wxString filename = wxFileSelector(_T("Choose a file to open"),fn.GetPath(), _T(""), _T("png"), _T( "BMP files (*.bmp)|*.bmp|GIF files (*.gif)|*.gif|PNG files (*.png)|*.png|All files (*.*)|*.*"), wxOPEN | wxFILE_MUST_EXIST);
+    wxString filename = wxFileSelector(_T("Choose a file to open"),fn.GetPath(), _T(""), _T("png"), _T( "BMP files (*.bmp)|*.bmp|GIF files (*.gif)|*.gif|PNG files (*.png)|*.png|All files (*.*)|*.*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     if ( !filename.empty() )
     {
         bg_path_text->SetValue(filename);

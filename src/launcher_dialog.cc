@@ -90,7 +90,7 @@ LauncherDialog::LauncherDialog(wxWindow* parent, simImage* launcher): wxDialog(p
     
     wxBoxSizer* Horizontal0 = new wxBoxSizer( wxHORIZONTAL );
     
-    bmp_button = new wxBitmapButton(this,ID_bmp_button,NULL,wxDefaultPosition,wxSize(60,60));
+    bmp_button = new wxButton(this,ID_bmp_button,_T("Icon"),wxDefaultPosition,wxSize(60,60));
     SetIcon(wxBitmap(launcher->img));
     Horizontal0->Add(bmp_button,0,5);
     LauncherBox->Add(Horizontal0, 0, wxGROW|wxALL, 5);
@@ -143,7 +143,7 @@ void LauncherDialog::OnBrowseEvent(wxCommandEvent& event)
 	
 	wxFileName fn(startingPath);
 	
-	wxString filename = wxFileSelector(_T("Choose a file to open"),fn.GetPath() /*wxPathOnly(startingPath)*/, _T(""), _T("png"), wxImage::GetImageExtWildcard(), wxOPEN | wxFILE_MUST_EXIST);
+	wxString filename = wxFileSelector(_T("Choose a file to open"),fn.GetPath() /*wxPathOnly(startingPath)*/, _T(""), _T("png"), wxImage::GetImageExtWildcard(), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
 	if ( !filename.empty() )
 	{

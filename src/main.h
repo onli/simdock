@@ -191,23 +191,33 @@ private:
 /* http://www.wxwidgets.org/wiki/index.php/Command-Line_Arguments */
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] = {
-  {wxCMD_LINE_SWITCH, wxT ("h"), wxT ("help"),
-   wxT ("displays help on the command line parameters"),
-   wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP},
-  {wxCMD_LINE_OPTION, wxT ("b"), wxT ("background"),
-   wxT ("use custom wallpaper"),
-   wxCMD_LINE_VAL_STRING},
-  {wxCMD_LINE_OPTION, wxT ("t"), wxT ("type"),
-   _("wallpaper positioning: <" CENTERED_STR "> <" STRETCHED_STR "> <"
-     NONE_STR ">"), wxCMD_LINE_VAL_STRING},
-  {wxCMD_LINE_OPTION, wxT ("o"), wxT ("color"),
-   wxT
-   ("background color. Hex or name values accepted. examples: -o:#FF0000 , -o:red"),
-   wxCMD_LINE_VAL_STRING},
-  {wxCMD_LINE_SWITCH, wxT ("r"), wxT ("tray"), wxT ("show in the trayBar"),
-   wxCMD_LINE_VAL_NONE},
-  {wxCMD_LINE_SWITCH, wxT ("y"), wxT ("on top"), wxT ("show on-top of other windows"),
-   wxCMD_LINE_VAL_NONE},
+  { wxCMD_LINE_SWITCH,
+    wxT_2("h"), wxT_2("help"),
+    wxT_2("displays help on the command line parameters"),
+    wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP},
+  { wxCMD_LINE_OPTION,
+    wxT_2("b"),
+    wxT_2("background"),
+    wxT_2("use custom wallpaper"),
+    wxCMD_LINE_VAL_STRING},
+  { wxCMD_LINE_OPTION,
+    wxT_2("t"), wxT_2("type"),
+    wxT_2("wallpaper positioning: <" CENTERED_STR "> <" STRETCHED_STR "> <"
+     NONE_STR ">"),
+    wxCMD_LINE_VAL_STRING},
+  { wxCMD_LINE_OPTION,
+    wxT_2("o"), wxT_2("color"),
+    wxT_2
+    ("background color. Hex or name values accepted. examples: -o:#FF0000 , -o:red"),
+    wxCMD_LINE_VAL_STRING},
+  { wxCMD_LINE_SWITCH,
+    wxT_2("r"), wxT_2("tray"),
+    wxT_2("show in the trayBar"),
+    wxCMD_LINE_VAL_NONE},
+  { wxCMD_LINE_SWITCH,
+    wxT_2("y"), wxT_2("ontop"),
+    wxT_2("show on-top of other windows"),
+    wxCMD_LINE_VAL_NONE},
 
   {wxCMD_LINE_NONE}
 };
