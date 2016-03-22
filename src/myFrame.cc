@@ -343,7 +343,7 @@ MyFrame::OnMiddleUp (wxMouseEvent & event) {
             }
 
             if (pid == 0) {
-                cout << wx2std(hoveringIcon->link).c_str();
+                system(wx2std(hoveringIcon->link).c_str());
                 exit (0);
             }
             
