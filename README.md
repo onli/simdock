@@ -39,7 +39,7 @@ and install with emerge
 
 1. Install dependencies. Under Ubuntu:
 
-        sudo apt-get install pkg-config libglib2.0-dev libgconf2-dev libgtk2.0-dev libwnck-dev libwxgtk2.8-dev libxcb1-dev libxcb-ewmh-dev xcb-proto
+        sudo apt-get install pkg-config libglib2.0-dev libgconf2-dev libgtk2.0-dev libwnck-dev libwxgtk3.0-dev libxcb1-dev libxcb-ewmh-dev xcb-proto libwxsvg-dev
 
 1. Type `make` to compile
 1. Type `sudo make install` to install
