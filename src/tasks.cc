@@ -148,7 +148,10 @@ static void tasks_window_closed (WnckScreen *screen, WnckWindow *window,callback
             if (img->windowCount() > 0) {
                 taskInfo ti;
                 ti.Init(img->getWindow());
-                img->img = ti.icon.ConvertToImage();
+                if (img->task) {
+                    // starters still have their own image we prefer to use
+                    img->img = ti.icon.ConvertToImage();
+                }
             }
             
             wxGetApp().frame->appSize = FirstPosition(ca->settings, ImagesList);
@@ -183,7 +186,7 @@ static void tasks_window_opened (WnckScreen *screen, WnckWindow *window, callbac
             img->pid = ti.pid;
             // refresh the icon, cause sometimes the splash-screen has not
             // a valid icon, but the program does
-            if (! img->task) {
+            if (img->task) {
                 // but don't do that for starters, as we want to preserve their image
                 img->img = ti.icon.ConvertToImage();
             }
