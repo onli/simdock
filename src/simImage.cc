@@ -109,14 +109,22 @@ void simImage::initReflex()
 
 bool simImage::loadImage(const wxString& path)
 {
-   if (!img.LoadFile(path))
-   	return false;
+    if (path.EndsWith(".svg")) {
+        wxSVGDocument* svgDoc = new wxSVGDocument;
+        svgDoc->Load(path);
+        // when rendering, make the icon bigger to improve image quality on zoom
+        img = svgDoc->Render(w * 2, h * 2, NULL, true, true);   
+    } else {
+        if (!img.LoadFile(path))
+        return false;
+    }
    
-   if (!img.HasAlpha ())
-   	img.InitAlpha ();
+    if (!img.HasAlpha ()) {
+        img.InitAlpha ();
+    }
    	
-   initReflex();
-   return true;	
+    initReflex();
+    return true;	
 }
 
 bool simImage::allNotMinimized() {

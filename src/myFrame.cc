@@ -442,39 +442,30 @@ MyFrame::OnSettings (wxCommandEvent & WXUNUSED (event))
 void
 MyFrame::OnAdd (wxCommandEvent & event)
 {
-  simImage *sim = new simImage ();
-  LauncherDialog *dlg = new LauncherDialog (this, sim);
-  if (dlg->ShowModal () == wxID_OK)
-    {
-      if (dlg->saveChanges ())
-	{
+    simImage *sim = new simImage ();
+    LauncherDialog *dlg = new LauncherDialog (this, sim);
+    if (dlg->ShowModal () == wxID_OK) {
+        if (dlg->saveChanges ()) {
+            sim->w = settings.ICONW;
+            sim->h = settings.ICONH;
+            sim->future_w = settings.ICONW;
+            sim->future_h = settings.ICONH;
+            sim->y = (settings.MAXSIZE + settings.BOTTOM_BORDER) - settings.ICONH - settings.BOTTOM_BORDER;
+            ImagesList->Add (sim);
+            bool changeIcons[ImagesList->GetCount()];
+            fill_n(changeIcons, ImagesList->GetCount(), true);
+            appSize = PositionIcons (settings, ImagesList, changeIcons);
+            updateSize();
 
-	  sim->w = settings.ICONW;
-	  sim->h = settings.ICONH;
-	  sim->future_w = settings.ICONW;
-	  sim->future_h = settings.ICONH;
-	  sim->y =
-	    (settings.MAXSIZE + settings.BOTTOM_BORDER) - settings.ICONH -
-	    settings.BOTTOM_BORDER;
-	  ImagesList->Add (sim);
-      bool changeIcons[ImagesList->GetCount()];
-      fill_n(changeIcons, ImagesList->GetCount(), true);
-	  appSize = PositionIcons (settings, ImagesList, changeIcons);
-	  updateSize();
-
-      saveLaunchers(ImagesList);
-	  Refresh (false);
-
-	}
-      else
-	delete sim;
-
+            saveLaunchers(ImagesList);
+            Refresh (false);
+        } else {
+            delete sim;
+        }
+    } else {
+        delete sim;
     }
-  else
-    delete sim;
-
-  dlg->Destroy ();
-
+    dlg->Destroy ();
 }
 
 void MyFrame::OnKeep(wxCommandEvent & event) {

@@ -17,6 +17,8 @@
  */
 #include "launcher_dialog.h"
 
+using namespace std;
+
 enum
 {
 ID_bmp_button = 99,
@@ -34,13 +36,11 @@ wxString LauncherDialog::lastPath = wxString();
 void LauncherDialog::SetIcon(const wxBitmap& value)
 {
 	wxBitmap v;
-	if (value.GetWidth() != 50 || value.GetHeight() != 50)
-	{
-	v = value.ConvertToImage().Scale(50,50);
+	if (value.GetWidth() != 50 || value.GetHeight() != 50) {
+		v = value.ConvertToImage().Scale(50,50);
+	} else {
+		v = value;
 	}
-	else
-	v = value;
-
 	bmp_button->SetBitmapLabel(v);
 }
 
@@ -145,7 +145,7 @@ void LauncherDialog::OnBrowseEvent(wxCommandEvent& event)
 	
 	wxFileName fn(startingPath);
 	
-	wxString filename = wxFileSelector(_T("Choose a file to open"),fn.GetPath() /*wxPathOnly(startingPath)*/, _T(""), _T("png"), wxImage::GetImageExtWildcard(), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	wxString filename = wxFileSelector(_T("Choose a file to open"),fn.GetPath() /*wxPathOnly(startingPath)*/, _T(""), _T("png"), wxImage::GetImageExtWildcard() + ";*.svg", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
 	if ( !filename.empty() )
 	{

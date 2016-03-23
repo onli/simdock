@@ -74,47 +74,46 @@ loadPrograms (wxString fullPath, ImagesArray * list,simSettings* settings, strin
 {
     openOrInitialize (&fullPath, &defaultLaunchers);
     wxXmlDocument doc;
-    if (!doc.Load (fullPath))
-      {
+    if (!doc.Load (fullPath)) {
 	  exit (1);
 	  return FALSE;
-      }
+	}
     // start processing the XML file
-    if (doc.GetRoot ()->GetName () != wxT (XML_PROGRAM))
-      {
-	  cout << "invalid xml file" << endl;
-	  return FALSE;
-      }
+    if (doc.GetRoot ()->GetName () != wxT (XML_PROGRAM)) {
+	    cout << "invalid xml file" << endl;
+	    return FALSE;
+	}
 
     wxXmlNode *program = doc.GetRoot ()->GetChildren ();
     int id = 0;
-    while (program)
-      {
+    while (program) {
 
-	  if (program->GetName () == wxT (XML_SIMDOCK))
-	    {
-		wxXmlNode *child = program->GetChildren ();
+		if (program->GetName () == wxT (XML_SIMDOCK)) {
+			wxXmlNode *child = program->GetChildren ();
 
-		wxString path, icon, descr, name;
-		while (child)
-		  {
-		      if (child->GetName () == wxT (XML_PATH))
-			  path = child->GetNodeContent ();
-		      if (child->GetName () == wxT (XML_ICON))
-			  icon = child->GetNodeContent ();
-		      if (child->GetName () == wxT (XML_DESCR))
-			  descr = child->GetNodeContent ();
-		      if (child->GetName () == wxT (XML_NAME))
-			  name = child->GetNodeContent ();
-		      child = child->GetNext ();
-		  }
-		if (!path.IsEmpty () && !icon.IsEmpty ())
-		  {
-		      wxImage img;
-		      if (!img.LoadFile (icon))
-			  {
-				img.LoadFile(questionPath);
-			  }
+			wxString path, icon, descr, name;
+			while (child) {
+				if (child->GetName () == wxT (XML_PATH))
+					path = child->GetNodeContent ();
+				if (child->GetName () == wxT (XML_ICON))
+					icon = child->GetNodeContent ();
+				if (child->GetName () == wxT (XML_DESCR))
+					descr = child->GetNodeContent ();
+				if (child->GetName () == wxT (XML_NAME))
+					name = child->GetNodeContent ();
+				child = child->GetNext ();
+			}
+			if (!path.IsEmpty () && !icon.IsEmpty ()) {
+		        wxImage img;
+
+				if (icon.EndsWith(".svg")) {
+					// we use the questionPath as placeholder for the constructor
+					img.LoadFile(questionPath);
+				} else {
+					if (!img.LoadFile (icon)) {
+						img.LoadFile(questionPath);
+					}
+				}
 			    simImage *sim = new simImage (img,
 							  icon,
 							  path,
@@ -123,16 +122,16 @@ loadPrograms (wxString fullPath, ImagesArray * list,simSettings* settings, strin
 							  id++);
 			    sim->w = settings->ICONW;
 			    sim->h = settings->ICONH;
-			    sim->y = (settings->MAXSIZE + settings->BOTTOM_BORDER) - settings->ICONH - settings->BOTTOM_BORDER;	// I 
-			    // know, 
-			    // it's 
-			    // ugly
+			    sim->y = (settings->MAXSIZE + settings->BOTTOM_BORDER) - settings->ICONH - settings->BOTTOM_BORDER;
+				if (icon.EndsWith(".svg")) {
+					sim->loadImage(icon);
+				}
 
 			    list->Add (sim);
 #ifdef SIMDOCK_DEBUG
 			    cout << id << ":" << wx2std (name) << endl;
 #endif
-		  }
+		    }
 	    }
 	  program = program->GetNext ();
 

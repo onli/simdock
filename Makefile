@@ -9,9 +9,9 @@ SHELL ?= /bin/sh
 CC = g++
 #CC := clang++ -v
 CCFLAGS ?= -march=native -O2 -flto -Wall -pipe
-DEPS = $(shell pkg-config --cflags glib-2.0 gconf-2.0 gtk+-2.0 libwnck-1.0 xcb-ewmh)
+DEPS = $(shell pkg-config --cflags glib-2.0 gconf-2.0 gtk+-2.0 libwnck-1.0 xcb-ewmh libwxsvg)
 DEPS += $(shell wx-config --cflags )
-LDFLAGS = $(shell pkg-config --libs glib-2.0 gconf-2.0 gtk+-2.0 libwnck-1.0 xcb-ewmh)
+LDFLAGS = $(shell pkg-config --libs glib-2.0 gconf-2.0 gtk+-2.0 libwnck-1.0 xcb-ewmh libwxsvg)
 LDFLAGS +=  $(shell wx-config --libs)
 SRCS = $(SRCDIR)background.o $(SRCDIR)main_arguments.o $(SRCDIR)save_launchers.o $(SRCDIR)tasks.o $(SRCDIR)gconf_settings.o $(SRCDIR)settingsDialog.o $(SRCDIR)xstuff.o $(SRCDIR)interrupts.o $(SRCDIR)main_settings.o $(SRCDIR)sim_gconf.o $(SRCDIR)launcher_dialog.o $(SRCDIR)myFrame.o $(SRCDIR)simImage.o $(SRCDIR)main.o
 
