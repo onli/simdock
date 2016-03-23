@@ -91,7 +91,9 @@ LauncherDialog::LauncherDialog(wxWindow* parent, simImage* launcher): wxDialog(p
     wxBoxSizer* Horizontal0 = new wxBoxSizer( wxHORIZONTAL );
     
     bmp_button = new wxButton(this,ID_bmp_button,_T("Icon"),wxDefaultPosition,wxSize(60,60));
-    SetIcon(wxBitmap(launcher->img));
+	if (launcher->img.IsOk()) {
+		SetIcon(wxBitmap(launcher->img));
+	}
     Horizontal0->Add(bmp_button,0,5);
     LauncherBox->Add(Horizontal0, 0, wxGROW|wxALL, 5);
     
