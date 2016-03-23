@@ -295,16 +295,19 @@ MyFrame::OnMouseMove (wxMouseEvent & event)
     showTooltip = false;
     
     if (middleClicked) {
+        if (abs(middleClick.x - event.m_x) > 5 || abs(middleClick.y - event.m_y) > 5) {
+            // moving should indicate that the icon was clearly moved and not only accidentally dragged a bit while clicking
+            moving = true;
+        }
         wxPoint framePos = this->GetScreenPosition ();
         framePos.x += event.m_x - middleClick.x;
         framePos.y += event.m_y - middleClick.y;
         this->Move (framePos);
-        moving = true;
         return;
     }
     
     if (dragging) {
-        if (draggedStart - event.m_x > 5 || draggedStart - event.m_x < -5) {
+        if (abs(draggedStart - event.m_x > 5)) {
             // moving should indicate that the icon was clearly moved and not only accidentally dragged a bit while clicking
             moving = true;
         }
@@ -333,7 +336,8 @@ MyFrame::OnMiddleDown (wxMouseEvent & event) {
 void
 MyFrame::OnMiddleUp (wxMouseEvent & event) {
     if (! moving) {
-        if (hoveringIcon != None) {
+        simImage* img = this->getClickedIcon(event);
+        if (img) {
             /* process identifier */
             int pid;		
             pid = fork ();
@@ -343,18 +347,17 @@ MyFrame::OnMiddleUp (wxMouseEvent & event) {
             }
 
             if (pid == 0) {
-                system(wx2std(hoveringIcon->link).c_str());
+                system(wx2std(img->link).c_str());
                 exit (0);
             }
             
-            hoveringIcon->blurStatus = STATUS_INCREASING;
+            img->blurStatus = STATUS_INCREASING;
 
             if (! blurTimer->IsRunning()) {
                 blurTimer->Start (settings.BLUR_TIMEOUT);
             }
         } 
-           //else "Not hovering an icon";
-    } 
+    }
     // else "Already moving";
     middleClicked = false;
     moving = false;
