@@ -110,10 +110,14 @@ void simImage::initReflex()
 bool simImage::loadImage(const wxString& path)
 {
     if (path.EndsWith(".svg")) {
-        wxSVGDocument* svgDoc = new wxSVGDocument;
-        svgDoc->Load(path);
-        // when rendering, make the icon bigger to improve image quality on zoom
-        img = svgDoc->Render(w * 2, h * 2, NULL, true, true);   
+        GError *err = NULL;
+        RsvgHandle* handle = rsvg_handle_new_from_file(path.ToUTF8().data(), &err);
+        if (err != NULL) {
+            printf("could not load svg from file");
+        }
+        GdkPixbuf* pixbuf = rsvg_handle_get_pixbuf(handle);
+        wxBitmap bmp = wxBitmap(pixbuf);
+        img = bmp.ConvertToImage();
     } else {
         if (!img.LoadFile(path))
         return false;

@@ -20,8 +20,7 @@
 #define WNCK_I_KNOW_THIS_IS_UNSTABLE 1	// LOL !!
 #include <libwnck/libwnck.h>
 #include "wx/wx.h"
-#include <wxSVG/SVGDocument.h>
-
+#include "librsvg/rsvg.h"
 
 #define MAX_BLUR 10
 #define PID_NONE 0
