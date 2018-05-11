@@ -21,6 +21,7 @@
 #include "settingsDialog.h"
 #include "launcher_dialog.h"
 #include "simSettings.h"
+#include <wx/dcgraph.h>
 
 
 /* Forward declaration */

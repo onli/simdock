@@ -132,19 +132,19 @@ positionToId (const wxPoint & p, ImagesArray * list, int min, int max)
  * width and height 
  */
 void
-drawBmp (wxDC * dc, const wxBitmap & bmp, const int &x, const int &y,
+drawBmp (wxGCDC* dc, const wxBitmap & bmp, const int &x, const int &y,
 	 const int &w, const int &h)
 {
   double xFactor = w / (double) bmp.GetWidth ();
   double yFactor = h / (double) bmp.GetHeight ();
+  //the last parameter enables transparency, used when no X-background
+  //pixmap found
   dc->SetUserScale (xFactor, yFactor);
-  //the last parameter anables transparency, used when no X-background
-  //paixmap found
   dc->DrawBitmap (bmp, wxCoord (x / xFactor), wxCoord (y / yFactor), true);
   dc->SetUserScale (1, 1);
 }
 
-void drawTooltip(wxDC * dc, wxString tooltip, simImage* hoveringIcon)
+void drawTooltip(wxGCDC* dc, wxString tooltip, simImage* hoveringIcon)
 {
     wxPoint iconCenter = hoveringIcon->center();
     int iconHeight = hoveringIcon->img.GetHeight();
@@ -835,13 +835,15 @@ MyFrame::approachFutures() {
 void
 MyFrame::OnPaint (wxPaintEvent & event) {
     wxAutoBufferedPaintDC dc (this);
+    wxGraphicsContext* gc = wxGraphicsContext::Create(dc);
+    wxGCDC* gdc = new wxGCDC(gc);
     wxPoint framePos = this->GetScreenPosition ();
     wxSize sz = GetClientSize ();
 
     dc.Blit (0, 0, sz.GetWidth (), sz.GetHeight (), src_dc, framePos.x,
 	   framePos.y);
 
-    drawBmp (&dc, wxBitmap (*appBackground), 0,
+    drawBmp (gdc, wxBitmap (*appBackground), 0,
 	   sz.GetHeight () - settings.BG_HEIGHT, appSize.GetWidth (),
 	   settings.BG_HEIGHT);
 
@@ -857,11 +859,11 @@ MyFrame::OnPaint (wxPaintEvent & event) {
             fade (&wxImage2, img->blur * 20);
 
             wxBitmap bmp (wxImage2);
-            drawBmp (&dc, bmp, img->x, img->y, img->w, img->h);
+            drawBmp (gdc, bmp, img->x, img->y, img->w, img->h);
         }
         else
         {
-            drawBmp (&dc, wxBitmap (img->img), img->x, img->y, img->w, img->h);
+            drawBmp (gdc, wxBitmap (img->img), img->x, img->y, img->w, img->h);
         }
         wxSize shadowSize;
         if (settings.SHOW_REFLEXES)
@@ -870,12 +872,12 @@ MyFrame::OnPaint (wxPaintEvent & event) {
             fade (&wxImage3, settings.REFLEX_ALPHA + img->blur * 10);
             shadowSize =
                 ImageToShadow (img->w, img->h, settings.REFLEX_SCALING);
-            drawBmp (&dc, wxBitmap (wxImage3), img->x, img->y + img->h,
+            drawBmp (gdc, wxBitmap (wxImage3), img->x, img->y + img->h,
                 shadowSize.GetWidth (), shadowSize.GetHeight ());
         }
 		if (img->windowCount() > 0)
         {
-            drawBmp(&dc,*markBitmap,img->x+img->w/2 -markBitmap->GetWidth()/2,img->y+img->h+shadowSize.GetHeight (), markBitmap->GetWidth(),5);
+            drawBmp(gdc,*markBitmap,img->x+img->w/2 -markBitmap->GetWidth()/2,img->y+img->h+shadowSize.GetHeight (), markBitmap->GetWidth(),5);
 				
         }
     }
@@ -884,13 +886,13 @@ MyFrame::OnPaint (wxPaintEvent & event) {
     if (dragging && moving)
     {
       simImage *img = (*ImagesList)[draggedID];
-      drawBmp (&dc, wxBitmap (img->img), draggedPos.x,
+      drawBmp (gdc, wxBitmap (img->img), draggedPos.x,
 	       draggedPos.y, settings.ICONW, settings.ICONH);
     }
 
     if (showTooltip && hoveringIcon != None) {
         wxString tooltip = hoveringIcon->name;
-        drawTooltip(&dc, tooltip, hoveringIcon);
+        drawTooltip(gdc, tooltip, hoveringIcon);
     }
 
 }
