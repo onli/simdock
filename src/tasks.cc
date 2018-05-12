@@ -177,8 +177,7 @@ static void tasks_window_opened (WnckScreen *screen, WnckWindow *window, callbac
     taskInfo ti;
     ti.Init(window);
     
-    unsigned int i;
-    for (i = 0; i < ImagesList->GetCount (); i++) {
+    for (int i = 0; i < ImagesList->GetCount (); i++) {
         simImage *img = (*ImagesList)[i];
 
         if (ti.compareWith (img)) {
@@ -194,10 +193,8 @@ static void tasks_window_opened (WnckScreen *screen, WnckWindow *window, callbac
             return;
         }
     }
-    
-    if (i == ImagesList->GetCount()) {
-        tasks_addNewImage(window, ImagesList, settings, ti);
-    }
+    // if we are here the window is not linked to an existing icon
+    tasks_addNewImage(window, ImagesList, settings, ti);
 }
 
 void tasks_window_background_change (WnckScreen *screen, WnckWindow *window, callbackArgs* ca) {
