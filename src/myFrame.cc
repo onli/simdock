@@ -135,13 +135,13 @@ void
 drawBmp (wxGCDC* dc, const wxBitmap & bmp, const int &x, const int &y,
 	 const int &w, const int &h)
 {
-  double xFactor = w / (double) bmp.GetWidth ();
-  double yFactor = h / (double) bmp.GetHeight ();
-  //the last parameter enables transparency, used when no X-background
-  //pixmap found
-  dc->SetUserScale (xFactor, yFactor);
-  dc->DrawBitmap (bmp, wxCoord (x / xFactor), wxCoord (y / yFactor), true);
-  dc->SetUserScale (1, 1);
+    double xFactor = w / (double) bmp.GetWidth ();
+    double yFactor = h / (double) bmp.GetHeight ();
+    dc->SetUserScale (xFactor, yFactor);
+    //the last parameter enables transparency, used when no X-background
+    //pixmap found
+    dc->DrawBitmap (bmp, wxCoord (x / xFactor), wxCoord (y / yFactor), true);
+    dc->SetUserScale (1, 1);
 }
 
 void drawTooltip(wxGCDC* dc, wxString tooltip, simImage* hoveringIcon)
@@ -307,7 +307,7 @@ MyFrame::OnMouseMove (wxMouseEvent & event)
     }
     
     if (dragging) {
-        if (abs(draggedStart - event.m_x > 5)) {
+        if (abs(draggedStart - event.m_x) > 5) {
             // moving should indicate that the icon was clearly moved and not only accidentally dragged a bit while clicking
             moving = true;
         }
