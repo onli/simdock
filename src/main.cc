@@ -55,9 +55,21 @@ int startPositionY = 50;
 double borderRatio; // border size ratio, left to right
 wxString dirPath;
 
-wxString markPath = _T (DATA_DIR "/mark.png");
-wxString questionPath = _T (DATA_DIR "/question.png");
+wxString get_selfpath() {
+    char buff[PATH_MAX];
+    ssize_t len = ::readlink("/proc/self/exe", buff, sizeof(buff)-1);
+    if (len != -1) {
+      buff[len] = '\0';
+      return wxString::FromUTF8(buff);
+    }
+    /* handle error condition */
+}
 
+wxFileName selfexe(get_selfpath());
+wxString exeDir = selfexe.GetPath();
+wxString markPath = exeDir + _T("/../share/simdock/mark.png");
+wxString questionPath = exeDir + _T("/../share/simdock/question.png");
+wxString bgPath = exeDir + _T("/../share/simdock/bg5.png");
 
 bool
 loadSettings (simSettings* settings)
@@ -75,8 +87,8 @@ loadPrograms (wxString fullPath, ImagesArray * list,simSettings* settings, strin
     openOrInitialize (&fullPath, &defaultLaunchers);
     wxXmlDocument doc;
     if (!doc.Load (fullPath)) {
-	  exit (1);
-	  return FALSE;
+        exit (1);
+        return FALSE;
 	}
     // start processing the XML file
     if (doc.GetRoot ()->GetName () != wxT (XML_PROGRAM)) {
@@ -105,7 +117,6 @@ loadPrograms (wxString fullPath, ImagesArray * list,simSettings* settings, strin
 			}
 			if (!path.IsEmpty () && !icon.IsEmpty ()) {
 		        wxImage img;
-
 				if (icon.EndsWith(".svg")) {
 					// we use the questionPath as placeholder for the constructor
 					img.LoadFile(questionPath);
@@ -126,7 +137,6 @@ loadPrograms (wxString fullPath, ImagesArray * list,simSettings* settings, strin
 				if (icon.EndsWith(".svg")) {
 					sim->loadImage(icon);
 				}
-
 			    list->Add (sim);
 #ifdef SIMDOCK_DEBUG
 			    cout << id << ":" << wx2std (name) << endl;
@@ -154,19 +164,15 @@ loadAll (ImagesArray * list, simSettings* settings, string defaultLaunchers)
       }
 
     dirPath = home + _T ("/") + _T (CONF_DIR);
-
-    if (!fixSimDir (&dirPath))
-      {
-	  exit (1);
-      }
-    if (!loadSettings (settings))
-      {
-	  exit (1);
-      }
-    if (!loadPrograms (PROGRAMS_PATH, list,settings, defaultLaunchers))
-      {
-	  exit (1);
-      }
+    if (!fixSimDir (&dirPath)) {
+        exit (1);
+    }
+    if (!loadSettings (settings)) {
+        exit (2);
+    }
+    if (!loadPrograms (PROGRAMS_PATH, list,settings, defaultLaunchers)) {
+        exit (3);
+    }
 }
 
 
@@ -244,7 +250,7 @@ MyApp::OnInit () {
 	
 	ImagesList = new ImagesArray ();
 	wxInitAllImageHandlers ();
-	
+    	
     //default values 
 	simSettings settings = {
         30,  // LEFT_BORDER,
@@ -260,7 +266,7 @@ MyApp::OnInit () {
         100, // REFLEX_ALPHA,
         30,  // MAXSIZE
         50,  //BLUR_TIMEOUT
-        _T (DATA_DIR "/bg5.png"), // bgPath,
+        bgPath, // bgPath,
         true, // SHOW_REFLEXES,
         true, // ENABLE_TASKS,
         true, // ENABLE_MINIMIZE,
@@ -268,7 +274,6 @@ MyApp::OnInit () {
 		true  // FAST_ANIMATIONS
     };
     loadAll (ImagesList, & settings, defaultLaunchers);
-
 
     long options = wxNO_BORDER;
     options = options | wxFRAME_TOOL_WINDOW;

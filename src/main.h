@@ -119,8 +119,6 @@ WX_DEFINE_ARRAY (simImage *, ImagesArray);
 #define NONE_STR  "none"
 #define WALLPAPER_STR "wallpaper"
 
-#define DATA_DIR "/usr/share/simdock"
-
 //#include <wx/arrimpl.cpp>
 //WX_DEFINE_OBJARRAY(simImage)
 //WX_DEFINE_OBJARRAY(ImagesList);
@@ -135,6 +133,7 @@ WX_DEFINE_ARRAY (simImage *, ImagesArray);
 std::string wx2std (const wxString & input);
 const wxString PROGRAMS_PATH = wxGetHomeDir() + _T ("/") + _T (CONF_DIR) + _T ("/") + _T (CONF_FILE);
 std::string getGTKIconPath(std::string name);
+wxString get_selfpath();
 
 /* Creates the given directory only if it does not exist */
 bool fixSimDir (wxString * dirPath);
