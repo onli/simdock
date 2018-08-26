@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Simdock
+Exec=simdock
+Categories=Utility;
+Comment=Small dock with pseudo-transparency and good window handling
+Icon=simdock
