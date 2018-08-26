@@ -14,6 +14,16 @@ This is simdock, an eye-candy deskbar for Linux.
 
 ## Install
 
+### AppImage
+
+You can use simdock without install by downloading the continous AppImage build from the [release page](https://github.com/onli/simdock/releases). Then make it executable
+
+    chmod +x ~/Downloads/Simdock*.AppImage
+    
+and start it
+
+    ~/Downloads/Simdock*.AppImage
+
 ### Ubuntu
 
 On launchpad, there is a [PPA with daily builds](https://launchpad.net/~onli/+archive/simdock). Add it with
