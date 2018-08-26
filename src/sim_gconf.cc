@@ -37,21 +37,6 @@ gconf_key_exist(GConfClient *gconf_client, const gchar *key)
 bool
 SimGconf::init ()
 {
-  /*
-   * TODO: Add argc and argv to gconf init ?
-   */
-  g_type_init ();
-  GError *err = NULL;
-
-  if (!gconf_init (0, NULL, &err))
-    {
-      printf ("Failed to init GConf: %s", err->message);
-      g_error_free (err);
-      err = NULL;
-
-      return false;
-    }
-  //initialized = true;
   return true;
 }
 
