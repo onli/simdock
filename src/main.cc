@@ -287,6 +287,10 @@ MyApp::OnInit () {
     frame = new MyFrame (NULL, settings,ImagesList,-1, _T ("SimDock"), wxPoint (10, 10),
 			 wxSize (450, 150), options);
     wxImage* appBackground = new wxImage (settings.BG_PATH);
+    if (! appBackground->IsOk()) {
+        delete appBackground;
+        wxImage* appBackground = new wxImage (bgPath);
+    }
     appBackground->Rescale (frame->GetClientSize ().GetWidth(), settings.BG_HEIGHT, wxIMAGE_QUALITY_HIGH);
 	frame->SetBG(appBackground);
 	
