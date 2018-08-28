@@ -22,6 +22,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <dirent.h>
+#include <fstream>
 
 #include <glib.h>
 #include <gconf/gconf-client.h>

@@ -210,6 +210,12 @@ FirstPosition (simSettings settings, ImagesArray* list)
     return PositionIcons (settings,list, changeIcons);
 }
 
+bool fileExists(const char *fileName)
+{
+    std::ifstream infile(fileName);
+    return infile.good();
+}
+
 void
 MyApp::GracefullyExit () {
     if (!frame) {
@@ -286,10 +292,10 @@ MyApp::OnInit () {
 	}
     frame = new MyFrame (NULL, settings,ImagesList,-1, _T ("SimDock"), wxPoint (10, 10),
 			 wxSize (450, 150), options);
-    wxImage* appBackground = new wxImage (settings.BG_PATH);
-    if (! appBackground->IsOk()) {
-        delete appBackground;
-        wxImage* appBackground = new wxImage (bgPath);
+
+    wxImage* appBackground = new wxImage(bgPath);
+    if (fileExists(settings.BG_PATH)) {
+        wxImage* appBackground = new wxImage(settings.BG_PATH);
     }
     appBackground->Rescale (frame->GetClientSize ().GetWidth(), settings.BG_HEIGHT, wxIMAGE_QUALITY_HIGH);
 	frame->SetBG(appBackground);
