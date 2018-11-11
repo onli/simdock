@@ -109,11 +109,18 @@ void simImage::initReflex()
 
 bool simImage::loadImage(const wxString& path)
 {
+    struct stat buffer;   
+    if (stat (path.c_str(), &buffer) != 0) {
+        // we need to check that file really exists
+        printf("could not load image file");
+        return false;
+    }
     if (path.EndsWith(".svg")) {
         GError *err = NULL;
         RsvgHandle* handle = rsvg_handle_new_from_file(path.ToUTF8().data(), &err);
         if (err != NULL) {
             printf("could not load svg from file");
+            return false;
         }
         GdkPixbuf* pixbuf = rsvg_handle_get_pixbuf(handle);
         wxBitmap bmp = wxBitmap(pixbuf);
