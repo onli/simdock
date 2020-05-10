@@ -54,7 +54,7 @@ SettingsDialog::SettingsDialog(wxWindow* win, simSettings* settings)
     SetExtraStyle(wxDIALOG_EX_CONTEXTHELP|wxWS_EX_VALIDATE_RECURSIVELY);
 
 
-    int  tabImage1 = 0;
+    int tabImage1 = 0;
 	int tabImage2 = 1;
 	int tabImage3 = 2;
 
@@ -68,13 +68,33 @@ SettingsDialog::SettingsDialog(wxWindow* win, simSettings* settings)
     const wxSize imageSize(32, 32);
 
     m_imageList = new wxImageList(imageSize.GetWidth(), imageSize.GetHeight());
-        
-    /* TODO: Check for wxNullIcon here */
-    m_imageList->Add(wxArtProvider::GetIcon(_T("applications-system"), wxART_OTHER, imageSize));
-    m_imageList->Add(wxArtProvider::GetIcon(_T("applications-accessories"), wxART_OTHER, imageSize));
-    m_imageList->Add(wxArtProvider::GetIcon(_T("applications-graphics"), wxART_OTHER, imageSize));
-    m_imageList->Add(wxArtProvider::GetIcon(wxART_INFORMATION, wxART_OTHER, imageSize));
 
+    wxIconBundle iconBundle = wxArtProvider::GetIconBundle(wxART_INFORMATION, wxART_OTHER);
+    wxIcon fallbackIcon = iconBundle.GetIcon(imageSize, wxIconBundle::FALLBACK_NEAREST_LARGER);
+        
+    iconBundle = wxArtProvider::GetIconBundle(_T("applications-system"), wxART_OTHER);
+    if (iconBundle.GetIcon(imageSize, wxIconBundle::FALLBACK_NEAREST_LARGER).IsOk()) {
+        wxIcon systemsIcon = iconBundle.GetIcon(imageSize, wxIconBundle::FALLBACK_NEAREST_LARGER);
+        m_imageList->Add(systemsIcon);
+    } else {
+        m_imageList->Add(fallbackIcon);
+    }
+    
+    iconBundle = wxArtProvider::GetIconBundle(_T("applications-accessories"), wxART_OTHER);
+    if (iconBundle.GetIcon(imageSize, wxIconBundle::FALLBACK_NEAREST_LARGER).IsOk()) {
+        wxIcon accsIcon = iconBundle.GetIcon(imageSize, wxIconBundle::FALLBACK_NEAREST_LARGER);
+        m_imageList->Add(accsIcon);
+    } else {
+        m_imageList->Add(fallbackIcon);
+    }
+    
+    iconBundle = wxArtProvider::GetIconBundle(_T("applications-graphics"), wxART_OTHER);
+    if (iconBundle.GetIcon(imageSize, wxIconBundle::FALLBACK_NEAREST_LARGER).IsOk()) {
+        wxIcon gfxIcon = iconBundle.GetIcon(imageSize, wxIconBundle::FALLBACK_NEAREST_LARGER);
+        m_imageList->Add(gfxIcon);
+    } else {
+        m_imageList->Add(fallbackIcon);
+    }
 
     Create(win, wxID_ANY, _("SimDock - Preferences"), wxDefaultPosition, wxDefaultSize,
         wxDEFAULT_DIALOG_STYLE| wxRESIZE_BORDER);
