@@ -17,6 +17,7 @@
  */
 #ifndef MAIN_H_
 #define MAIN_H_
+#define NDEBUG 1
 #include <iostream>		//cout
 #include <stdlib.h>
 #include <unistd.h>
