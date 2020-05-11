@@ -197,7 +197,7 @@ PositionIcons (simSettings settings, ImagesArray* ImagesList, bool* changeIcons)
         positionX += img->w + settings.SPACER;
     }
     
-    return wxSize (availableSpace, settings.MAXSIZE);
+    return wxSize (availableSpace, settings.MAXSIZE + settings.BOTTOM_BORDER);
 }
 
 wxSize
@@ -309,11 +309,7 @@ MyApp::OnInit () {
     register_sigint (this);	// CTRL-C Handling
     
     frame->Show (TRUE);
-    frame->Freeze();
 
-    GtkWidget* widget = frame->GetHandle();
-    XID xid = GDK_WINDOW_XWINDOW(widget->window);
-    xstuff_resizeScreen(xid, *frame);
     if (settings.ENABLE_TASKS) {
 		tasks_fillList(ImagesList, settings);
 		tasks_register_signals(ImagesList, settings);
@@ -324,8 +320,10 @@ MyApp::OnInit () {
 		frame->Move (startPositionX, startPositionY);
     } else {
     	wxSize sz = wxGetDisplaySize();
-    	frame->Move ((sz.GetWidth() - frame->GetClientSize().GetWidth()) / 2, 
-    	sz.GetHeight() - frame->GetClientSize().GetHeight());
+    	frame->Move(
+                    (sz.GetWidth() - frame->GetClientSize().GetWidth()) / 2, 
+    	            sz.GetHeight()
+        );
     }
     //getting the background from root will only work at a late point
     //like this
@@ -337,9 +335,7 @@ MyApp::OnInit () {
         backImage = getRootWallpaper();
     }
     frame->SetWallpaper(backImage);
-	frame->Thaw();
-    xstuff_setDefaultWindowFlags(xid);
-    
+
     return TRUE;
 }
 

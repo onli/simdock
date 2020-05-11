@@ -24,7 +24,6 @@
 
 
 #include "main.h"
-#include "xstuff.h"
 
 
 class callbackArgs

@@ -172,6 +172,7 @@ wxFrame (parent, id, title, pos, size, style)
     appBackground = NULL;
     src_dc = NULL;
     backImage = NULL;
+    firstPaint = true;
 
     blurTimer = new wxTimer (this, ID_blur_Timer);
     blurTimer->Start (settings.BLUR_TIMEOUT);
@@ -893,6 +894,24 @@ MyFrame::OnPaint (wxPaintEvent & event) {
     if (showTooltip && hoveringIcon != None) {
         wxString tooltip = hoveringIcon->name;
         drawTooltip(gdc, tooltip, hoveringIcon);
+    }
+
+    WnckScreen *defaultScreen = wnck_screen_get_default ();
+    wnck_screen_force_update (defaultScreen);
+    GList *windowz = wnck_screen_get_windows (defaultScreen);
+
+    if (firstPaint) {
+        // The X window is only ready after the first paint started, but we need to do this only once
+        GtkWidget* widget = GetHandle();
+        XID xid = GDK_WINDOW_XWINDOW(widget->window);
+        WnckWindow *xWin = wnck_window_get(xid);
+        wnck_window_make_above(xWin);
+        wnck_window_stick(xWin);
+        wnck_window_pin(xWin);
+        wnck_window_set_window_type(xWin, WNCK_WINDOW_DOCK);
+        wnck_window_set_skip_pager(xWin, true);
+        wnck_window_set_skip_tasklist(xWin, true);
+        firstPaint = false;
     }
 
 }

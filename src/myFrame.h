@@ -122,6 +122,7 @@ private:
 
     bool middleClicked;
     wxPoint middleClick;
+    bool firstPaint;
 
     SettingsDialog *settingsDialog;
     void OnClose (wxCloseEvent & event);
