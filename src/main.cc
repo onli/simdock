@@ -322,7 +322,7 @@ MyApp::OnInit () {
     	wxSize sz = wxGetDisplaySize();
     	frame->Move(
                     (sz.GetWidth() - frame->GetClientSize().GetWidth()) / 2, 
-    	            sz.GetHeight()
+    	            sz.GetHeight() - frame->GetClientSize().GetHeight() + 30
         );
     }
     //getting the background from root will only work at a late point
