@@ -62,7 +62,7 @@ wxString get_selfpath() {
       buff[len] = '\0';
       return wxString::FromUTF8(buff);
     }
-    /* handle error condition */
+    return _T("");
 }
 
 wxFileName selfexe(get_selfpath());
