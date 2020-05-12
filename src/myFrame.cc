@@ -279,7 +279,7 @@ MyFrame::updateSize ()
 {
     int width = (settings.ICONW + settings.SPACER) * (ImagesList->GetCount ()) +
                     settings.LEFT_BORDER + settings.RIGHT_BORDER;
-    int height = settings.MAXSIZE + settings.BOTTOM_BORDER + settings.BG_HEIGHT;
+    int height = settings.MAXSIZE + settings.BOTTOM_BORDER;
 
     SetSize (width, height);
     if (settings.AUTO_POSITION) {
@@ -835,6 +835,7 @@ MyFrame::OnPaint (wxPaintEvent & event) {
     dc.Blit (0, 0, sz.GetWidth (), sz.GetHeight (), src_dc, framePos.x,
 	   framePos.y);
 
+    
     drawBmp (gdc, wxBitmap (*appBackground), 0,
 	   sz.GetHeight () - settings.BG_HEIGHT, appSize.GetWidth (),
 	   settings.BG_HEIGHT);
@@ -902,6 +903,12 @@ MyFrame::OnPaint (wxPaintEvent & event) {
         wnck_window_set_window_type(xWin, WNCK_WINDOW_DOCK);
         wnck_window_set_skip_pager(xWin, true);
         wnck_window_set_skip_tasklist(xWin, true);
+
+        // this helps wxwidgets to match internal and X height. Without setting the height here, the window will jump into form after an application is started
+        int xp, yp, widthp, heightp;
+        wnck_window_get_geometry(xWin, &xp, &yp, &widthp, &heightp);
+        int height = settings.MAXSIZE + settings.BOTTOM_BORDER;
+        wnck_window_set_geometry(xWin, WNCK_WINDOW_GRAVITY_CURRENT, WNCK_WINDOW_CHANGE_HEIGHT, xp, yp, widthp, height);
         firstPaint = false;
     }
 
