@@ -280,7 +280,7 @@ MyFrame::updateSize ()
 {
     int width = (settings.ICONW + settings.SPACER) * (ImagesList->GetCount ()) +
                     settings.LEFT_BORDER + settings.RIGHT_BORDER;
-    int height = settings.MAXSIZE + settings.BOTTOM_BORDER + 30;
+    int height = settings.MAXSIZE + settings.BOTTOM_BORDER + settings.BG_HEIGHT;
 
     SetSize (width, height);
     if (settings.AUTO_POSITION) {

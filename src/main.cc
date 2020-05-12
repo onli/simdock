@@ -321,8 +321,9 @@ MyApp::OnInit () {
     } else {
     	wxSize sz = wxGetDisplaySize();
     	frame->Move(
-                    (sz.GetWidth() - frame->GetClientSize().GetWidth()) / 2, 
-    	            sz.GetHeight() - frame->GetClientSize().GetHeight() + 30
+                    (sz.GetWidth() - frame->GetClientSize().GetWidth()) / 2,
+                    // BG_HEIGHT should not be necessary, but it seems liek GetHeight returns the wrong value
+    	            sz.GetHeight() - frame->GetClientSize().GetHeight() + settings.BG_HEIGHT
         );
     }
     //getting the background from root will only work at a late point
