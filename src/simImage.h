@@ -18,9 +18,12 @@
 #ifndef SIMIMAGE_H_
 #define SIMIMAGE_H_
 #define WNCK_I_KNOW_THIS_IS_UNSTABLE 1	// LOL !!
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include <libwnck/libwnck.h>
 #include "wx/wx.h"
 #include "librsvg/rsvg.h"
+#pragma GCC diagnostic pop
 
 #define MAX_BLUR 10
 #define PID_NONE 0

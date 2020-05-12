@@ -19,7 +19,11 @@
 #define TASKS_H_
 
 #define WNCK_I_KNOW_THIS_IS_UNSTABLE 1	// LOL !!
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include <libwnck/libwnck.h>
+#pragma GCC diagnostic pop
+
 #include "limits.h"
 
 

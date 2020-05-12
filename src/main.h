@@ -18,6 +18,8 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 #define NDEBUG 1
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include <iostream>		//cout
 #include <stdlib.h>
 #include <unistd.h>
@@ -58,7 +60,7 @@
 #include "wx/toolbook.h"
 #include "wx/stattext.h"
 #include "wx/filedlg.h"
-
+#pragma GCC diagnostic pop
 
 
 class simImage;
