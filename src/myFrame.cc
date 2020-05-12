@@ -66,7 +66,6 @@ EVT_MENU (ID_Delete, MyFrame::OnDelete)
 * Painting 
 */
 EVT_PAINT (MyFrame::OnPaint)
-EVT_ERASE_BACKGROUND (MyFrame::OnBackground) 
 END_EVENT_TABLE ()
 
 wxSize
@@ -165,7 +164,7 @@ MyFrame::MyFrame (wxWindow * parent, simSettings set, ImagesArray * array,
 		  wxWindowID id, const wxString & title, const wxPoint & pos,
 		  const wxSize & size, long style):
 wxFrame (parent, id, title, pos, size, style)
-{
+{    
     settings = set;
     ImagesList = array;
     markBitmap = NULL;
@@ -709,14 +708,6 @@ fade (wxImage * img, const int &intensity)
     }
 }
 #endif
-
-
-void
-MyFrame::OnBackground (wxEraseEvent & event)
-{
-
-}
-
 
 
 
