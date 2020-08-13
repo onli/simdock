@@ -26,7 +26,7 @@ and start it
 
 ### Ubuntu
 
-On launchpad, there is a [PPA with daily builds](https://launchpad.net/~onli/+archive/simdock). Add it with
+On launchpad, there is a [PPA with daily builds](https://launchpad.net/~onli/+archive/simdock), currently for Ubuntu versions up to 19.10. Add it with
 
     sudo add-apt-repository ppa:onli/simdock
 
@@ -34,16 +34,6 @@ and install simdock
 
     sudo apt-get update
     sudo apt-get install simdock
-    
-### Gentoo/Funtoo
-
-Use the [overlay](https://github.com/onli/overlay ) with layman
-
-    layman -o https://raw.github.com/onli/overlay/master/repositories.xml -f -a onli
-    
-and install with emerge
-
-    emerge simdock
 
 
 ### Manually
