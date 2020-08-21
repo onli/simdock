@@ -65,6 +65,7 @@ bool taskInfo::Init (WnckWindow* window) {
     return true;
 }
 
+// Return true if both simImages belong to the same application
 bool taskInfo::compareWith (simImage * img) {
     if (name.IsEmpty() || img->link.IsEmpty()) {
         return false;
@@ -124,7 +125,6 @@ int tasks_getProcessName (unsigned int pid, char *target_name, int size_targetna
 }
 
 static void tasks_window_closed (WnckScreen *screen, WnckWindow *window,callbackArgs* ca) {
-    
     if (!WNCK_IS_WINDOW (window) || wnck_window_is_skip_tasklist (window)) {
         return;
     }
@@ -133,17 +133,16 @@ static void tasks_window_closed (WnckScreen *screen, WnckWindow *window,callback
     if (!ImagesList) {
         return;
     }
-    
+
     for (unsigned int i = 0; i < ImagesList->GetCount (); i++) {
         simImage *img = (*ImagesList)[i];
 
         if (img->hasWindow(window)) {
-              img->removeWindow(window);
-              if (img->task && img->windowCount() == 0) {
-                  delete img;
-                  ImagesList->RemoveAt (i);
-                wxGetApp().updateSize();          
-              } else if (img->windowCount() == 0) {
+            img->removeWindow(window);
+            if (img->task && img->windowCount() == 0) {
+                delete img;
+                ImagesList->RemoveAt (i);
+            } else if (img->windowCount() == 0) {
                 // we need to fall back to the default image, if a starter
                 img->loadImage(img->img_link);
             }
@@ -156,13 +155,12 @@ static void tasks_window_closed (WnckScreen *screen, WnckWindow *window,callback
                     img->img = ti.icon.ConvertToImage();
                 }
             }
-            
             wxGetApp().frame->appSize = FirstPosition(ca->settings, ImagesList);
             wxGetApp().updateSize();
             wxGetApp().refresh();
             return;
         }
-    }    
+    }
 }
 
 static void tasks_window_opened (WnckScreen *screen, WnckWindow *window, callbackArgs* ca) {
@@ -171,23 +169,23 @@ static void tasks_window_opened (WnckScreen *screen, WnckWindow *window, callbac
         return;
     }
 
-    if (wnck_window_is_skip_tasklist (window)) {
-      return;
+    if (!WNCK_IS_WINDOW (window) || wnck_window_is_skip_tasklist (window)) {
+        return;
     }
     
     ImagesArray * ImagesList = ca->ImagesList;
     simSettings settings = ca->settings;
     taskInfo ti;
     ti.Init(window);
-    
+
     for (int i = 0; i < ImagesList->GetCount (); i++) {
         simImage *img = (*ImagesList)[i];
 
         if (ti.compareWith (img)) {
             img->addWindow(window);
             img->pid = ti.pid;
-            // refresh the icon, cause sometimes the splash-screen has not
-            // a valid icon, but the program does
+            // refresh the icon, cause sometimes the splash-screen has no
+            // valid icon, but the program does
             if (img->task) {
                 // but don't do that for starters, as we want to preserve their image
                 img->img = ti.icon.ConvertToImage();
@@ -256,8 +254,6 @@ void tasks_addNewImage(WnckWindow *window, ImagesArray* ImagesList, simSettings 
         printf("addNewImage::Null argument\n");
         return;    
     }
-    
-
     simImage *si = new simImage (ti.icon.ConvertToImage (), _T (" "), ti.name, ti.name, _T (" "), 1);
 
     si->addWindow(window);
@@ -272,6 +268,7 @@ void tasks_addNewImage(WnckWindow *window, ImagesArray* ImagesList, simSettings 
     wxGetApp().frame->appSize = FirstPosition(settings, ImagesList);
     wxGetApp().updateSize();
     wxGetApp().refresh();
+    wxGetApp().update();
 }
 
 void tasks_fillList (ImagesArray * ImagesList, simSettings settings) {
