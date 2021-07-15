@@ -895,7 +895,7 @@ MyFrame::OnPaint (wxPaintEvent & event) {
     if (firstPaint) {
         // The X window is only ready after the first paint started, but we need to do this only once
         GtkWidget* widget = GetHandle();
-        XID xid = GDK_WINDOW_XWINDOW(widget->window);
+        XID xid = GDK_WINDOW_XID(gtk_widget_get_window(widget));
         WnckWindow *xWin = wnck_window_get(xid);
         wnck_window_make_above(xWin);
         wnck_window_stick(xWin);
