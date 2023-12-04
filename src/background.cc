@@ -25,6 +25,7 @@ wxBitmap* getRootWallpaper()
     wxBitmap* backImage = new wxBitmap();
     WnckScreen *screen = wnck_screen_get_default ();
 
+	// This is the X window ID of the desktop
     Pixmap pm = wnck_screen_get_background_pixmap(screen);
     int i = 0;
     while(i < 5)
@@ -38,12 +39,21 @@ wxBitmap* getRootWallpaper()
     }
     
     if (pm != None) {
-         wxBitmap* backImage = new wxBitmap(
-                            gdk_pixmap_foreign_new(
-                                pm
-                                )
-                            );
-		  return backImage;
+		  wxSize sz = wxGetDisplaySize();
+	  	  wxBitmap* backImage = new wxBitmap(
+			  gdk_pixbuf_get_from_window(
+				  gdk_x11_window_foreign_new_for_display(
+					  gdk_display_get_default(),
+					  pm
+				  ),
+				  0,
+				  0,
+				  sz.GetWidth(),
+				  sz.GetHeight()
+			  )
+			);
+         );
+		return backImage;
     } else {
         wxSize sz = wxGetDisplaySize();
 		wxBitmap* backImage = new wxBitmap(sz.GetWidth(), sz.GetHeight());
