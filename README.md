@@ -14,33 +14,13 @@ This is simdock, an eye-candy deskbar for Linux.
 
 ## Install
 
-### AppImage
+Currently, simdock has to be compiled manually. The main dependencies are wxWidgets and GTK3.
 
-You can use simdock without install by downloading the continous AppImage build from the [release page](https://github.com/onli/simdock/releases). Then make it executable
+1. Install dependencies.
 
-    chmod +x ~/Downloads/Simdock*.AppImage
-    
-and start it
+    Under Void Linux:
 
-    ~/Downloads/Simdock*.AppImage
-
-### Ubuntu
-
-On launchpad, there is a [PPA with daily builds](https://launchpad.net/~onli/+archive/simdock), currently for Ubuntu versions up to 19.10. Add it with
-
-    sudo add-apt-repository ppa:onli/simdock
-
-and install simdock
-
-    sudo apt-get update
-    sudo apt-get install simdock
-
-
-### Manually
-
-1. Install dependencies. Under Ubuntu:
-
-        sudo apt-get install pkg-config libglib2.0-dev libgconf2-dev libgtk2.0-dev libwnck-dev libwxgtk3.0-dev libxcb1-dev libxcb-ewmh-dev xcb-proto librsvg2-dev
+        sudo xbps-install pkg-config wxWidgets-gtk3-devel librsvg-devel xcb-ewmh libwnck-devel GConf-devel make gcc
 
 1. Type `make` to compile
 1. Type `sudo make install` to install
