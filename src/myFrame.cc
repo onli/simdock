@@ -221,12 +221,15 @@ MyFrame::SetWallpaper (wxBitmap * newBitmap)
 {
     if (backImage)
         delete (backImage);
-    if (src_dc)
-        delete src_dc;
 
     backImage = newBitmap;
-    if (backImage->GetHeight() > 0) { 
-        src_dc = new wxMemoryDC(*backImage);
+    if (backImage->GetHeight() > 0) {
+        if (src_dc) {
+            src_dc->Clear();
+            src_dc->SelectObject(*backImage);
+        } else {
+            src_dc = new wxMemoryDC(*backImage);
+        }
     }
     Refresh(true);
 }
