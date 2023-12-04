@@ -199,8 +199,18 @@ static void tasks_window_opened (WnckScreen *screen, WnckWindow *window, callbac
 }
 
 void tasks_window_background_change (WnckScreen *screen, WnckWindow *window, callbackArgs* ca) {
-    wxBitmap* backImage = getRootWallpaper();
-    wxGetApp().SetWallpaper(backImage);
+    // The signal arrives before the background is actually changed. The small sleep workarounds this issue.
+    wxMilliSleep(20);
+    // Now we hide the app, because getRootWallpaper() since the switch to GTK3 also sees simdock itself
+    wxGetApp().frame->SetTransparent(0);
+    wxGetApp().frame->Hide();
+    wxGetApp().frame->Disable();
+    wxGetApp().CallAfter([]{
+        // The use of CallAfter is needed, otheerwise the app won't be hidden while getRoootWallpaper runs
+        wxBitmap* backImage = getRootWallpaper();
+        wxGetApp().SetWallpaper(backImage);
+    });
+    
 }
 
 void tasks_track_active_window (WnckScreen *screen, WnckWindow *window, callbackArgs* ca) {

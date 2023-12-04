@@ -40,6 +40,16 @@ wxBitmap* getRootWallpaper()
     
     if (pm != None) {
 		wxSize sz = wxGetDisplaySize();
+		// Note: This code to hide the app is duplicated with the outer call in tasks.cc, but this is needed for first app start
+		wxGetApp().frame->SetTransparent(0);
+		wxGetApp().frame->Hide();
+		wxGetApp().frame->Disable();
+		// Give the main UI thread a chance to hide the app first
+		while(wxGetApp().frame->IsShown()) {
+			wxMilliSleep(20);
+		}
+		// This sleep should be unnecessary, but without it the UI will not be hidden in the next step
+		wxMilliSleep(20);
 		wxBitmap* backImage = new wxBitmap(
 			gdk_pixbuf_get_from_window(
 				gdk_x11_window_foreign_new_for_display(
@@ -52,6 +62,9 @@ wxBitmap* getRootWallpaper()
 				sz.GetHeight()
 			)
 		  );
+		wxGetApp().frame->Show();
+		wxGetApp().frame->SetTransparent(255);
+		wxGetApp().frame->Enable();
 		return backImage;
     } else {
         wxSize sz = wxGetDisplaySize();
