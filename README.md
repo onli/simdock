@@ -1,5 +1,4 @@
 # Simdock
-[![Build Status](https://travis-ci.com/onli/simdock.svg?branch=master)](https://travis-ci.com/onli/simdock)
 
 This is simdock, an eye-candy deskbar for Linux.
 
