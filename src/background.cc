@@ -44,7 +44,7 @@ wxBitmap* getRootWallpaper()
 			  gdk_pixbuf_get_from_window(
 				  gdk_x11_window_foreign_new_for_display(
 					  gdk_display_get_default(),
-					  pm
+					  gdk_x11_get_default_root_xwindow()
 				  ),
 				  0,
 				  0,
@@ -52,8 +52,14 @@ wxBitmap* getRootWallpaper()
 				  sz.GetHeight()
 			  )
 			);
-         );
-		return backImage;
+          //wxBitmap* backImage = new wxBitmap(
+          //                  gdk_pixbuf_get_from_window(
+          //                      gdk_x11_window_foreign_new_for_display(
+			//						GDK_SCREEN_XDISPLAY(screen),
+			//						pm)
+          //                      )
+          //                  );
+		  return backImage;
     } else {
         wxSize sz = wxGetDisplaySize();
 		wxBitmap* backImage = new wxBitmap(sz.GetWidth(), sz.GetHeight());
