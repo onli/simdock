@@ -163,8 +163,12 @@ void drawTooltip(wxGCDC* dc, wxString tooltip, simImage* hoveringIcon)
 MyFrame::MyFrame (wxWindow * parent, simSettings set, ImagesArray * array,
 		  wxWindowID id, const wxString & title, const wxPoint & pos,
 		  const wxSize & size, long style):
-wxFrame (parent, id, title, pos, size, style)
-{    
+wxFrame()
+{
+    // This enables full composited transparency:
+    SetBackgroundStyle(wxBG_STYLE_TRANSPARENT);
+    Create(parent, id, title, pos, size, style);
+    
     settings = set;
     ImagesList = array;
     markBitmap = NULL;
@@ -194,8 +198,11 @@ wxFrame (parent, id, title, pos, size, style)
     draggedStart = 0;
 
     showTooltip = false;
-    
-    SetBackgroundStyle(wxBG_STYLE_PAINT); // needed since wx2.9.1 for the autodc in onPaint
+
+    if (! IsTransparentBackgroundSupported()) {
+        // needed since wx2.9.1 for the autodc in onPaint
+        SetBackgroundStyle(wxBG_STYLE_PAINT); 
+    }
 }
 
 
@@ -835,14 +842,15 @@ MyFrame::OnPaint (wxPaintEvent & event) {
     wxPoint framePos = this->GetScreenPosition ();
     wxSize sz = GetClientSize ();
 
-    dc.Blit (0, 0, sz.GetWidth (), sz.GetHeight (), src_dc, framePos.x,
-	   framePos.y);
-
+    if (! IsTransparentBackgroundSupported()) {
+        // Paint the pseudo-transparency bg only if we have no real transparency
+        dc.Blit (0, 0, sz.GetWidth (), sz.GetHeight (), src_dc, framePos.x,
+        framePos.y);
+    }
     
     drawBmp (gdc, wxBitmap (*appBackground), 0,
-	   sz.GetHeight () - settings.BG_HEIGHT, appSize.GetWidth (),
-	   settings.BG_HEIGHT);
-
+        sz.GetHeight () - settings.BG_HEIGHT, appSize.GetWidth (),
+        settings.BG_HEIGHT);
 
     for (unsigned int i = 0; i < ImagesList->GetCount (); i++)
     {
