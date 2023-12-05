@@ -1,7 +1,7 @@
 .PHONY: build upload
 
 build:
-	@wget -c -nv "https://github.com/TheAssassin/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
+	@wget -c -nv "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
 	@wget -c "https://raw.githubusercontent.com/linuxdeploy/linuxdeploy-plugin-gtk/master/linuxdeploy-plugin-gtk.sh"
 	@chmod a+x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-gtk.sh
 	@unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
