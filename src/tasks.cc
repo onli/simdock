@@ -26,9 +26,7 @@ bool taskInfo::Init (WnckWindow* window) {
 
     /* First set the icon. This will work always, as wnck_window_get_icon
     returns a fallbackicon if necessary, the rest may fail */
-
-    // enable this after moving to wnck 3
-    //wnck_set_default_icon_size(128); 
+    wnck_set_default_icon_size(256); 
     GdkPixbuf* pb = gdk_pixbuf_copy(wnck_window_get_icon (window));
     
     wxBitmap* bmp = new wxBitmap(pb);
