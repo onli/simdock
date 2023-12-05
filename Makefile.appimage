@@ -5,7 +5,7 @@ build:
 	@chmod a+x linuxdeployqt-continuous-x86_64.AppImage
 	@unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
 	@export VERSION=$(git rev-parse --short HEAD)
-	@./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage
+	@./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage -extra-plugins=iconengines,platformthemes/libqgtk3.so
 
 upload:
 	@find appdir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq

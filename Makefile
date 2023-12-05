@@ -21,16 +21,13 @@ all:
 	$(CC) $(CCFLAGS) $(SRCDIR)*.cc $(DEPS) $(LDLIBS) -o simdock
 
 install: 
-	@install -d "$(DESTDIR)$(BINDIR)" "$(DESTDIR)$(APPDIR)" "$(DESTDIR)$(ICONDIR)"
+	@install -d "$(DESTDIR)$(BINDIR)" "$(DESTDIR)$(APPDIR)" "$(DESTDIR)$(ICONDIR)" "$(DESTDIR)$(PREFIX)/share/applications/" "$(DESTDIR)$(PREFIX)/share/icons/hicolor/256x256/apps/" "$(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/"
 	@install -m 0755 -v simdock "$(DESTDIR)$(BINDIR)/simdock"
 	@install -m 0644 -v gfx/* "$(DESTDIR)$(APPDIR)/"
 	@install -m 0644 -v gfx/simdock.png "$(DESTDIR)$(ICONDIR)/"
-	@mkdir -p "$(DESTDIR)/usr/share/applications/"
-	@install -m 0644 -v simdock.desktop "$(DESTDIR)/usr/share/applications/"
-	@mkdir -p "$(DESTDIR)/usr/share/icons/hicolor/256x256/apps/"
-	@install -m 0644 -v gfx/simdock.png "$(DESTDIR)/usr/share/icons/hicolor/256x256/apps/"
-	@mkdir -p "$(DESTDIR)/usr/share/icons/hicolor/scalable/apps/"
-	@install -m 0644 -v gfx/simdock.svg "$(DESTDIR)/usr/share/icons/hicolor/scalable/apps/"
+	@install -m 0644 -v simdock.desktop "$(DESTDIR)$(PREFIX)/share/applications/"
+	@install -m 0644 -v gfx/simdock.png "$(DESTDIR)$(PREFIX)/share/icons/hicolor/256x256/apps/"
+	@install -m 0644 -v gfx/simdock.svg "$(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/"
 
 uninstall:
 	@rm -vf "$(DESTDIR)$(BINDIR)/simdock" "$(DESTDIR)$(APPDIR)/*" "$(DESTDIR)$(ICONDIR)/simdock.png"
