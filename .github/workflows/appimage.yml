@@ -16,3 +16,5 @@ jobs:
         run: make -f Makefile.appimage build
       - name: Upload AppImage
         run: make -f Makefile.appimage upload
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
