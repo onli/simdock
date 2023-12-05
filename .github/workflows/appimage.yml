@@ -4,13 +4,13 @@ jobs:
   Create-Appimage:
     runs-on: ubuntu-20.04
     steps:
-	  - name: Install dependencies
-	    run: sudo apt-get -y install pkg-config libglib2.0-dev libgconf2-dev libgtk-3-dev libwnck-3-dev libwxgtk3.0-gtk3-dev libxcb1-dev libxcb-ewmh-dev xcb-proto librsvg2-dev
-	  - name: Compile software
-	    run: make
-	  - name: Install into appdir
-	    run: DESTDIR=appdir make install
-	  - name: Build AppImage
-	    run: make -f Makefile.appimage build
-	  - name: Upload AppImage
-	    run: make -f Makefile.appimage upload
+      - name: Install dependencies
+        run: sudo apt-get -y install pkg-config libglib2.0-dev libgconf2-dev libgtk-3-dev libwnck-3-dev libwxgtk3.0-gtk3-dev libxcb1-dev libxcb-ewmh-dev xcb-proto librsvg2-dev
+      - name: Compile software
+        run: make
+      - name: Install into appdir
+        run: DESTDIR=appdir make install
+      - name: Build AppImage
+        run: make -f Makefile.appimage build
+      - name: Upload AppImage
+        run: make -f Makefile.appimage upload
