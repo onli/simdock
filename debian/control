@@ -2,7 +2,7 @@ Source: simdock
 Section: x11
 Priority: extra
 Maintainer: onli <onli@paskuda.biz>
-Build-Depends: debhelper (>= 8.0.0), libglib2.0-dev, libgconf2-dev, libgtk2.0-dev, libwnck-dev, libwxgtk3.0-dev, libxcb1-dev, libxcb-ewmh-dev | libxcb-ewmh1-dev, xcb-proto, librsvg2-dev
+Build-Depends: debhelper (>= 8.0.0), libglib2.0-dev, libgconf2-dev, libwnck-3-dev, libwxgtk3.0-gtk3-dev |  libwxgtk3.2-dev, libxcb1-dev, libxcb-ewmh-dev | libxcb-ewmh1-dev, xcb-proto, librsvg2-dev
 Standards-Version: 3.9.2
 Homepage: https://github.com/onli/simdock
 #Vcs-Git: git://git.debian.org/collab-maint/simdock.git
@@ -10,6 +10,6 @@ Homepage: https://github.com/onli/simdock
 
 Package: simdock
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libglib2.0-0, libgconf-2-4, libgtk2.0-0, libwnck22, libwxgtk3.0-0 | libwxgtk3.0-0v5, libxcb1, libxcb-ewmh2 | libxcb-ewmh1, xcb-proto, librsvg2-2
+Depends: ${shlibs:Depends}, ${misc:Depends}, libglib2.0-0, libgconf-2-4, libwnck-3-0, libwxgtk3.0-gtk3-0v5 | libwxgtk3.2-1, libxcb1, libxcb-ewmh2 | libxcb-ewmh1, xcb-proto, librsvg2-2
 Description: light and fast dock
 
