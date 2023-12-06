@@ -1,8 +1,10 @@
 name: Create Appimage
 on:
   push:
-    tags-ignore: 
+    branches:
     - '**'
+    tags: 
+    - '!*'
 jobs:
   Create-Appimage:
     runs-on: ubuntu-20.04
