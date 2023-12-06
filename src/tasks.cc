@@ -138,18 +138,18 @@ static void tasks_window_closed (WnckScreen *screen, WnckWindow *window,callback
         if (img->hasWindow(window)) {
             img->removeWindow(window);
             if (img->task && img->windowCount() == 0) {
+                // This can be safely deleted, it is not a starter and all windows are closed
                 delete img;
                 ImagesList->RemoveAt (i);
             } else if (img->windowCount() == 0) {
-                // we need to fall back to the default image, if a starter
+                // we need to fall back to the default image, as it is a permanent starter
                 img->loadImage(img->img_link);
-            }
-
-            if (img->windowCount() > 0) {
+            } else if (img->windowCount() > 0) {
                 taskInfo ti;
                 ti.Init(img->getWindow());
                 if (img->task) {
-                    // starters still have their own image we prefer to use
+                    // starters still have their own image we prefer to use, so we only do
+                    // this for the non-starters
                     img->img = ti.icon.ConvertToImage();
                 }
             }

@@ -25,6 +25,8 @@ simImage::simImage()
   blur = 0;
   pid = PID_NONE;
   lastWindow = 0;
+  // Task gets set to true when this simImage is connected to a currently open window
+  // and iff it is not a permanent starter
   task = false;
 }
 
