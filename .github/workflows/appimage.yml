@@ -1,5 +1,6 @@
 name: Create Appimage
 on: [push]
+tags-ignore: *
 jobs:
   Create-Appimage:
     runs-on: ubuntu-20.04
