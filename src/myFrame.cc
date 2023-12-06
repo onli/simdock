@@ -539,9 +539,11 @@ MyFrame::OnDelete (wxCommandEvent & event)
         delete (*ImagesList)[clickedID];
         ImagesList->RemoveAt (clickedID);
     }
+    appSize = FirstPosition(settings, ImagesList);
     saveLaunchers(ImagesList);
     updateSize();
     Refresh (false);
+    Update();
 }
 
 void
