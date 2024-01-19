@@ -67,7 +67,7 @@ class simSettings;
 class MyApp;
 WX_DEFINE_ARRAY (simImage *, ImagesArray);
 
-#define SIMDOCK_VERSION "2.0"
+#define SIMDOCK_VERSION "3.0"
 #define SIMDOCK_WEBSITE "https://github.com/onli/simdock"
 //#define SIMDOCK_DEBUG
 //#define SIMDOCK_DEBUG_ICON_POSITIONING //this is very verbose
