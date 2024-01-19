@@ -20,6 +20,8 @@
 #define GCONF_SETTINGS_H
 
 #include "simSettings.h"
+#include <wx/config.h>
+#include <iostream>		//cout
 
 // Gconf does not accept slash-ended strings as keys. Just in case
 #define APPLICATION_PATH "/apps/simdock/" 
@@ -48,10 +50,10 @@
 #define GCONF_WALLPAPER_URL "wallpaper_url"
 
 
-/* Loads simdock settings from libgconf2 */
+/* Loads simdock settings into given struct */
 void simGconf_loadSettings (simSettings* data);
 
-/* Loads last simdock position using libgconf2 */
+/* Loads last simdock position  */
 void simGconf_loadPosition (int* x, int* y);
 
 

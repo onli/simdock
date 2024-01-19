@@ -16,7 +16,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "sim_gconf.h"
 #include "gconf_settings.h"
 
 using namespace std;
@@ -26,77 +25,73 @@ using namespace std;
 void simGconf_loadSettings (simSettings* data)
 {
 
-    GConfClient *client = SimGconf::GetClient ();
+    wxConfigBase* config = wxConfig::Get();
     
-    SimGconf::GetInt(client, APPLICATION_PATH GCONF_LEFT_BORDER, &data->LEFT_BORDER);
-    SimGconf::GetInt(client, APPLICATION_PATH GCONF_RIGHT_BORDER, &data->RIGHT_BORDER);
-    SimGconf::GetInt(client, APPLICATION_PATH GCONF_BOTTOM_BORDER, &data->BOTTOM_BORDER);
-    SimGconf::GetInt(client, APPLICATION_PATH GCONF_ICON_WIDTH, &data->ICONW);
-    SimGconf::GetInt(client, APPLICATION_PATH GCONF_ICON_HEIGHT, &data->ICONH);
-    SimGconf::GetInt(client, APPLICATION_PATH GCONF_ZOOM, &data->PERCENT);
-    SimGconf::GetInt(client, APPLICATION_PATH GCONF_RANGE, &data->RANGE);
-    SimGconf::GetInt(client, APPLICATION_PATH GCONF_BG_HEIGHT, &data->BG_HEIGHT);
-    SimGconf::GetInt(client, APPLICATION_PATH GCONF_SPACER, &data->SPACER);
-    SimGconf::GetInt(client, APPLICATION_PATH GCONF_BLUR_TIMEOUT, &data->BLUR_TIMEOUT);
-    SimGconf::GetString(client, APPLICATION_PATH GCONF_BG_URL, &data->BG_PATH);
+    config->Read(GCONF_LEFT_BORDER, &data->LEFT_BORDER);
+    config->Read(GCONF_RIGHT_BORDER, &data->RIGHT_BORDER);
+    config->Read(GCONF_BOTTOM_BORDER, &data->BOTTOM_BORDER);
+    config->Read(GCONF_ICON_WIDTH, &data->ICONW);
+    config->Read(GCONF_ICON_HEIGHT, &data->ICONH);
+    config->Read(GCONF_ZOOM, &data->PERCENT);
+    config->Read(GCONF_RANGE, &data->RANGE);
+    config->Read(GCONF_BG_HEIGHT, &data->BG_HEIGHT);
+    config->Read(GCONF_SPACER, &data->SPACER);
+    config->Read(GCONF_BLUR_TIMEOUT, &data->BLUR_TIMEOUT);
+    config->Read(GCONF_BG_URL, &data->BG_PATH);
     
-    SimGconf::GetBool(client, APPLICATION_PATH GCONF_SHOW_REFLEXES, &data->SHOW_REFLEXES);
-    SimGconf::GetInt(client, APPLICATION_PATH GCONF_REFLEX_SCALING, &data->REFLEX_SCALING);
-    SimGconf::GetInt(client, APPLICATION_PATH GCONF_REFLEX_ALPHA, &data->REFLEX_ALPHA);
-    SimGconf::GetBool(client, APPLICATION_PATH GCONF_AUTO_POSITION, &data->AUTO_POSITION);
-    SimGconf::GetBool(client, APPLICATION_PATH GCONF_ENABLE_TASKS, &data->ENABLE_TASKS);
+    config->Read(GCONF_SHOW_REFLEXES, &data->SHOW_REFLEXES);
+    config->Read(GCONF_REFLEX_SCALING, &data->REFLEX_SCALING);
+    config->Read(GCONF_REFLEX_ALPHA, &data->REFLEX_ALPHA);
+    config->Read(GCONF_AUTO_POSITION, &data->AUTO_POSITION);
+    config->Read(GCONF_ENABLE_TASKS, &data->ENABLE_TASKS);
 
-    SimGconf::GetBool(client, APPLICATION_PATH GCONF_ENABLE_MINIMIZE, &data->ENABLE_MINIMIZE);
-    SimGconf::GetBool(client, APPLICATION_PATH GCONF_FAST_ANIMATIONS, &data->FAST_ANIMATIONS);
-
-    g_object_unref (client);
+    config->Read(GCONF_ENABLE_MINIMIZE, &data->ENABLE_MINIMIZE);
+    config->Read(GCONF_FAST_ANIMATIONS, &data->FAST_ANIMATIONS);
 }
 
 void simGconf_loadPosition (int* x, int* y)
 {
-        GConfClient *client = SimGconf::GetClient ();
+    wxConfigBase* config = wxConfig::Get();
 
-	SimGconf::GetInt(client, APPLICATION_PATH GCONF_SETTINGS_X, x);
-        SimGconf::GetInt(client, APPLICATION_PATH GCONF_SETTINGS_Y, y);
-
-  	g_object_unref (client);
+	config->Read(GCONF_SETTINGS_X, x);
+    config->Read(GCONF_SETTINGS_Y, y);
 }
 
 void
 simGconf_saveSettings (struct simSettings* data)
 {
-    GConfClient *client = SimGconf::GetClient ();
+    wxConfigBase* config = wxConfig::Get();
 
-    SimGconf::SetInt(client, APPLICATION_PATH GCONF_LEFT_BORDER, &data->LEFT_BORDER);
-    SimGconf::SetInt(client, APPLICATION_PATH GCONF_RIGHT_BORDER, &data->RIGHT_BORDER);
-    SimGconf::SetInt(client, APPLICATION_PATH GCONF_BOTTOM_BORDER, &data->BOTTOM_BORDER);
-    SimGconf::SetInt(client, APPLICATION_PATH GCONF_ICON_WIDTH, &data->ICONW);
-    SimGconf::SetInt(client, APPLICATION_PATH GCONF_ICON_HEIGHT, &data->ICONH);
-    SimGconf::SetInt(client, APPLICATION_PATH GCONF_ZOOM, &data->PERCENT);
-    SimGconf::SetInt(client, APPLICATION_PATH GCONF_RANGE, &data->RANGE);
-    SimGconf::SetInt(client, APPLICATION_PATH GCONF_BG_HEIGHT, &data->BG_HEIGHT);
-    SimGconf::SetInt(client, APPLICATION_PATH GCONF_SPACER, &data->SPACER);
-    SimGconf::SetInt(client, APPLICATION_PATH GCONF_BLUR_TIMEOUT, &data->BLUR_TIMEOUT);
-    SimGconf::SetString(client, APPLICATION_PATH GCONF_BG_URL, &data->BG_PATH);
-    SimGconf::SetBool(client, APPLICATION_PATH GCONF_SHOW_REFLEXES, &data->SHOW_REFLEXES);
-    SimGconf::SetInt(client, APPLICATION_PATH GCONF_REFLEX_SCALING, &data->REFLEX_SCALING);
-    SimGconf::SetInt(client, APPLICATION_PATH GCONF_REFLEX_ALPHA, &data->REFLEX_ALPHA);
-    SimGconf::SetBool(client, APPLICATION_PATH GCONF_AUTO_POSITION, &data->AUTO_POSITION);
-    SimGconf::SetBool(client, APPLICATION_PATH GCONF_ENABLE_TASKS, &data->ENABLE_TASKS);
+    config->Write(GCONF_LEFT_BORDER, data->LEFT_BORDER);
+    config->Write(GCONF_RIGHT_BORDER, data->RIGHT_BORDER);
+    config->Write(GCONF_BOTTOM_BORDER, data->BOTTOM_BORDER);
+    config->Write(GCONF_ICON_WIDTH, data->ICONW);
+    config->Write(GCONF_ICON_HEIGHT, data->ICONH);
+    config->Write(GCONF_ZOOM, data->PERCENT);
+    config->Write(GCONF_RANGE, data->RANGE);
+    config->Write(GCONF_BG_HEIGHT, data->BG_HEIGHT);
+    config->Write(GCONF_SPACER, data->SPACER);
+    config->Write(GCONF_BLUR_TIMEOUT, data->BLUR_TIMEOUT);
+    config->Write(GCONF_BG_URL, data->BG_PATH);
+    config->Write(GCONF_SHOW_REFLEXES, data->SHOW_REFLEXES);
+    config->Write(GCONF_REFLEX_SCALING, data->REFLEX_SCALING);
+    config->Write(GCONF_REFLEX_ALPHA, data->REFLEX_ALPHA);
+    config->Write(GCONF_AUTO_POSITION, data->AUTO_POSITION);
+    config->Write(GCONF_ENABLE_TASKS, data->ENABLE_TASKS);
     
-    SimGconf::SetBool(client, APPLICATION_PATH GCONF_ENABLE_MINIMIZE, &data->ENABLE_MINIMIZE);
-    SimGconf::SetBool(client, APPLICATION_PATH GCONF_FAST_ANIMATIONS, &data->FAST_ANIMATIONS);
+    config->Write(GCONF_ENABLE_MINIMIZE, data->ENABLE_MINIMIZE);
+    config->Write(GCONF_FAST_ANIMATIONS, data->FAST_ANIMATIONS);
 
-    g_object_unref (client);
+    config->Flush();
 
 }
 
 void simGconf_savePosition(int x, int y)
 {
-	GConfClient *client = SimGconf::GetClient ();
+	wxConfigBase* config = wxConfig::Get();
 	
-	SimGconf::SetInt(client, APPLICATION_PATH GCONF_SETTINGS_X, &x);
-        SimGconf::SetInt(client, APPLICATION_PATH GCONF_SETTINGS_Y, &y);
+	config->Write(APPLICATION_PATH GCONF_SETTINGS_X, x);
+    config->Write(GCONF_SETTINGS_Y, y);
 	
-	g_object_unref (client);
+	config->Flush();
 }

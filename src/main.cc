@@ -256,6 +256,14 @@ MyApp::OnInit () {
 	
 	ImagesList = new ImagesArray ();
 	wxInitAllImageHandlers ();
+
+	// The default wxConfig configuration would try to create .simdock as a config file. But we
+	// already create a directory there. Because of that we have to configure wxwidgets to use a
+	// different config instead.
+	// Note: This likely has the drawback of forcing a FileConfig even when a registry would be
+	// 		 used by default instead
+	wxConfigBase* config = new wxFileConfig(wxEmptyString, wxEmptyString, ".config/simdock");
+	wxConfigBase::Set(config);
     	
     //default values 
 	simSettings settings = {

@@ -1,6 +1,8 @@
 #ifndef _SIMSETTINGS_H
 #define _SIMSETTINGS_H
 
+#include <wx/string.h>
+
 struct simSettings {
     int LEFT_BORDER;
     int RIGHT_BORDER;

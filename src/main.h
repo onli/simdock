@@ -28,7 +28,6 @@
 #include <fstream>
 
 #include <glib.h>
-#include <gconf/gconf-client.h>
 #include <gdk/gdkx.h>
 
 
@@ -76,7 +75,6 @@ WX_DEFINE_ARRAY (simImage *, ImagesArray);
 #include "settingsDialog.h"
 
 #include "myFrame.h"
-//#include "getBg.h"
 #include "gconf_settings.h"
 #include "background.h"
 
