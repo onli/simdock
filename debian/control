@@ -10,6 +10,6 @@ Homepage: https://github.com/onli/simdock
 
 Package: simdock
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libglib2.0-0, libgconf-2-4, libwnck-3-0, libwxgtk3.0-gtk3-0v5 | libwxgtk3.2-1, libxcb1, libxcb-ewmh2 | libxcb-ewmh1, xcb-proto, librsvg2-2
+Depends: ${shlibs:Depends}, ${misc:Depends}, libglib2.0-0, libwnck-3-0, libwxgtk3.0-gtk3-0v5 | libwxgtk3.2-1, libxcb1, libxcb-ewmh2 | libxcb-ewmh1, xcb-proto, librsvg2-2
 Description: light and fast dock
 
