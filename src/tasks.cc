@@ -201,12 +201,26 @@ void tasks_window_background_change (WnckScreen *screen, WnckWindow *window, cal
         // With real transparency enabled we have to do nothing here
         return;
     }
-    if (! wxGetApp().frame->IsExposed(wxGetApp().frame->GetRect())) {
+    /*if (! wxGetApp().frame->IsExposed(wxGetApp().frame->GetRect())) {
         // TODO: IsExposed does not work, it always thinks it's not exposed
         std::cout << "not exposed" << "\n";
         // If simdock itself is covered, the fetched background will be unusable, so we stop
         return;
+    }*/
+
+    GtkWidget* widget = wxGetApp().frame->GetHandle();
+    GdkWindow* gdkWindow = gtk_widget_get_window(widget);
+    cairo_region_t* visibleRegion = gdk_window_get_visible_region(gdkWindow);
+    cairo_rectangle_int_t* extents = new cairo_rectangle_int_t();
+    cairo_region_get_extents(visibleRegion, extents);
+    std::cout << extents->width << "\n";
+    if (cairo_region_is_empty(visibleRegion)) {
+        // TODO: cairo_region_is_empty does not work, it is never empty
+        std::cout << "not exposed" << "\n";
+        cairo_region_destroy(visibleRegion);
+        return;
     }
+    cairo_region_destroy(visibleRegion);
    
     
     
