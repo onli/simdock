@@ -34,7 +34,7 @@ wxBitmap* getRootWallpaper()
             break;
         }
         wxMilliSleep(1000);
-        pm  = wnck_screen_get_background_pixmap(screen);
+        pm = wnck_screen_get_background_pixmap(screen);
         i++;
     }
     

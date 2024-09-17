@@ -201,6 +201,16 @@ void tasks_window_background_change (WnckScreen *screen, WnckWindow *window, cal
         // With real transparency enabled we have to do nothing here
         return;
     }
+    if (! wxGetApp().frame->IsExposed(wxGetApp().frame->GetRect())) {
+        // TODO: IsExposed does not work, it always thinks it's not exposed
+        std::cout << "not exposed" << "\n";
+        // If simdock itself is covered, the fetched background will be unusable, so we stop
+        return;
+    }
+   
+    
+    
+    
     // The signal arrives before the background is actually changed. The small sleep workarounds this issue.
     wxMilliSleep(20);
     // Now we hide the app, because getRootWallpaper() since the switch to GTK3 also sees simdock itself
