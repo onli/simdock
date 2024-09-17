@@ -196,6 +196,52 @@ static void tasks_window_opened (WnckScreen *screen, WnckWindow *window, callbac
     tasks_addNewImage(window, ImagesList, settings, ti);
 }
 
+// Check whether our simdock window intersects with a different window.
+// If it does, it is probably covered by it - and our background grabbing will fail
+bool is_covered(WnckScreen *screen, WnckWindow *window) {
+    GdkDisplay* display = gdk_display_get_default();
+    GtkWidget* widget = wxGetApp().frame->GetHandle();
+    GdkWindow* gdkWindow = gtk_widget_get_window(widget);
+    XID xid = gdk_x11_window_get_xid(gdkWindow);
+    cairo_region_t* visibleDockRegion = gdk_window_get_visible_region(gdkWindow);
+    cairo_rectangle_int_t dockRect;
+    cairo_region_get_rectangle(visibleDockRegion, 0, &dockRect);
+    std::cout << "region x: " << dockRect.x << std::endl;
+    std::cout << "region y: " << dockRect.y << std::endl;
+                
+
+    GList* allWindows = wnck_screen_get_windows(screen);
+    for (GList *l = allWindows; l != NULL; l = l->next) {
+        WnckWindow* curWindow = WNCK_WINDOW(l->data);
+        if (wnck_window_is_visible_on_workspace(curWindow, wnck_screen_get_active_workspace(screen))) {
+            Window otherXid = wnck_window_get_xid(curWindow);
+
+            // We use the XID here just to avoid confusion with different pointers
+            if (xid != otherXid) {
+                GdkWindow* gdkWindowOther = gdk_x11_window_foreign_new_for_display(display, otherXid);
+                cairo_region_t* otherVisibleRegion = gdk_window_get_visible_region(gdkWindowOther);
+                // To check for intersection, we need to work with individual points, like stored
+                // in a rectangle
+                cairo_rectangle_int_t rect;
+                cairo_region_get_rectangle(otherVisibleRegion, 0, &rect);
+                cairo_region_overlap_t intersection = cairo_region_contains_rectangle(visibleDockRegion, &rect);
+            
+                if (intersection !=  CAIRO_REGION_OVERLAP_OUT) {
+                    std::cout << "Colliding Window Name: " << wnck_window_get_name(curWindow) << std::endl;
+                    std::cout << "with region x: " << rect.x << std::endl;
+                    std::cout << "with region y: " << rect.y << std::endl;
+                    cairo_region_destroy(visibleDockRegion);
+                    cairo_region_destroy(otherVisibleRegion);
+                    return true;
+                }
+                cairo_region_destroy(otherVisibleRegion);
+            }
+        }
+    }
+    cairo_region_destroy(visibleDockRegion);
+    return false;
+}
+
 void tasks_window_background_change (WnckScreen *screen, WnckWindow *window, callbackArgs* ca) {
     if (wxGetApp().frame->IsTransparentBackgroundSupported()) {
         // With real transparency enabled we have to do nothing here
@@ -208,21 +254,22 @@ void tasks_window_background_change (WnckScreen *screen, WnckWindow *window, cal
         return;
     }*/
 
-    GtkWidget* widget = wxGetApp().frame->GetHandle();
-    GdkWindow* gdkWindow = gtk_widget_get_window(widget);
-    cairo_region_t* visibleRegion = gdk_window_get_visible_region(gdkWindow);
-    cairo_rectangle_int_t* extents = new cairo_rectangle_int_t();
-    cairo_region_get_extents(visibleRegion, extents);
-    std::cout << extents->width << "\n";
-    if (cairo_region_is_empty(visibleRegion)) {
-        // TODO: cairo_region_is_empty does not work, it is never empty
-        std::cout << "not exposed" << "\n";
-        cairo_region_destroy(visibleRegion);
+    //GtkWidget* widget = wxGetApp().frame->GetHandle();
+    //GdkWindow* gdkWindow = gtk_widget_get_window(widget);
+    //cairo_region_t* visibleRegion = gdk_window_get_visible_region(gdkWindow);
+    //cairo_rectangle_int_t* extents = new cairo_rectangle_int_t();
+    //cairo_region_get_extents(visibleRegion, extents);
+    //std::cout << extents->width << "\n";
+    //if (cairo_region_is_empty(visibleRegion)) {
+        // //TODO: cairo_region_is_empty does not work, it is never empty
+        //std::cout << "not exposed" << "\n";
+        //cairo_region_destroy(visibleRegion);
+        //return;
+    //}
+    //cairo_region_destroy(visibleRegion);
+    if (is_covered(screen, window)) {
         return;
     }
-    cairo_region_destroy(visibleRegion);
-   
-    
     
     
     // The signal arrives before the background is actually changed. The small sleep workarounds this issue.
