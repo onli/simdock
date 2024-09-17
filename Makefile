@@ -8,7 +8,7 @@ SRCDIR ?= src/
 SHELL ?= /bin/sh
 CC = g++
 CCFLAGS ?= -O2
-DEPS = $(shell pkg-config --libs --cflags glib-2.0 gtk+-3.0 libwnck-3.0 xcb-ewmh librsvg-2.0)
+DEPS = $(shell pkg-config --libs --cflags glib-2.0 gtk+-3.0 libwnck-3.0 xcb-ewmh librsvg-2.0 x11)
 ifneq (, $(shell which wx-config))
 	DEPS += $(shell wx-config --cflags --libs)
 else

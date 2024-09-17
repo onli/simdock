@@ -126,7 +126,6 @@ private:
 
     SettingsDialog *settingsDialog;
     void OnClose (wxCloseEvent &event);
-    //void OnDelayedBackground(wxCommandEvent &event);
 
     DECLARE_EVENT_TABLE () 
   

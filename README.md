@@ -19,7 +19,7 @@ Currently, simdock has to be compiled manually. The main dependencies are wxWidg
 
     Under Void Linux:
 
-        sudo xbps-install pkg-config wxWidgets-gtk3-devel librsvg-devel xcb-ewmh libwnck-devel make gcc
+        sudo xbps-install pkg-config wxWidgets-gtk3-devel librsvg-devel xcb-ewmh libwnck-devel libX11-devel make gcc
 
 1. Type `make` to compile
 1. Type `sudo make install` to install

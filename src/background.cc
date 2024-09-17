@@ -19,64 +19,86 @@
 
 using namespace std;
 
+// Function to fetch the root window background pixmap
+Pixmap getRootPixmap(Display* display, Window root) {
+    Atom actual_type;
+    int actual_format;
+    unsigned long nitems, bytes_after;
+    unsigned char* prop = nullptr;
+    Atom prop_root = XInternAtom(display, "_XROOTPMAP_ID", True);
+
+    if (XGetWindowProperty(display, root, prop_root, 0, 1, False, XA_PIXMAP, 
+                           &actual_type, &actual_format, &nitems, &bytes_after, 
+                           &prop) == Success) {
+        if (nitems == 1) {
+            Pixmap pixmap = *(Pixmap*)prop;
+            XFree(prop);
+            return pixmap;
+        }
+    }
+    return None;
+}
+
+// Function to convert X11 Pixmap into wxImage
+wxImage ConvertPixmapToWxImage(Display* display, Pixmap pixmap, int width, int height) {
+    XImage* ximage = XGetImage(display, pixmap, 0, 0, width, height, AllPlanes, ZPixmap);
+    if (!ximage) {
+        std::cerr << "Failed to get XImage from Pixmap!" << std::endl;
+        return wxImage(width, height);
+    }
+
+    wxImage image(width, height);
+    unsigned char* data = image.GetData();
+    if (!data) {
+        std::cerr << "Failed to allocate memory for wxImage data!" << std::endl;
+        XDestroyImage(ximage);
+        return wxImage(width, height);
+    }
+
+    // Convert pixel data
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            unsigned long pixel = XGetPixel(ximage, x, y);
+            unsigned char red   = (pixel >> 16) & 0xFF;
+            unsigned char green = (pixel >> 8) & 0xFF;
+            unsigned char blue  = pixel & 0xFF;
+
+            data[(y * width + x) * 3 + 0] = red;
+            data[(y * width + x) * 3 + 1] = green;
+            data[(y * width + x) * 3 + 2] = blue;
+        }
+    }
+
+    XDestroyImage(ximage);
+    return image;
+}
+
 //get the currently used background 
 wxBitmap* getRootWallpaper()
 {
-    wxBitmap* backImage = new wxBitmap();
-    WnckScreen *screen = wnck_screen_get_default ();
+	wxBitmap* backImage;
+	Display* display = XOpenDisplay(nullptr);
+    if (!display) {
+        std::cerr << "Unable to open X display" << std::endl;
+        return NULL;
+    }
 
-	// This is the X window ID of the desktop
-    Pixmap pm = wnck_screen_get_background_pixmap(screen);
-    int i = 0;
-    while(i < 5)
-    {
-        if (pm != None) {
-            break;
+    Window root = DefaultRootWindow(display);
+
+    // Get the root window background pixmap
+    Pixmap rootPixmap = getRootPixmap(display, root);
+    if (rootPixmap != None) {
+        int screen_width = DisplayWidth(display, DefaultScreen(display));
+        int screen_height = DisplayHeight(display, DefaultScreen(display));
+
+        // Convert Pixmap to wxImage and then to wxBitmap
+        wxImage image = ConvertPixmapToWxImage(display, rootPixmap, screen_width, screen_height);
+        if (image.IsOk()) {
+		  backImage = new wxBitmap(image);
         }
-        wxMilliSleep(1000);
-        pm = wnck_screen_get_background_pixmap(screen);
-        i++;
     }
-    
-    if (pm != None) {
-		wxSize sz = wxGetDisplaySize();
-		// Note: This code to hide the app is duplicated with the outer call in tasks.cc, but this is needed for first app start
-		wxGetApp().frame->SetTransparent(0);
-		wxGetApp().frame->Hide();
-		wxGetApp().frame->Disable();
-		// Give the main UI thread a chance to hide the app first
-		while(wxGetApp().frame->IsShown()) {
-			wxMilliSleep(20);
-		}
-		// This sleep should be unnecessary, but without it the UI will not be hidden in the next step
-		wxMilliSleep(20);
-		wxBitmap* backImage = new wxBitmap(
-			gdk_pixbuf_get_from_window(
-				gdk_x11_window_foreign_new_for_display(
-					gdk_display_get_default(),
-					gdk_x11_get_default_root_xwindow()
-				),
-				0,
-				0,
-				sz.GetWidth(),
-				sz.GetHeight()
-			)
-		  );
-		wxGetApp().frame->Show();
-		wxGetApp().frame->SetTransparent(255);
-		wxGetApp().frame->Enable();
-		return backImage;
-    } else {
-        wxSize sz = wxGetDisplaySize();
-		wxBitmap* backImage = new wxBitmap(sz.GetWidth(), sz.GetHeight());
-        wxMemoryDC dc;
-        dc.SelectObject(*backImage);
-        dc.SetBackground(*wxTRANSPARENT_BRUSH);
-        dc.Clear();
-        dc.SelectObject(*backImage);
-		return backImage;
-    }
-    return backImage;
+	XCloseDisplay(display);
+	return backImage;
 }
 
 wxBitmap *fixImage (wxString url, int type, wxColour c)

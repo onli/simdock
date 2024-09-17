@@ -64,6 +64,5 @@ void tasks_register_signals(ImagesArray * ImagesList,simSettings settings);
 /* Adds a new image to the images list given a window and task informations */
 void tasks_addNewImage(WnckWindow *window, ImagesArray* ImagesList, simSettings settings,const taskInfo& ti);
 wxBitmap* tasks_getRootWallpaper();
-void update_background();
 
 #endif

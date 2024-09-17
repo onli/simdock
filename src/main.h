@@ -118,16 +118,6 @@ WX_DEFINE_ARRAY (simImage *, ImagesArray);
 #define NONE_STR  "none"
 #define WALLPAPER_STR "wallpaper"
 
-//#include <wx/arrimpl.cpp>
-//WX_DEFINE_OBJARRAY(simImage)
-//WX_DEFINE_OBJARRAY(ImagesList);
-
-
-//WX_DECLARE_LIST(simImage, ImagesList);
-
-// the ID we'll use to identify our event
-//const int BACKGROUND_UPDATE_ID = 100000;
-
 
 /* wxString to std::string converter. Useful for printing stuff */
 std::string wx2std (const wxString & input);

@@ -207,51 +207,6 @@ bool check_overlap(int x1, int y1, int width1, int height1,
     return false;
 }
 
-// Check whether our simdock window intersects with some different window
-bool is_covered(WnckScreen *screen) {
-    GdkDisplay* display = gdk_display_get_default();
-    GtkWidget* widget = wxGetApp().frame->GetHandle();
-    GdkWindow* gdkWindow = gtk_widget_get_window(widget);
-    XID xid = gdk_x11_window_get_xid(gdkWindow);
-    WnckWindow* frameWindow = wnck_window_get(xid);
-    
-    int win1_x, win1_y, win1_width, win1_height;
-    wnck_window_get_geometry(frameWindow, &win1_x, &win1_y, &win1_width, &win1_height);
-
-    GList* allWindows = wnck_screen_get_windows(screen);
-    for (GList *l = allWindows; l != NULL; l = l->next) {
-        WnckWindow* curWindow = WNCK_WINDOW(l->data);
-        if (wnck_window_is_visible_on_workspace(curWindow, wnck_screen_get_active_workspace(screen))) {
-            Window otherXid = wnck_window_get_xid(curWindow);
-
-            // We use the XID here just to avoid confusion with different pointers
-            if (xid != otherXid) {
-                int win2_x, win2_y, win2_width, win2_height;
-                wnck_window_get_geometry(curWindow, &win2_x, &win2_y, &win2_width, &win2_height);
-                if (check_overlap(win1_x, win1_y, win1_width, win1_height, win2_x, win2_y, win2_width, win2_height)) {
-                    return true;
-                }
-            }
-        }
-    }
-    return false;
-}
-
-// Change the background for pseudo transparency mode
-void update_background() {
-     std::cout << "updating background" << std::endl;
-    // The signal arrives before the background is actually changed. The small sleep workarounds this issue.
-    wxMilliSleep(20);
-    // Now we hide the app, because getRootWallpaper() since the switch to GTK3 also sees simdock itself
-    wxGetApp().frame->SetTransparent(0);
-    wxGetApp().frame->Hide();
-    wxGetApp().frame->Disable();
-    wxGetApp().CallAfter([]{
-        // The use of CallAfter is needed, otherwise the app won't be hidden while getRoootWallpaper runs
-        wxBitmap* backImage = getRootWallpaper();
-        wxGetApp().SetWallpaper(backImage);
-    });
-}
 
 void tasks_window_background_change (WnckScreen *screen, WnckWindow *window, callbackArgs* ca) {
     if (wxGetApp().frame->IsTransparentBackgroundSupported()) {
@@ -259,26 +214,8 @@ void tasks_window_background_change (WnckScreen *screen, WnckWindow *window, cal
         return;
     }
     
-    if (is_covered(screen)) {
-        // Without real transparency, we don't want to continue if the frame is covered. It would
-        // make us fetch the overlapping window as part of the background.
-        std::thread([]() {
-            WnckScreen* screen = wnck_screen_get_default();
-            do {
-                std::cout << "sleeping" << std::endl;
-                std::this_thread::sleep_for(std::chrono::seconds(5)); // Delay of 5 seconds
-            } while (is_covered(screen));
-            std::cout << "send event" << std::endl;
-            //wxCommandEvent event(wxEVT_COMMAND_TEXT_UPDATED, BACKGROUND_UPDATE_ID);
-            //wxGetApp().frame->GetEventHandler()->AddPendingEvent(event);
-            wxGetApp().CallAfter([]{
-                update_background();
-            });
-        }).detach();
-        return;
-    }
-    
-    update_background();
+    wxBitmap* backImage = getRootWallpaper();
+    wxGetApp().SetWallpaper(backImage);
 }
 
 void tasks_track_active_window (WnckScreen *screen, WnckWindow *window, callbackArgs* ca) {

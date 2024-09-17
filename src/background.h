@@ -20,6 +20,8 @@
 #define BACKGROUND_H_
 
 #include "main.h"
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
 
 wxBitmap *fixImage (wxString img, int type, wxColour c);
 wxBitmap* getRootWallpaper();

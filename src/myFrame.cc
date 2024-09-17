@@ -62,10 +62,6 @@ EVT_MENU (ID_Keep, MyFrame::OnKeep)
 EVT_MENU (ID_Edit, MyFrame::OnEdit) 
 EVT_MENU (ID_Delete, MyFrame::OnDelete)
 /*
-*  Custom
-*/
-//EVT_COMMAND (BACKGROUND_UPDATE_ID, wxEVT_COMMAND_TEXT_UPDATED, MyFrame::OnDelayedBackground)
-/*
 * Painting 
 */
 EVT_PAINT (MyFrame::OnPaint)
@@ -250,12 +246,6 @@ MyFrame::GetWallpaper ()
 {
   return backImage;
 }
-
-//void 
-//MyFrame::OnDelayedBackground(wxCommandEvent &event) {
-    //std::cout << "got update background event" << std::endl;
-    //update_background();
-//}
   
 void MyFrame::SetMarkBitmap (wxBitmap * newBmp)
 {
