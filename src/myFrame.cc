@@ -36,7 +36,6 @@ enum
   ID_animation = 11,
 };
 
-
 BEGIN_EVENT_TABLE (MyFrame, wxFrame)
 EVT_MIDDLE_DOWN (MyFrame::OnMiddleDown)
 EVT_MIDDLE_UP (MyFrame::OnMiddleUp)
@@ -62,6 +61,10 @@ EVT_MENU (ID_Add, MyFrame::OnAdd)
 EVT_MENU (ID_Keep, MyFrame::OnKeep)
 EVT_MENU (ID_Edit, MyFrame::OnEdit) 
 EVT_MENU (ID_Delete, MyFrame::OnDelete)
+/*
+*  Custom
+*/
+//EVT_COMMAND (BACKGROUND_UPDATE_ID, wxEVT_COMMAND_TEXT_UPDATED, MyFrame::OnDelayedBackground)
 /*
 * Painting 
 */
@@ -181,6 +184,7 @@ wxFrame()
     blurTimer->Start (settings.BLUR_TIMEOUT);
     hoverTimer = new wxTimer(this, ID_hover_Timer);
     animation = new wxTimer(this, ID_animation);
+    
     /*
     * Menu stuff 
     */
@@ -247,7 +251,11 @@ MyFrame::GetWallpaper ()
   return backImage;
 }
 
-
+//void 
+//MyFrame::OnDelayedBackground(wxCommandEvent &event) {
+    //std::cout << "got update background event" << std::endl;
+    //update_background();
+//}
   
 void MyFrame::SetMarkBitmap (wxBitmap * newBmp)
 {
@@ -720,8 +728,6 @@ fade (wxImage * img, const int &intensity)
     }
 }
 #endif
-
-
 
 void
 MyFrame::OnClose (wxCloseEvent & event)

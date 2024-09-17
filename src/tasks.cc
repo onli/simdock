@@ -237,18 +237,9 @@ bool is_covered(WnckScreen *screen) {
     return false;
 }
 
-void tasks_window_background_change (WnckScreen *screen, WnckWindow *window, callbackArgs* ca) {
-    if (wxGetApp().frame->IsTransparentBackgroundSupported()) {
-        // With real transparency enabled we have to do nothing here
-        return;
-    }
-    
-    if (is_covered(screen)) {
-        // Without real transparency, we don't want to continue if the frame is covered. It would
-        // make us fetch the overlapping window as part of the background.
-        return;
-    }
-    
+// Change the background for pseudo transparency mode
+void update_background() {
+     std::cout << "updating background" << std::endl;
     // The signal arrives before the background is actually changed. The small sleep workarounds this issue.
     wxMilliSleep(20);
     // Now we hide the app, because getRootWallpaper() since the switch to GTK3 also sees simdock itself
@@ -260,7 +251,34 @@ void tasks_window_background_change (WnckScreen *screen, WnckWindow *window, cal
         wxBitmap* backImage = getRootWallpaper();
         wxGetApp().SetWallpaper(backImage);
     });
+}
+
+void tasks_window_background_change (WnckScreen *screen, WnckWindow *window, callbackArgs* ca) {
+    if (wxGetApp().frame->IsTransparentBackgroundSupported()) {
+        // With real transparency enabled we have to do nothing here
+        return;
+    }
     
+    if (is_covered(screen)) {
+        // Without real transparency, we don't want to continue if the frame is covered. It would
+        // make us fetch the overlapping window as part of the background.
+        std::thread([]() {
+            WnckScreen* screen = wnck_screen_get_default();
+            do {
+                std::cout << "sleeping" << std::endl;
+                std::this_thread::sleep_for(std::chrono::seconds(5)); // Delay of 5 seconds
+            } while (is_covered(screen));
+            std::cout << "send event" << std::endl;
+            //wxCommandEvent event(wxEVT_COMMAND_TEXT_UPDATED, BACKGROUND_UPDATE_ID);
+            //wxGetApp().frame->GetEventHandler()->AddPendingEvent(event);
+            wxGetApp().CallAfter([]{
+                update_background();
+            });
+        }).detach();
+        return;
+    }
+    
+    update_background();
 }
 
 void tasks_track_active_window (WnckScreen *screen, WnckWindow *window, callbackArgs* ca) {

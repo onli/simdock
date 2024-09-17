@@ -125,7 +125,8 @@ private:
     bool firstPaint;
 
     SettingsDialog *settingsDialog;
-    void OnClose (wxCloseEvent & event);
+    void OnClose (wxCloseEvent &event);
+    //void OnDelayedBackground(wxCommandEvent &event);
 
     DECLARE_EVENT_TABLE () 
   

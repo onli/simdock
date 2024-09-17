@@ -125,7 +125,8 @@ WX_DEFINE_ARRAY (simImage *, ImagesArray);
 
 //WX_DECLARE_LIST(simImage, ImagesList);
 
-
+// the ID we'll use to identify our event
+//const int BACKGROUND_UPDATE_ID = 100000;
 
 
 /* wxString to std::string converter. Useful for printing stuff */
