@@ -196,19 +196,27 @@ static void tasks_window_opened (WnckScreen *screen, WnckWindow *window, callbac
     tasks_addNewImage(window, ImagesList, settings, ti);
 }
 
-// Check whether our simdock window intersects with a different window.
-// If it does, it is probably covered by it - and our background grabbing will fail
-bool is_covered(WnckScreen *screen, WnckWindow *window) {
+// Function to check if two rectangles (windows) overlap
+bool check_overlap(int x1, int y1, int width1, int height1, 
+                   int x2, int y2, int width2, int height2) {
+    // Calculate overlap using axis-aligned bounding box (AABB)
+    if (x1 < x2 + width2 && x1 + width1 > x2 && 
+        y1 < y2 + height2 && y1 + height1 > y2) {
+        return true;
+    }
+    return false;
+}
+
+// Check whether our simdock window intersects with some different window
+bool is_covered(WnckScreen *screen) {
     GdkDisplay* display = gdk_display_get_default();
     GtkWidget* widget = wxGetApp().frame->GetHandle();
     GdkWindow* gdkWindow = gtk_widget_get_window(widget);
     XID xid = gdk_x11_window_get_xid(gdkWindow);
-    cairo_region_t* visibleDockRegion = gdk_window_get_visible_region(gdkWindow);
-    cairo_rectangle_int_t dockRect;
-    cairo_region_get_rectangle(visibleDockRegion, 0, &dockRect);
-    std::cout << "region x: " << dockRect.x << std::endl;
-    std::cout << "region y: " << dockRect.y << std::endl;
-                
+    WnckWindow* frameWindow = wnck_window_get(xid);
+    
+    int win1_x, win1_y, win1_width, win1_height;
+    wnck_window_get_geometry(frameWindow, &win1_x, &win1_y, &win1_width, &win1_height);
 
     GList* allWindows = wnck_screen_get_windows(screen);
     for (GList *l = allWindows; l != NULL; l = l->next) {
@@ -218,27 +226,14 @@ bool is_covered(WnckScreen *screen, WnckWindow *window) {
 
             // We use the XID here just to avoid confusion with different pointers
             if (xid != otherXid) {
-                GdkWindow* gdkWindowOther = gdk_x11_window_foreign_new_for_display(display, otherXid);
-                cairo_region_t* otherVisibleRegion = gdk_window_get_visible_region(gdkWindowOther);
-                // To check for intersection, we need to work with individual points, like stored
-                // in a rectangle
-                cairo_rectangle_int_t rect;
-                cairo_region_get_rectangle(otherVisibleRegion, 0, &rect);
-                cairo_region_overlap_t intersection = cairo_region_contains_rectangle(visibleDockRegion, &rect);
-            
-                if (intersection !=  CAIRO_REGION_OVERLAP_OUT) {
-                    std::cout << "Colliding Window Name: " << wnck_window_get_name(curWindow) << std::endl;
-                    std::cout << "with region x: " << rect.x << std::endl;
-                    std::cout << "with region y: " << rect.y << std::endl;
-                    cairo_region_destroy(visibleDockRegion);
-                    cairo_region_destroy(otherVisibleRegion);
+                int win2_x, win2_y, win2_width, win2_height;
+                wnck_window_get_geometry(curWindow, &win2_x, &win2_y, &win2_width, &win2_height);
+                if (check_overlap(win1_x, win1_y, win1_width, win1_height, win2_x, win2_y, win2_width, win2_height)) {
                     return true;
                 }
-                cairo_region_destroy(otherVisibleRegion);
             }
         }
     }
-    cairo_region_destroy(visibleDockRegion);
     return false;
 }
 
@@ -247,30 +242,12 @@ void tasks_window_background_change (WnckScreen *screen, WnckWindow *window, cal
         // With real transparency enabled we have to do nothing here
         return;
     }
-    /*if (! wxGetApp().frame->IsExposed(wxGetApp().frame->GetRect())) {
-        // TODO: IsExposed does not work, it always thinks it's not exposed
-        std::cout << "not exposed" << "\n";
-        // If simdock itself is covered, the fetched background will be unusable, so we stop
-        return;
-    }*/
-
-    //GtkWidget* widget = wxGetApp().frame->GetHandle();
-    //GdkWindow* gdkWindow = gtk_widget_get_window(widget);
-    //cairo_region_t* visibleRegion = gdk_window_get_visible_region(gdkWindow);
-    //cairo_rectangle_int_t* extents = new cairo_rectangle_int_t();
-    //cairo_region_get_extents(visibleRegion, extents);
-    //std::cout << extents->width << "\n";
-    //if (cairo_region_is_empty(visibleRegion)) {
-        // //TODO: cairo_region_is_empty does not work, it is never empty
-        //std::cout << "not exposed" << "\n";
-        //cairo_region_destroy(visibleRegion);
-        //return;
-    //}
-    //cairo_region_destroy(visibleRegion);
-    if (is_covered(screen, window)) {
+    
+    if (is_covered(screen)) {
+        // Without real transparency, we don't want to continue if the frame is covered. It would
+        // make us fetch the overlapping window as part of the background.
         return;
     }
-    
     
     // The signal arrives before the background is actually changed. The small sleep workarounds this issue.
     wxMilliSleep(20);
@@ -279,7 +256,7 @@ void tasks_window_background_change (WnckScreen *screen, WnckWindow *window, cal
     wxGetApp().frame->Hide();
     wxGetApp().frame->Disable();
     wxGetApp().CallAfter([]{
-        // The use of CallAfter is needed, otheerwise the app won't be hidden while getRoootWallpaper runs
+        // The use of CallAfter is needed, otherwise the app won't be hidden while getRoootWallpaper runs
         wxBitmap* backImage = getRootWallpaper();
         wxGetApp().SetWallpaper(backImage);
     });
