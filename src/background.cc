@@ -36,15 +36,23 @@ Pixmap getRootPixmap(Display* display, Window root) {
             return pixmap;
         }
     }
+	std::cerr << "pixmap resolved to None" << std::endl;
     return None;
 }
 
 // Function to convert X11 Pixmap into wxImage
 wxImage ConvertPixmapToWxImage(Display* display, Pixmap pixmap, int width, int height) {
+	bool pixmapMode = true;
     XImage* ximage = XGetImage(display, pixmap, 0, 0, width, height, AllPlanes, ZPixmap);
     if (!ximage) {
-        std::cerr << "Failed to get XImage from Pixmap!" << std::endl;
-        return wxImage(width, height);
+		pixmapMode = false;
+        std::cerr << "Failed to get full size XImage from Pixmap!" << std::endl;
+		// If the image was set by color, it only creates a 1x1 pixmap
+		ximage = XGetImage(display, pixmap, 0, 0, 1, 1, AllPlanes, ZPixmap);
+		if (!ximage) {
+		  std::cerr << "Failed to get 1px XImage from Pixmap!" << std::endl;
+		  return wxImage(width, height);
+		}
     }
 
     wxImage image(width, height);
@@ -55,19 +63,33 @@ wxImage ConvertPixmapToWxImage(Display* display, Pixmap pixmap, int width, int h
         return wxImage(width, height);
     }
 
-    // Convert pixel data
-    for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
-            unsigned long pixel = XGetPixel(ximage, x, y);
-            unsigned char red   = (pixel >> 16) & 0xFF;
-            unsigned char green = (pixel >> 8) & 0xFF;
-            unsigned char blue  = pixel & 0xFF;
+	// Convert pixel data to wx rgb codes
+	if (pixmapMode) {
+		for (int y = 0; y < height; ++y) {
+			for (int x = 0; x < width; ++x) {
+				unsigned long pixel = XGetPixel(ximage, x, y);
+				unsigned char red   = (pixel >> 16) & 0xFF;
+				unsigned char green = (pixel >> 8) & 0xFF;
+				unsigned char blue  = pixel & 0xFF;
 
-            data[(y * width + x) * 3 + 0] = red;
-            data[(y * width + x) * 3 + 1] = green;
-            data[(y * width + x) * 3 + 2] = blue;
-        }
-    }
+				data[(y * width + x) * 3 + 0] = red;
+				data[(y * width + x) * 3 + 1] = green;
+				data[(y * width + x) * 3 + 2] = blue;
+			}
+		}
+	} else {
+		unsigned long pixel = XGetPixel(ximage, 0, 0);
+		unsigned char red   = (pixel >> 16) & 0xFF;
+		unsigned char green = (pixel >> 8) & 0xFF;
+		unsigned char blue  = pixel & 0xFF;
+		for (int y = 0; y < height; ++y) {
+			for (int x = 0; x < width; ++x) {
+				data[(y * width + x) * 3 + 0] = red;
+				data[(y * width + x) * 3 + 1] = green;
+				data[(y * width + x) * 3 + 2] = blue;
+			}
+		}
+	}
 
     XDestroyImage(ximage);
     return image;
