@@ -7,7 +7,7 @@ This is simdock, an eye-candy deskbar for Linux.
 ## Features
 
  * Starters in the dock keep track of launched applications, enabling minimizing, raising and cycling through its windows
- * Transparent background with or without without compositing, and in both modes the dock automatically updates when the desktop background changes
+ * Transparent background with or without compositing, and in both modes the dock automatically updates when the desktop background changes
  * Fluid animations – icons get bigger when hovered and shortly transparent when clicked
  * Configurable size and icon placement
 
