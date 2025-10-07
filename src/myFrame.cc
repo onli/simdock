@@ -381,7 +381,7 @@ MyFrame::OnRightClick (wxMouseEvent & event)
     for (unsigned int i = 0; i < ImagesList->GetCount (); i++)
     {
         simImage *img = (*ImagesList)[i];
-        if (img->isIn (p.x, p.y))
+        if (img->isIn (p.x, p.y, settings.BOTTOM_BORDER))
         {
             clickedID = i;
             break;
@@ -609,7 +609,7 @@ simImage*
 MyFrame::getClickedIcon(wxMouseEvent & event) {
     for (unsigned int i = 0; i < ImagesList->GetCount (); i++) {
         simImage *img = (*ImagesList)[i];
-        if (img->isIn (event.m_x, event.m_y)) {
+        if (img->isIn (event.m_x, event.m_y, settings.BOTTOM_BORDER)) {
             return img;
         }
     }

@@ -22,6 +22,7 @@
 #include "main.h"
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
+#include <cairo/cairo-xlib.h>
 
 wxBitmap *fixImage (wxString img, int type, wxColour c);
 wxBitmap* getRootWallpaper();

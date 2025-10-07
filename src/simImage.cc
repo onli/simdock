@@ -189,9 +189,8 @@ simImage::handleStatus ()
         break;
     }
 }
-bool simImage::isIn (int m_x, int m_y)
-{
-  return m_x > x && m_y > y && m_x < x + w && m_y < y + h;
+bool simImage::isIn (int m_x, int m_y, int bottom_border) {
+    return m_x > x && m_y > y && m_x < x + w && (m_y - bottom_border) < y + h;
 }
 wxPoint simImage::center()
 {

@@ -70,8 +70,10 @@ public:
   bool loadImage(const wxString& path);
   /* Uses the current image to initialize the reflex image */
   void initReflex();
-  /* Returns true if the given point is inside the simImage bounds, false otherwise */
-  bool isIn (int x, int y);
+  /* Returns true if the given point is inside the simImage bounds, false otherwise.
+   * If bottom_border is given will return true even if clicked below the icon, to enable clicks at
+   * the border of the display */
+  bool isIn (int x, int y, int bottom_border);
   /* Returns the center point of the image */
   wxPoint center();
 
